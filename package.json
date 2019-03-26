@@ -4,7 +4,7 @@
   "description": "kodemia api ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -35,5 +35,8 @@
     "lodash": "^4.17.11",
     "mongoose": "^5.4.20",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }
