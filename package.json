@@ -1,0 +1,39 @@
+{
+  "name": "kodemiapi",
+  "version": "1.0.0",
+  "description": "kodemia api ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devCharles/kodemiAPI.git"
+  },
+  "keywords": [
+    "kodemia",
+    "api",
+    "node",
+    "koders",
+    "devcharles"
+  ],
+  "author": "devcharles",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/devCharles/kodemiAPI/issues"
+  },
+  "homepage": "https://github.com/devCharles/kodemiAPI#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.5",
+    "dotenv": "^7.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "kcors": "^2.2.2",
+    "koa": "^2.7.0",
+    "koa-body": "^4.1.0",
+    "koa-helmet": "^4.1.0",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.4.20",
+    "uuid": "^3.3.2"
+  }
+}
