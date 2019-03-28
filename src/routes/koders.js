@@ -1,4 +1,5 @@
 const Router = require('koa-router')
+const jwt = require('../lib/jwt')
 
 const koder = require('../usecases/koder')
 
@@ -42,14 +43,13 @@ router.post('/login', async ctx => {
   if (!password) throw ctx.throw(400, 'Password is required')
 
   const koderSignedIn = await koder.sigIn(email, password)
-
-  console.warn('  koderSignedIn ')
+  const token = await jwt.sign({ id: koderSignedIn._id })
   
   console.warn({ email, password })
   ctx.resolve({
-    message: 'login',
+    message: `${koderSignedIn.email} Signed in successfully`,
     payload: {
-      koder: koderSignedIn
+      token
     }
   })
 })
