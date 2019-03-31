@@ -10,10 +10,26 @@ const router = new Router({
 router.get('/', async ctx => {
   const koders = await koder.getAll()
 
+  const publicKoders = koders.map(koder => {
+    const { 
+      firstName,
+      lastName,
+      email,
+      generation
+    } = koder
+    
+    return {
+      firstName,
+      lastName,
+      email,
+      generation
+    }
+  })
+
   ctx.resolve({
     message: `Koders list`,
     payload: {
-      koders
+      koders: publicKoders
     }
   })
 
