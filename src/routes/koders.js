@@ -8,7 +8,7 @@ const router = new Router({
 })
 
 router.get('/', async ctx => {
-  const koders = koder.getAll()
+  const koders = await koder.getAll()
 
   ctx.resolve({
     message: `Koders list`,

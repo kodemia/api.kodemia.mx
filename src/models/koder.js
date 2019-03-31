@@ -29,6 +29,9 @@ const koderSchema = new Schema({
   phone: {
     type: String,
     trim: true
+  },
+  generation: {
+    type: String
   }
 })
 
