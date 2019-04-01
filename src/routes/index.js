@@ -2,6 +2,8 @@ const Router = require('koa-router')
 
 const koders = require('./koders')
 const generations = require('./generations')
+const mentors = require('./mentors')
+const streams = require('./streams')
 
 const root = new Router({
   prefix: '/'
@@ -17,6 +19,8 @@ root.get('/', ctx => {
 
 module.exports = {
   koders,
+  mentors,
   generations,
+  streams,
   root
 }

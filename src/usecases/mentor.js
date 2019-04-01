@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 
-const Mentor = require('../models/mentor')
+const Mentor = require('../models/mentor').model
 
 const create = async ({ firstName, lastName, email, password, phone }) => {
   const newMentor = new Mentor({ firstName, lastName, email, password, phone })

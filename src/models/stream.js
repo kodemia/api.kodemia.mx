@@ -2,6 +2,7 @@
 const mongoose = require('mongoose')
 
 const { Schema } = mongoose
+const { Types } = Schema
 
 const streamSchema = new Schema({
   name: {
