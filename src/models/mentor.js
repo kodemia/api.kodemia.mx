@@ -2,9 +2,8 @@
 const mongoose = require('mongoose')
 
 const { Schema } = mongoose
-const { Types } = Schema
 
-const koderSchema = new Schema({
+const mentorSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -18,13 +17,12 @@ const koderSchema = new Schema({
     lowercase: true
   },
   email: {
-    type: String,
-    index: true,
+    type: String, 
     required: true,
     trim: true,
     lowercase: true,
     unique: true
-  },
+  }, 
   password: {
     type: String,
     required: true,
@@ -33,17 +31,13 @@ const koderSchema = new Schema({
   phone: {
     type: String,
     trim: true,
-    match: /[0-9]{10,12}/
-  },
-  generation: {
-    type: Types.ObjectId,
-    ref: 'Generation'
+    match: /[0-9]{10}/
   }
 })
 
-const model = mongoose.model('Koder', koderSchema)
+const model = mongoose.model('Mentor', mentorSchema)
 
 module.exports = {
   model,
-  schema: koderSchema
+  schema: mentorSchema
 }

@@ -2,6 +2,7 @@
 const mongoose = require('mongoose')
 
 const { Schema } = mongoose
+const { Types } = Schema
 
 const classSchema = new Schema({
   title: {
@@ -9,11 +10,13 @@ const classSchema = new Schema({
     required: true
   },
   date: {
-    type: Date
+    type: Date,
+    required: true
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
+    default: ''
   },
   thumbnail: {
     type: String,
@@ -22,6 +25,14 @@ const classSchema = new Schema({
   playbackId: {
     type: String,
     trim: true
+  },
+  mentor: {
+    type: Types.ObjectId,
+    ref: 'Mentor'
+  },
+  generation: {
+    type: Types.ObjectId,
+    ref: 'Generation'
   }
 })
 

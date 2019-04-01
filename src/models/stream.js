@@ -9,8 +9,8 @@ const streamSchema = new Schema({
     required: true
   },
   generation: {
-    type: Number,
-    required: true
+    type: Types.ObjectId,
+    ref: 'Generation'
   },
   title: {
     type: String,
@@ -30,7 +30,6 @@ const streamSchema = new Schema({
   },
   isActive: {
     type: Boolean,
-    required: true,
     default: false
   },
   isLive: {

@@ -6,7 +6,16 @@ const { Schema } = mongoose
 const generationSchema = new Schema({
   number: {
     type: Number,
-    min: 1,
+    min: 1
+  },
+  type: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    enum: [
+      'black',
+      'white'
+    ]
   },
   startDate: {
     type: Date
@@ -16,7 +25,7 @@ const generationSchema = new Schema({
   }
 })
 
-const model = mongoose.model('Class', generationSchema)
+const model = mongoose.model('Generation', generationSchema)
 
 module.exports = {
   model,
