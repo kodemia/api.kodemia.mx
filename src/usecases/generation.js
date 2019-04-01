@@ -1,5 +1,6 @@
 
 const createError = require('http-errors')
+
 const Generation = require('../models/generation').model
 
 const create = async ({ number, type, startDate, endDate }) => {
