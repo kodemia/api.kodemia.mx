@@ -11,13 +11,13 @@ router.get('/', async ctx => {
   const koders = await koder.getAll()
 
   const publicKoders = koders.map(koder => {
-    const { 
+    const {
       firstName,
       lastName,
       email,
       generation
     } = koder
-    
+
     return {
       firstName,
       lastName,
@@ -32,17 +32,22 @@ router.get('/', async ctx => {
       koders: publicKoders
     }
   })
-
 })
 
 router.post('/', async ctx => {
-  const { firstName = '', lastName = '', email = '', password = ''} = ctx.request.body
+  const {
+    firstName = '',
+    lastName = '',
+    email = '',
+    password = ''
+  } = ctx.request.body
+
   if (!firstName) throw ctx.throw(400, 'firstName is required')
   if (!lastName) throw ctx.throw(400, 'lastName is required')
   if (!email) throw ctx.throw(400, 'Email is required')
   if (!password) throw ctx.throw(400, 'password is required')
 
-  const newKoder = await koder.create({ firstName, lastName, email, password})
+  const newKoder = await koder.create({ firstName, lastName, email, password })
 
   ctx.resolve({
     message: 'Koder created',
@@ -60,7 +65,7 @@ router.post('/login', async ctx => {
 
   const koderSignedIn = await koder.sigIn(email, password)
   const token = await jwt.sign({ id: koderSignedIn._id })
-  
+
   console.warn({ email, password })
   ctx.resolve({
     message: `${koderSignedIn.email} Signed in successfully`,
@@ -69,6 +74,5 @@ router.post('/login', async ctx => {
     }
   })
 })
-
 
 module.exports = router
