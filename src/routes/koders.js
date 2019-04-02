@@ -39,15 +39,15 @@ router.post('/', async ctx => {
     firstName = '',
     lastName = '',
     email = '',
-    password = ''
+    password = '',
+    phone = '',
+    generation = {
+      type: 'white',
+      number: 0
+    }
   } = ctx.request.body
 
-  if (!firstName) throw ctx.throw(400, 'firstName is required')
-  if (!lastName) throw ctx.throw(400, 'lastName is required')
-  if (!email) throw ctx.throw(400, 'Email is required')
-  if (!password) throw ctx.throw(400, 'password is required')
-
-  const newKoder = await koder.create({ firstName, lastName, email, password })
+  const newKoder = await koder.create({ firstName, lastName, email, password, phone, generation })
 
   ctx.resolve({
     message: 'Koder created',
@@ -72,6 +72,19 @@ router.post('/login', async ctx => {
     payload: {
       token
     }
+  })
+})
+
+router.post('/reset-password', async ctx => {
+  const { email, password } = ctx.request.body
+
+  if (!email) throw ctx.throw(400, 'Email is required')
+  if (!password) throw ctx.throw(400, 'Password is required')
+
+  await koder.resetPassword(email, password)
+
+  ctx.resolve({
+    message: `Password updated for ${email}`
   })
 })
 
