@@ -4,7 +4,7 @@ const Stream = require('../models/stream').model
 const Generation = require('../models/generation').model
 
 const create = async ({ name, generation, title, url, muxData, endDate, isActive, isLive }) => {
-  const generationFound = await Generation.findOne({ type: generation.type, number: generation.number })
+  const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
   const newStream = new Stream({ name, generation: generationFound._id, title, url, muxData, endDate, isActive, isLive })

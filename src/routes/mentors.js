@@ -33,10 +33,16 @@ router.post('/', async ctx => {
 
 router.get('/', async ctx => {
   const allMentors = await mentor.getAll()
+
+  const cleanMentors = allMentors.map(mentor => {
+    const { password, ...cleanMentor } = mentor.toObject()
+    return cleanMentor
+  })
+
   ctx.resolve({
     message: 'Mentors list',
     payload: {
-      mentors: allMentors
+      mentors: cleanMentors
     }
   })
 })

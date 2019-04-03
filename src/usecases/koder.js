@@ -30,7 +30,7 @@ const resetPassword = async (email = '', password = '') => {
   return koder.save()
 }
 
-const getAll = () => Koder.find({}).exec()
+const getAll = async () => Koder.find({}).sort({ email: 'asc' }).populate('generation').exec()
 
 const sigIn = async (email = '', password = '') => {
   const koder = await Koder.findOne({ email }).exec()

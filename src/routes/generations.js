@@ -27,7 +27,6 @@ router.post('/', async ctx => {
       generation: newGeneration
     }
   })
-
 })
 
 router.get('/', async ctx => {
@@ -39,6 +38,5 @@ router.get('/', async ctx => {
     }
   })
 })
-
 
 module.exports = router

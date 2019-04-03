@@ -11,19 +11,8 @@ router.get('/', async ctx => {
   const koders = await koder.getAll()
 
   const publicKoders = koders.map(koder => {
-    const {
-      firstName,
-      lastName,
-      email,
-      generation
-    } = koder
-
-    return {
-      firstName,
-      lastName,
-      email,
-      generation
-    }
+    const { password, ...cleanKoder } = koder.toObject()
+    return cleanKoder
   })
 
   ctx.resolve({
@@ -66,7 +55,6 @@ router.post('/login', async ctx => {
   const koderSignedIn = await koder.sigIn(email, password)
   const token = await jwt.sign({ id: koderSignedIn._id })
 
-  console.warn({ email, password })
   ctx.resolve({
     message: `${koderSignedIn.email} Signed in successfully`,
     payload: {
