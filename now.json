@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "name": "kodemia-api",
+  "scope": "kodemia",
+  "builds": [
+    {
+      "src": "index.js", 
+      "use": "@now/node-server" 
+    }
+  ],
+  "routes": [{
+    "src": "/(.*)", 
+    "dest": "index.js" 
+  }],
+  "env": {
+    "DB_NAME": "@db_name",
+    "DB_PASSWORD": "@db_password",
+    "DB_USER": "@db_user",
+    "JWT_SECRET": "@jwt_secret"
+  }
+}
