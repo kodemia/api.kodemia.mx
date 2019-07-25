@@ -26,6 +26,7 @@
   "dependencies": {
     "bcrypt": "^3.0.5",
     "dotenv": "^7.0.0",
+    "http-assert": "^1.4.1",
     "http-errors": "^1.7.2",
     "jsonwebtoken": "^8.5.1",
     "kcors": "^2.2.2",
