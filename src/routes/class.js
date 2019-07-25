@@ -1,4 +1,7 @@
 const Router = require('koa-router')
+const _ = require('lodash')
+
+const auth = require('../middlewares/auth')
 
 const klass = require('../usecases/class')
 
@@ -38,8 +41,10 @@ router.post('/', async ctx => {
   })
 })
 
-router.get('/', async ctx => {
-  const allClasses = await klass.getAll()
+router.get('/', auth(), async ctx => {
+  const user = _.get(ctx, 'state.user', {})
+  console.log('user: ', user)
+  const allClasses = await klass.getList(user)
   ctx.resolve({
     message: 'Classes list',
     payload: {

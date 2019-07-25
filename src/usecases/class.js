@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const assert = require('http-assert')
 
 const Class = require('../models/class').model
 const Generation = require('../models/generation').model
@@ -31,7 +32,25 @@ const create = async ({ title, date, description, thumbnail, playbackId, mentor,
 }
 
 const getAll = async () => {
-  const classes = await Class.find({}).sort({ date: 'desc' }).populate('mentor').exec()
+  const classes = await Class.find({}).sort({ date: 'desc' }).populate('mentor generation').exec()
+
+  return classes.map(klass => {
+    const objKlass = klass.toObject({ getters: true })
+    const { mentor } = klass
+    const { password, ...cleanMentor } = mentor.toObject({ getters: true })
+    return {
+      ...objKlass,
+      mentor: cleanMentor
+    }
+  })
+}
+
+async function getList (user = {}) {
+  const { isMentor, generation } = user
+  assert(!isMentor && generation, 404, 'User has no generation asociated')
+  if (isMentor) return this.getAll()
+
+  const classes = await Class.find({ generation }).sort({ date: 'desc' }).populate('mentor generation').exec()
 
   return classes.map(klass => {
     const objKlass = klass.toObject({ getters: true })
@@ -46,5 +65,6 @@ const getAll = async () => {
 
 module.exports = {
   create,
-  getAll
+  getAll,
+  getList
 }

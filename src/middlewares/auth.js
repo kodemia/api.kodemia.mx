@@ -15,12 +15,13 @@ module.exports = (authRoles = []) => async (ctx, next) => {
 
       let tokenDecoded = await jwt.verify(token)
       const { id, isMentor } = tokenDecoded
-      const user = isMentor
+      let user = isMentor
         ? await mentor.getById(id)
         : await koder.getById(id)
+      user = user.toObject({ getters: true })
 
       assert(user, 401, 'User not found')
-      _.set(ctx, 'state.user', user)
+      _.set(ctx, 'state.user', { isMentor, ...user })
 
       if (tokenDecoded) return next()
       ctx.throw(401, 'Unauthorized')
