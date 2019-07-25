@@ -1,4 +1,8 @@
 const Router = require('koa-router')
+const _ = require('lodash')
+const assert = require('http-assert')
+
+const auth = require('../middlewares/auth')
 
 const stream = require('../usecases/stream')
 
@@ -43,6 +47,18 @@ router.get('/', async ctx => {
     message: 'Streams list',
     payload: {
       streams: allStreams
+    }
+  })
+})
+
+router.get('/url', auth(), async ctx => {
+  const generationId = _.get(ctx, 'state.user.generation', '')
+
+  const streamData = await stream.getByGenerationId(generationId)
+  ctx.resolve({
+    message: 'Stream retrieved successfuly',
+    payload: {
+      stream: streamData
     }
   })
 })

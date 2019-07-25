@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const _ = require('lodash')
 
 const Stream = require('../models/stream').model
 const Generation = require('../models/generation').model
@@ -19,7 +20,18 @@ const create = async ({ name, generation, title, url, muxData, endDate, isActive
 
 const getAll = () => Stream.find({}).exec()
 
+async function getByGenerationId (generationId) {
+  const stream = await Stream.findOne({ generation: generationId }).populate('generation').lean()
+  const playbackId = _.get(stream, 'muxData.playback_ids.0.id', '')
+  const {
+    muxData,
+    ...restStream
+  } = stream
+  return { playbackId, ...restStream }
+}
+
 module.exports = {
   getAll,
-  create
+  create,
+  getByGenerationId
 }
