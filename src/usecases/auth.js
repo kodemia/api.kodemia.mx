@@ -1,0 +1,31 @@
+
+const createError = require('http-errors')
+
+const Koder = require('../models/koder')
+const Mentor = require('../models/mentor')
+
+const bcrypt = require('../lib/bcrypt')
+const jwt = require('../lib/jwt')
+
+async function signIn (email, password) {
+  const koder = await Koder.findOne({ email }).exec()
+  const mentor = await Mentor.findOne({ email }).exec()
+  const user = koder || mentor
+
+  if (!user) throw createError(401, 'Invalid data')
+
+  const { password: hash } = user
+  const isValidPassword = await bcrypt.verify(password, hash)
+  if (!isValidPassword) throw createError(401, 'Invalid data')
+
+  const token = await jwt.sign({
+    id: user._id,
+    isMentor: !!mentor
+  })
+
+  return token
+}
+
+module.exports = {
+  signIn
+}
