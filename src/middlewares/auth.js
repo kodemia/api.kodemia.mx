@@ -1,19 +1,34 @@
 
 const _ = require('lodash')
+const assert = require('http-assert')
+
 const jwt = require('../lib/jwt')
+
+const koder = require('../usecases/koder')
+const mentor = require('../usecases/mentor')
 
 module.exports = (authRoles = []) => async (ctx, next) => {
   if ('authorization' in ctx.request.headers) {
     try {
       const token = _.get(ctx, 'request.headers.authorization')
-      let jwtDecoded = await jwt.verify(ctx.request.headers.authorization)
-      if (jwtDecoded) return next()
+      assert(token, 401, 'Empty Authorization header')
+
+      let tokenDecoded = await jwt.verify(token)
+      const { id, isMentor } = tokenDecoded
+      const user = isMentor
+        ? await mentor.getById(id)
+        : await koder.getById(id)
+
+      assert(user, 401, 'User not found')
+      _.set(ctx, 'state.user', user)
+
+      if (tokenDecoded) return next()
       ctx.throw(401, 'Unauthorized')
     } catch (error) {
       console.error(error)
-      ctx.throw(401, 'Invalid token')
+      ctx.throw(401, error.message)
     }
   } else {
-    ctx.throw(401, 'Unauthorized')
+    ctx.throw(401, 'No Authorization header present')
   }
 }

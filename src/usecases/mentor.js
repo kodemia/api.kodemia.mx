@@ -19,7 +19,12 @@ const create = async ({ firstName, lastName, email, password, phone }) => {
 
 const getAll = () => Mentor.find({}).exec()
 
+function getById (id) {
+  return Mentor.findById(id).exec()
+}
+
 module.exports = {
+  getById,
   getAll,
   create
 }

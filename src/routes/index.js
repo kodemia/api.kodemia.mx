@@ -1,5 +1,6 @@
 const Router = require('koa-router')
 
+const auth = require('./auth')
 const koders = require('./koders')
 const generations = require('./generations')
 const mentors = require('./mentors')
@@ -19,6 +20,7 @@ root.get('/', ctx => {
 })
 
 module.exports = {
+  auth,
   koders,
   mentors,
   generations,

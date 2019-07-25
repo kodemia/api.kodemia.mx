@@ -43,9 +43,14 @@ const sigIn = async (email = '', password = '') => {
   return koder
 }
 
+function getById (id) {
+  return Koder.findById(id).exec()
+}
+
 module.exports = {
   create,
   getAll,
   sigIn,
-  resetPassword
+  resetPassword,
+  getById
 }

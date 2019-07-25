@@ -12,7 +12,7 @@ router.post('/login', async ctx => {
   if (!email) throw ctx.throw(400, 'Email is required')
   if (!password) throw ctx.throw(400, 'Password is required')
 
-  const token = await auth.sigIn(email, password)
+  const token = await auth.signIn(email, password)
 
   ctx.resolve({
     message: `${email} Signed in successfully`,

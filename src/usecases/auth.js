@@ -1,8 +1,8 @@
 
 const createError = require('http-errors')
 
-const Koder = require('../models/koder')
-const Mentor = require('../models/mentor')
+const Koder = require('../models/koder').model
+const Mentor = require('../models/mentor').model
 
 const bcrypt = require('../lib/bcrypt')
 const jwt = require('../lib/jwt')
