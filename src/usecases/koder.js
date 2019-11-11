@@ -4,7 +4,7 @@ const Generation = require('../models/generation').model
 const createError = require('http-errors')
 
 const create = async ({ firstName = '', lastName = '', email = '', password = '', phone = '', generation = {} }) => {
-  const hash = await bcrypt.create(password)
+  const hash = await bcrypt.hash(password)
 
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number })
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
@@ -21,7 +21,7 @@ const create = async ({ firstName = '', lastName = '', email = '', password = ''
 }
 
 const resetPassword = async (email = '', password = '') => {
-  const hash = await bcrypt.create(password)
+  const hash = await bcrypt.hash(password)
   const koder = await Koder.findOne({ email })
   if (!koder) throw createError(404, `Koder [${email}] does not exists`)
 

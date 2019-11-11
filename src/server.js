@@ -1,4 +1,3 @@
-const fs = require('fs')
 const Koa = require('koa')
 const cors = require('kcors')
 const Router = require('koa-router')
