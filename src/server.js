@@ -25,9 +25,8 @@ app.use(koaBody({ multipart: true, formidable: { maxFileSize: 10000000 } }))
 app.use(errorHandler)
 app.use(resolver)
 app.use(logger)
-Object.values(routers).map(
-  router => app.use(router.routes()).use(router.allowedMethods())
-)
+Object.values(routers)
+  .map(router => app.use(router.routes()).use(router.allowedMethods()))
 
 app.on('error', (err, ctx) => {
   console.error(`[ERROR] in (${ctx.path}): `, err)
