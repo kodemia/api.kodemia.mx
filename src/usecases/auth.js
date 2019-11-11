@@ -15,7 +15,7 @@ async function signIn (email, password) {
   if (!user) throw createError(401, 'Invalid data')
 
   const { password: hash } = user
-  const isValidPassword = await bcrypt.verify(password, hash)
+  const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
 
   const token = await jwt.sign({
