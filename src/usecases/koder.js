@@ -65,7 +65,7 @@ async function sigIn (email = '', password = '') {
   if (!koder) throw createError(401, 'Invalid data')
 
   const { password: hash } = koder
-  const isValidPassword = await bcrypt.verify(password, hash)
+  const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
   return koder
 }
