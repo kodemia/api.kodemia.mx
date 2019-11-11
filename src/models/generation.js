@@ -6,12 +6,14 @@ const { Schema } = mongoose
 const generationSchema = new Schema({
   number: {
     type: Number,
-    min: 1
+    min: 1,
+    required: true
   },
   type: {
     type: String,
     trim: true,
     lowercase: true,
+    required: true,
     enum: [
       'black',
       'white'

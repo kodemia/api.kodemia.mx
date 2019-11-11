@@ -4,7 +4,7 @@ const bcrypt = require('../lib/bcrypt')
 
 const Mentor = require('../models/mentor').model
 
-const create = async ({ firstName, lastName, email, password, phone }) => {
+async function create ({ firstName, lastName, email, password, phone }) {
   const hash = await bcrypt.create(password)
 
   const existingMentor = await Mentor.findOne({ email }).exec()
@@ -17,7 +17,9 @@ const create = async ({ firstName, lastName, email, password, phone }) => {
   return newMentor.save()
 }
 
-const getAll = () => Mentor.find({}).exec()
+async function getAll () {
+  return Mentor.find({}).exec()
+}
 
 module.exports = {
   getAll,

@@ -1,9 +1,11 @@
+const createError = require('http-errors')
+const _ = require('lodash')
+
 const bcrypt = require('../lib/bcrypt')
 const Koder = require('../models/koder').model
 const Generation = require('../models/generation').model
-const createError = require('http-errors')
 
-const create = async ({ firstName = '', lastName = '', email = '', password = '', phone = '', generation = {} }) => {
+async function create ({ firstName = '', lastName = '', email = '', password = '', phone = '', generation = {} }) {
   const hash = await bcrypt.hash(password)
 
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number })
@@ -20,7 +22,21 @@ const create = async ({ firstName = '', lastName = '', email = '', password = ''
   return newKoder.save()
 }
 
-const resetPassword = async (email = '', password = '') => {
+function createMany (koders = []) {
+  const kodersHashesPromises = koders.map(({ password }) => bcrypt.hash(password))
+  const kodersHashes = Promise.all(kodersHashesPromises)
+
+  const kodersToInsert = koders.map((koderData, index) => {
+    return {
+      ...koderData,
+      password: _.get(kodersHashes, index)
+    }
+  })
+
+  return Koder.insertMany(kodersToInsert)
+}
+
+async function resetPassword (email = '', password = '') {
   const hash = await bcrypt.hash(password)
   const koder = await Koder.findOne({ email })
   if (!koder) throw createError(404, `Koder [${email}] does not exists`)
@@ -30,9 +46,11 @@ const resetPassword = async (email = '', password = '') => {
   return koder.save()
 }
 
-const getAll = async () => Koder.find({}).sort({ email: 'asc' }).populate('generation').exec()
+async function getAll () {
+  return Koder.find({}).sort({ email: 'asc' }).populate('generation').exec()
+}
 
-const sigIn = async (email = '', password = '') => {
+async function sigIn (email = '', password = '') {
   const koder = await Koder.findOne({ email }).exec()
 
   if (!koder) throw createError(401, 'Invalid data')
@@ -45,6 +63,7 @@ const sigIn = async (email = '', password = '') => {
 
 module.exports = {
   create,
+  createMany,
   getAll,
   sigIn,
   resetPassword

@@ -3,7 +3,7 @@ const createError = require('http-errors')
 const Stream = require('../models/stream').model
 const Generation = require('../models/generation').model
 
-const create = async ({ name, generation, title, url, muxData, endDate, isActive, isLive }) => {
+async function create ({ name, generation, title, url, muxData, endDate, isActive, isLive }) {
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
@@ -17,7 +17,9 @@ const create = async ({ name, generation, title, url, muxData, endDate, isActive
   return newStream.save()
 }
 
-const getAll = () => Stream.find({}).exec()
+async function getAll () {
+  return Stream.find({}).exec()
+}
 
 module.exports = {
   getAll,
