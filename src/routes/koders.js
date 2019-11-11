@@ -1,13 +1,15 @@
 const Router = require('koa-router')
 const jwt = require('../lib/jwt')
 
+const auth = require('../middlewares/auth')
+
 const koder = require('../usecases/koder')
 
 const router = new Router({
   prefix: '/koders'
 })
 
-router.get('/', async ctx => {
+router.get('/', auth(), async ctx => {
   const koders = await koder.getAll()
 
   const publicKoders = koders.map(koder => {
@@ -23,7 +25,7 @@ router.get('/', async ctx => {
   })
 })
 
-router.post('/', async ctx => {
+router.post('/', auth(), async ctx => {
   const {
     firstName = '',
     lastName = '',

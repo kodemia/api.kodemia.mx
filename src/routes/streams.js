@@ -9,7 +9,7 @@ const router = new Router({
   prefix: '/streams'
 })
 
-router.post('/', async ctx => {
+router.post('/', auth(), async ctx => {
   const {
     name,
     generation,
@@ -40,22 +40,12 @@ router.post('/', async ctx => {
   })
 })
 
-router.get('/', async ctx => {
-  const allStreams = await stream.getAll()
-  ctx.resolve({
-    message: 'Streams list',
-    payload: {
-      streams: allStreams
-    }
-  })
-})
-
-router.get('/url', auth(), async ctx => {
+router.get('/', auth(['koder']), async ctx => {
   const generationId = _.get(ctx, 'state.user.generation', '')
 
   const streamData = await stream.getByGenerationId(generationId)
   ctx.resolve({
-    message: 'Stream retrieved successfuly',
+    message: 'Stream retrieved successfully',
     payload: {
       stream: streamData
     }

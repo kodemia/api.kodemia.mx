@@ -1,12 +1,14 @@
 const Router = require('koa-router')
 
+const auth = require('../middlewares/auth')
+
 const mentor = require('../usecases/mentor')
 
 const router = new Router({
   prefix: '/mentors'
 })
 
-router.post('/', async ctx => {
+router.post('/', auth(), async ctx => {
   const {
     firstName,
     lastName,
@@ -31,7 +33,7 @@ router.post('/', async ctx => {
   })
 })
 
-router.get('/', async ctx => {
+router.get('/', auth(), async ctx => {
   const allMentors = await mentor.getAll()
 
   const cleanMentors = allMentors.map(mentor => {

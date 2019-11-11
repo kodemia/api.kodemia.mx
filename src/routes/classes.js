@@ -9,7 +9,7 @@ const router = new Router({
   prefix: '/classes'
 })
 
-router.post('/', async ctx => {
+router.post('/', auth(), async ctx => {
   const {
     title,
     date,
@@ -41,7 +41,7 @@ router.post('/', async ctx => {
   })
 })
 
-router.get('/', auth(), async ctx => {
+router.get('/', auth(['koder']), async ctx => {
   const user = _.get(ctx, 'state.user', {})
   console.log('user: ', user)
   const allClasses = await klass.getList(user)

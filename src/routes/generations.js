@@ -1,12 +1,14 @@
 const Router = require('koa-router')
 
+const auth = require('../middlewares/auth')
+
 const generation = require('../usecases/generation')
 
 const router = new Router({
   prefix: '/generations'
 })
 
-router.post('/', async ctx => {
+router.post('/', auth(), async ctx => {
   const {
     number,
     type,
@@ -29,7 +31,7 @@ router.post('/', async ctx => {
   })
 })
 
-router.get('/', async ctx => {
+router.get('/', auth(), async ctx => {
   const allGenerations = await generation.getAll()
   ctx.resolve({
     message: 'Generations list',
