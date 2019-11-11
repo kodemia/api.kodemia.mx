@@ -1,6 +1,5 @@
 const Router = require('koa-router')
 const _ = require('lodash')
-const assert = require('http-assert')
 
 const auth = require('../middlewares/auth')
 

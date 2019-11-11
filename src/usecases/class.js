@@ -5,15 +5,15 @@ const Class = require('../models/class').model
 const Generation = require('../models/generation').model
 const Mentor = require('../models/mentor').model
 
-const create = async ({ title, date, description, thumbnail, playbackId, mentor, generation = {} }) => {
+async function create ({ title, date, description, thumbnail, playbackId, mentor, generation = {} }) {
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
   const mentorFound = await Mentor.findOne({ ...mentor }).exec()
   if (!mentorFound) throw createError(409, `Mentor [${mentor}] does not exists`)
 
-  const exisitingClass = await Class.findOne({ playbackId }).exec()
-  if (exisitingClass) throw createError(409, `Class with [${playbackId}] already exists`)
+  const existingClass = await Class.findOne({ playbackId }).exec()
+  if (existingClass) throw createError(409, `Class with [${playbackId}] already exists`)
 
   const newClass = new Class({
     title,
@@ -31,7 +31,7 @@ const create = async ({ title, date, description, thumbnail, playbackId, mentor,
   return newClass.save()
 }
 
-const getAll = async () => {
+async function getAll () {
   const classes = await Class.find({}).sort({ date: 'desc' }).populate('mentor generation').exec()
 
   return classes.map(klass => {
@@ -47,7 +47,7 @@ const getAll = async () => {
 
 async function getList (user = {}) {
   const { isMentor, generation } = user
-  assert(!isMentor && generation, 404, 'User has no generation asociated')
+  assert(!isMentor && generation, 404, 'User has no generation associated')
   if (isMentor) return this.getAll()
 
   const classes = await Class.find({ generation }).sort({ date: 'desc' }).populate('mentor generation').exec()

@@ -3,7 +3,7 @@ const createError = require('http-errors')
 
 const Generation = require('../models/generation').model
 
-const create = async ({ number, type, startDate, endDate }) => {
+async function create ({ number, type, startDate, endDate }) {
   const newGeneration = new Generation({ number, type, startDate, endDate })
   const error = newGeneration.validateSync()
   if (error) throw error
@@ -14,9 +14,23 @@ const create = async ({ number, type, startDate, endDate }) => {
   return newGeneration.save()
 }
 
-const getAll = async () => Generation.find({}).exec()
+async function createIfNotExists ({ number, type, startDate, endDate }) {
+  const generationFound = await Generation.findOne({ type, number })
+  if (generationFound) return generationFound
+
+  const newGeneration = new Generation({ number, type, startDate, endDate })
+  const error = newGeneration.validateSync()
+  if (error) throw error
+
+  return newGeneration.save()
+}
+
+async function getAll () {
+  return Generation.find({}).exec()
+}
 
 module.exports = {
   create,
+  createIfNotExists,
   getAll
 }
