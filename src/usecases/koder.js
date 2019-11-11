@@ -22,14 +22,23 @@ async function create ({ firstName = '', lastName = '', email = '', password = '
   return newKoder.save()
 }
 
-function createMany (koders = []) {
+async function createMany (koders = []) {
   const kodersHashesPromises = koders.map(({ password }) => bcrypt.hash(password))
-  const kodersHashes = Promise.all(kodersHashesPromises)
+  const kodersHashes = await Promise.all(kodersHashesPromises)
+
+  const kodersGenerationsPromises = koders.map(koder => {
+    return Generation.findOne({
+      number: koder.generation.number,
+      type: koder.generation.type
+    })
+  })
+  const kodersGenerations = await Promise.all(kodersGenerationsPromises)
 
   const kodersToInsert = koders.map((koderData, index) => {
     return {
       ...koderData,
-      password: _.get(kodersHashes, index)
+      password: _.get(kodersHashes, index),
+      generation: _.get(kodersGenerations, `${index}._id`)
     }
   })
 

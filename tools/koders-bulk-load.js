@@ -1,4 +1,7 @@
 
+require('dotenv').config()
+
+const path = require('path')
 const _ = require('lodash')
 const fs = require('fs-extra')
 const args = require('minimist')(process.argv.splice(2))
@@ -18,12 +21,13 @@ async function main () {
 
   if (!csv) throw new Error('csv file is required')
   if (!csv.endsWith('.csv')) throw new Error('File must be a csv file')
-  if (!fs.pathExistsSync(csv)) throw new Error(`File path "${csv}" does not exists`)
+  const csvPath = path.join(process.cwd(), csv)
+  if (!fs.pathExistsSync(csv)) throw new Error(`File path "${csvPath}" does not exists`)
 
   if (!generationNumber) throw new Error('Generation number must be specified')
   if (!generationType) throw new Error('Generation type must be specified')
 
-  const csvData = fs.readFileSync(csv)
+  const csvData = fs.readFileSync(csvPath)
 
   const koders = parse(csvData, {
     columns: true,
@@ -51,7 +55,9 @@ async function main () {
 main()
   .then(koders => {
     console.log('Koders: ', koders)
+    process.exit(0)
   })
   .catch(error => {
     console.error('Error: ', error)
+    process.exit(1)
   })
