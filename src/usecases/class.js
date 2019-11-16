@@ -1,5 +1,4 @@
 const createError = require('http-errors')
-const assert = require('http-assert')
 const _ = require('lodash')
 
 const Class = require('../models/class').model
@@ -47,7 +46,6 @@ async function getAll (selectOptions = '') {
 
 async function getListByUser (user = {}) {
   const { isMentor, generation } = user
-  assert(isMentor && !generation, 404, 'User has no generation associated')
   if (isMentor) return this.getAll()
 
   return Class.find({ generation })

@@ -43,7 +43,6 @@ router.post('/', auth(), async ctx => {
 
 router.get('/', auth(['koder']), async ctx => {
   const user = _.get(ctx, 'state.user', {})
-  console.log('user: ', user)
   const allClasses = await klass.getListByUser(user)
   ctx.resolve({
     message: 'Classes list',
