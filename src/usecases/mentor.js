@@ -25,8 +25,19 @@ function getById (id, selectOptions) {
   return Mentor.findById(id).select(selectOptions)
 }
 
+async function resetPassword (email = '', newPassword = '') {
+  const hash = await bcrypt.hash(newPassword)
+  const mentor = await Mentor.findOne({ email })
+  if (!mentor) throw createError(404, `Mentor [${email}] does not exists`)
+
+  mentor.password = hash
+  const updatedMentor = await mentor.save()
+  return updatedMentor.toPublic()
+}
+
 module.exports = {
   getById,
   getAll,
-  create
+  create,
+  resetPassword
 }
