@@ -7,10 +7,10 @@ const fs = require('fs-extra')
 const args = require('minimist')(process.argv.splice(2))
 const parse = require('csv-parse/lib/sync')
 
-const db = require('../src/lib/db')
+const db = require('../../src/lib/db')
 
-const generation = require('../src/usecases/generation')
-const koder = require('../src/usecases/koder')
+const generation = require('../../src/usecases/generation')
+const koder = require('../../src/usecases/koder')
 
 async function main () {
   const {

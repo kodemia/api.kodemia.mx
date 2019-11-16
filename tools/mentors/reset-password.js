@@ -2,11 +2,12 @@
 require('dotenv').config()
 
 const assert = require('assert')
+
 const args = require('minimist')(process.argv.splice(2))
+require('colors')
+const db = require('../../src/lib/db')
 
-const db = require('../src/lib/db')
-
-const mentor = require('../src/usecases/mentor')
+const mentor = require('../../src/usecases/mentor')
 
 async function main () {
   const {
@@ -23,12 +24,12 @@ async function main () {
 }
 
 main()
-  .then(koders => {
-    console.log('Password updated')
-    console.log('Mentor: ', koders)
+  .then(mentor => {
+    console.log('> Password updated for mentor: '.green)
+    console.log(mentor)
     process.exit(0)
   })
   .catch(error => {
-    console.error('Error: ', error)
+    console.error('Error: '.red, error)
     process.exit(1)
   })
