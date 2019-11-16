@@ -41,9 +41,13 @@ router.post('/', auth(), async ctx => {
 })
 
 router.get('/', auth(['koder']), async ctx => {
+  const isMentor = _.get(ctx, 'state.user.isMentor', false)
   const generationId = _.get(ctx, 'state.user.generation', '')
 
-  const streamData = await stream.getByGenerationId(generationId)
+  const streamData = isMentor
+    ? await stream.getLast()
+    : await stream.getByGenerationId(generationId)
+
   ctx.resolve({
     message: 'Stream retrieved successfully',
     payload: {

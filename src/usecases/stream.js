@@ -12,14 +12,27 @@ async function create ({ name, generation, title, url, muxData, endDate, isActiv
   const error = newStream.validateSync()
   if (error) throw error
 
-  const existingStream = await Stream.findOne({ name }).exec()
+  const existingStream = await Stream.findOne({ name })
   if (existingStream) throw createError(409, `Stream [${name}] already exists`)
 
   return newStream.save()
 }
 
 async function getAll () {
-  return Stream.find({}).exec()
+  return Stream.find({})
+}
+
+async function getLast () {
+  const lastGeneration = await Generation.findOne().sort({ number: 'desc' })
+  const stream = await Stream.findOne({ generation: lastGeneration.id })
+    .populate('generation')
+    .lean()
+  const playbackId = _.get(stream, 'muxData.playback_ids.0.id', '')
+  const {
+    muxData,
+    ...restStream
+  } = stream
+  return { playbackId, ...restStream }
 }
 
 async function getByGenerationId (generationId) {
@@ -34,6 +47,7 @@ async function getByGenerationId (generationId) {
 
 module.exports = {
   getAll,
+  getLast,
   create,
   getByGenerationId
 }

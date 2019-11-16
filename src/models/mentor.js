@@ -29,7 +29,8 @@ const mentorSchema = new Schema({
   password: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    select: false
   },
   phone: {
     type: String,

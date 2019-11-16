@@ -47,15 +47,12 @@ async function getAll (selectOptions = '') {
 
 async function getListByUser (user = {}) {
   const { isMentor, generation } = user
-  assert(!isMentor && generation, 404, 'User has no generation associated')
-  if (isMentor) return this.getAll('-password')
+  assert(isMentor && !generation, 404, 'User has no generation associated')
+  if (isMentor) return this.getAll()
 
   return Class.find({ generation })
     .sort({ date: 'desc' })
-    .populate({
-      path: 'mentor generation',
-      select: '-password'
-    })
+    .populate('mentor generation')
 }
 
 module.exports = {

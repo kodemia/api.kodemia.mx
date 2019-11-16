@@ -51,7 +51,6 @@ async function resetPassword (email = '', password = '') {
   if (!koder) throw createError(404, `Koder [${email}] does not exists`)
 
   koder.password = hash
-
   return koder.save()
 }
 
@@ -63,7 +62,7 @@ async function getAll (selectOptions = '') {
 }
 
 async function sigIn (email = '', password = '') {
-  const koder = await Koder.findOne({ email }).exec()
+  const koder = await Koder.findOne({ email }).select('+password')
 
   if (!koder) throw createError(401, 'Invalid data')
 

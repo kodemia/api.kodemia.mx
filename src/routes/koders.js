@@ -10,7 +10,7 @@ const router = new Router({
 })
 
 router.get('/', auth(), async ctx => {
-  const koders = await koder.getAll('-password')
+  const koders = await koder.getAll()
 
   ctx.resolve({
     message: `Koders list`,
@@ -58,7 +58,7 @@ router.post('/login', async ctx => {
   })
 })
 
-router.post('/reset-password', async ctx => {
+router.post('/reset-password', auth(), async ctx => {
   const { email, password } = ctx.request.body
 
   if (!email) throw ctx.throw(400, 'Email is required')

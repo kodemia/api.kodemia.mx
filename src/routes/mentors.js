@@ -34,7 +34,7 @@ router.post('/', auth(), async ctx => {
 })
 
 router.get('/', auth(), async ctx => {
-  const mentors = await mentor.getAll('-password')
+  const mentors = await mentor.getAll()
 
   ctx.resolve({
     message: 'Mentors list',

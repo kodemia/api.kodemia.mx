@@ -20,10 +20,12 @@ const generationSchema = new Schema({
     ]
   },
   startDate: {
-    type: Date
+    type: Date,
+    default: new Date()
   },
   endDate: {
-    type: Date
+    type: Date,
+    default: new Date()
   }
 })
 
