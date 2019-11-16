@@ -55,8 +55,11 @@ async function resetPassword (email = '', password = '') {
   return koder.save()
 }
 
-async function getAll () {
-  return Koder.find({}).sort({ email: 'asc' }).populate('generation').exec()
+async function getAll (selectOptions = '') {
+  return Koder.find({})
+    .sort({ email: 'asc' })
+    .select(selectOptions)
+    .populate('generation')
 }
 
 async function sigIn (email = '', password = '') {
@@ -70,8 +73,10 @@ async function sigIn (email = '', password = '') {
   return koder
 }
 
-function getById (id) {
-  return Koder.findById(id).exec()
+function getById (id, selectOptions = '') {
+  return Koder.findById(id)
+    .select(selectOptions)
+    .populate('generation')
 }
 
 module.exports = {

@@ -8,8 +8,9 @@ const bcrypt = require('../lib/bcrypt')
 const jwt = require('../lib/jwt')
 
 async function signIn (email, password) {
-  const koder = await Koder.findOne({ email }).exec()
-  const mentor = await Mentor.findOne({ email }).exec()
+  const koder = await Koder.findOne({ email })
+  const mentor = await Mentor.findOne({ email })
+  console.log('USER: ', koder || mentor)
   const user = koder || mentor
 
   if (!user) throw createError(401, 'Invalid data')

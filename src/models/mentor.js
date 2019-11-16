@@ -1,7 +1,10 @@
 
 const mongoose = require('mongoose')
+const _ = require('lodash')
 
 const { Schema } = mongoose
+
+const nonPublicProperties = [ 'password' ]
 
 const mentorSchema = new Schema({
   firstName: {
@@ -32,6 +35,13 @@ const mentorSchema = new Schema({
     type: String,
     trim: true,
     match: /[0-9]{10}/
+  }
+})
+
+mentorSchema.method({
+  toPublic: function () {
+    const object = this.toObject()
+    return _.omit(object, nonPublicProperties)
   }
 })
 

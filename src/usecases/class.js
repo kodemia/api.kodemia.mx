@@ -1,5 +1,6 @@
 const createError = require('http-errors')
 const assert = require('http-assert')
+const _ = require('lodash')
 
 const Class = require('../models/class').model
 const Generation = require('../models/generation').model
@@ -9,10 +10,10 @@ async function create ({ title, date, description, thumbnail, playbackId, mentor
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
-  const mentorFound = await Mentor.findOne({ ...mentor }).exec()
+  const mentorFound = await Mentor.findOne({ ...mentor })
   if (!mentorFound) throw createError(409, `Mentor [${mentor}] does not exists`)
 
-  const existingClass = await Class.findOne({ playbackId }).exec()
+  const existingClass = await Class.findOne({ playbackId })
   if (existingClass) throw createError(409, `Class with [${playbackId}] already exists`)
 
   const newClass = new Class({
@@ -28,43 +29,37 @@ async function create ({ title, date, description, thumbnail, playbackId, mentor
   const error = newClass.validateSync()
   if (error) throw error
 
-  return newClass.save()
+  const savedClass = await newClass.save()
+  return {
+    ...savedClass.toObject({ getters: true }),
+    mentor: _.omit(mentorFound.toObject({ getters: true }), 'password')
+  }
 }
 
-async function getAll () {
-  const classes = await Class.find({}).sort({ date: 'desc' }).populate('mentor generation').exec()
-
-  return classes.map(klass => {
-    const objKlass = klass.toObject({ getters: true })
-    const { mentor } = klass
-    const { password, ...cleanMentor } = mentor.toObject({ getters: true })
-    return {
-      ...objKlass,
-      mentor: cleanMentor
-    }
-  })
+async function getAll (selectOptions = '') {
+  return Class.find({})
+    .sort({ date: 'desc' })
+    .populate({
+      path: 'mentor generation',
+      select: selectOptions
+    })
 }
 
-async function getList (user = {}) {
+async function getListByUser (user = {}) {
   const { isMentor, generation } = user
   assert(!isMentor && generation, 404, 'User has no generation associated')
-  if (isMentor) return this.getAll()
+  if (isMentor) return this.getAll('-password')
 
-  const classes = await Class.find({ generation }).sort({ date: 'desc' }).populate('mentor generation').exec()
-
-  return classes.map(klass => {
-    const objKlass = klass.toObject({ getters: true })
-    const { mentor } = klass
-    const { password, ...cleanMentor } = mentor.toObject({ getters: true })
-    return {
-      ...objKlass,
-      mentor: cleanMentor
-    }
-  })
+  return Class.find({ generation })
+    .sort({ date: 'desc' })
+    .populate({
+      path: 'mentor generation',
+      select: '-password'
+    })
 }
 
 module.exports = {
   create,
   getAll,
-  getList
+  getListByUser
 }

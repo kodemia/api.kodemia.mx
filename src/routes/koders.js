@@ -10,18 +10,11 @@ const router = new Router({
 })
 
 router.get('/', auth(), async ctx => {
-  const koders = await koder.getAll()
-
-  const publicKoders = koders.map(koder => {
-    const { password, ...cleanKoder } = koder.toObject()
-    return cleanKoder
-  })
+  const koders = await koder.getAll('-password')
 
   ctx.resolve({
     message: `Koders list`,
-    payload: {
-      koders: publicKoders
-    }
+    payload: { koders }
   })
 })
 

@@ -1,8 +1,11 @@
 
 const mongoose = require('mongoose')
+const _ = require('lodash')
 
 const { Schema } = mongoose
 const { Types } = Schema
+
+const nonPublicProperties = [ 'password' ]
 
 const koderSchema = new Schema({
   firstName: {
@@ -38,6 +41,13 @@ const koderSchema = new Schema({
   generation: {
     type: Types.ObjectId,
     ref: 'Generation'
+  }
+})
+
+koderSchema.method({
+  toPublic: function () {
+    const object = this.toObject()
+    return _.omit(object, nonPublicProperties)
   }
 })
 
