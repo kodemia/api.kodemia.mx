@@ -42,4 +42,17 @@ router.get('/', auth(), async ctx => {
   })
 })
 
+router.patch('/password', async ctx => {
+  const { email, password } = ctx.request.body
+
+  if (!email) throw ctx.throw(400, 'Email is required')
+  if (!password) throw ctx.throw(400, 'Password is required')
+
+  await mentor.resetPassword(email, password)
+
+  ctx.resolve({
+    message: `Password updated for ${email}`
+  })
+})
+
 module.exports = router

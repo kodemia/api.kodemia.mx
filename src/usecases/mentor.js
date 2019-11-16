@@ -27,7 +27,7 @@ function getById (id, selectOptions) {
 
 async function resetPassword (email = '', newPassword = '') {
   const hash = await bcrypt.hash(newPassword)
-  const mentor = await Mentor.findOne({ email })
+  const mentor = await Mentor.findOne({ email }).select('+password')
   if (!mentor) throw createError(404, `Mentor [${email}] does not exists`)
 
   mentor.password = hash
