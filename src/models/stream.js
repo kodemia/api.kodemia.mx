@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose')
+const moment = require('moment-timezone')
 
 const { Schema } = mongoose
 const { Types } = Schema
@@ -23,11 +24,15 @@ const streamSchema = new Schema({
     required: true
   },
   muxData: {},
+  vimeoEventId: {
+    type: String
+  },
   startDate: {
-    type: Date
+    type: Date,
+    default: moment()
   },
   endDate: {
-    type: Date
+    type: moment().add(20, 'weeks')
   },
   isActive: {
     type: Boolean,

@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose')
+const moment = require('moment-timezone')
 
 const { Schema } = mongoose
 
@@ -21,11 +22,11 @@ const generationSchema = new Schema({
   },
   startDate: {
     type: Date,
-    default: new Date()
+    default: moment()
   },
   endDate: {
     type: Date,
-    default: new Date()
+    default: moment().add(19, 'weeks')
   }
 })
 

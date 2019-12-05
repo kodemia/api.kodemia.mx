@@ -6,7 +6,11 @@ const Generation = require('../models/generation').model
 const Mentor = require('../models/mentor').model
 
 async function create ({ title, date, description, thumbnail, playbackId, mentor, generation = {} }) {
-  const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
+  const generationFound = await Generation.findOne({
+    type: generation.type,
+    number: generation.number
+  })
+
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
   const mentorFound = await Mentor.findOne({ ...mentor })

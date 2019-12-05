@@ -24,7 +24,12 @@ const classSchema = new Schema({
   },
   playbackId: {
     type: String,
-    trim: true
+    trim: true,
+    required: () => !this.vimeoId
+  },
+  vimeoId: {
+    type: String,
+    required: () => !this.playbackId
   },
   mentor: {
     type: Types.ObjectId,
