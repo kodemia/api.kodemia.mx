@@ -32,7 +32,8 @@ const streamSchema = new Schema({
     default: moment()
   },
   endDate: {
-    type: moment().add(20, 'weeks')
+    type: Date,
+    default: moment().add(20, 'weeks')
   },
   isActive: {
     type: Boolean,
