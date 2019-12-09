@@ -4,11 +4,11 @@ const _ = require('lodash')
 const Stream = require('../models/stream').model
 const Generation = require('../models/generation').model
 
-async function create ({ name, generation, title, url, muxData, endDate, isActive, isLive }) {
+async function create ({ name, generation, title, url, muxData, endDate, isActive, isLive, vimeoEventId }) {
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number }).exec()
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
-  const newStream = new Stream({ name, generation: generationFound._id, title, url, muxData, endDate, isActive, isLive })
+  const newStream = new Stream({ name, generation: generationFound._id, title, url, muxData, endDate, isActive, isLive, vimeoEventId })
   const error = newStream.validateSync()
   if (error) throw error
 
@@ -19,7 +19,18 @@ async function create ({ name, generation, title, url, muxData, endDate, isActiv
 }
 
 async function getAll () {
-  return Stream.find({})
+  const streams = await Stream.find({})
+    .populate('generation')
+    .lean()
+
+  const cleanStreams = streams.map(stream => {
+    const playbackId = _.get(stream, 'muxData.playback_ids.0.id', '')
+    const { muxData, ...restStreamData } = stream
+    return { playbackId, ...restStreamData }
+  })
+  return cleanStreams.sort((after, before) => {
+    return before.generation.number - after.generation.number
+  })
 }
 
 async function getLast () {
@@ -28,10 +39,7 @@ async function getLast () {
     .populate('generation')
     .lean()
   const playbackId = _.get(stream, 'muxData.playback_ids.0.id', '')
-  const {
-    muxData,
-    ...restStream
-  } = stream
+  const { muxData, ...restStream } = stream
   return { playbackId, ...restStream }
 }
 

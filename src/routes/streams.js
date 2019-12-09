@@ -10,27 +10,7 @@ const router = new Router({
 })
 
 router.post('/', auth(), async ctx => {
-  const {
-    name,
-    generation,
-    title,
-    url,
-    muxData,
-    endDate,
-    isActive,
-    isLive
-  } = ctx.request.body
-
-  const newStream = await stream.create({
-    name,
-    generation,
-    title,
-    url,
-    muxData,
-    endDate,
-    isActive,
-    isLive
-  })
+  const newStream = await stream.create(ctx.request.body)
 
   ctx.resolve({
     message: 'Stream created successfully',
@@ -45,7 +25,7 @@ router.get('/', auth(['koder']), async ctx => {
   const generationId = _.get(ctx, 'state.user.generation', '')
 
   const streamData = isMentor
-    ? await stream.getLast()
+    ? await stream.getAll()
     : await stream.getByGenerationId(generationId)
 
   ctx.resolve({

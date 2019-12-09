@@ -10,28 +10,7 @@ const router = new Router({
 })
 
 router.post('/', auth(), async ctx => {
-  const {
-    title,
-    date,
-    description,
-    thumbnail,
-    playbackId,
-    mentor,
-    generation = {
-      type: 'white',
-      number: 0
-    }
-  } = ctx.request.body
-
-  const newKlass = await klass.create({
-    title,
-    date,
-    description,
-    thumbnail,
-    playbackId,
-    mentor,
-    generation
-  })
+  const newKlass = await klass.create(ctx.request.body)
 
   ctx.resolve({
     message: 'Class created successfully',

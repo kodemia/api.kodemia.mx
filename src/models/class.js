@@ -25,11 +25,12 @@ const classSchema = new Schema({
   playbackId: {
     type: String,
     trim: true,
-    required: () => !this.vimeoId
+    required: () => this.vimeoId != null
   },
   vimeoId: {
     type: String,
-    required: () => !this.playbackId
+    trim: true,
+    required: () => this.playbackId != null
   },
   mentor: {
     type: Types.ObjectId,

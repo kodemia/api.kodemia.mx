@@ -5,7 +5,7 @@ const Class = require('../models/class').model
 const Generation = require('../models/generation').model
 const Mentor = require('../models/mentor').model
 
-async function create ({ title, date, description, thumbnail, playbackId, mentor, generation = {} }) {
+async function create ({ title, date, description, thumbnail, playbackId, mentor, generation = {}, vimeoId }) {
   const generationFound = await Generation.findOne({
     type: generation.type,
     number: generation.number
@@ -26,7 +26,8 @@ async function create ({ title, date, description, thumbnail, playbackId, mentor
     thumbnail,
     playbackId,
     mentor: mentorFound._id,
-    generation: generationFound._id
+    generation: generationFound._id,
+    vimeoId
   })
 
   const error = newClass.validateSync()
