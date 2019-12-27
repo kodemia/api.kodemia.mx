@@ -16,6 +16,7 @@
     "DB_NAME": "@db_name",
     "DB_PASSWORD": "@db_password",
     "DB_USER": "@db_user",
-    "JWT_SECRET": "@jwt_secret"
+    "JWT_SECRET": "@jwt_secret",
+    "VIMEO_TOKEN": "@vimeo_token"
   }
 }
