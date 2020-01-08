@@ -5,7 +5,7 @@ const bcrypt = require('../lib/bcrypt')
 const Mentor = require('../models/mentor').model
 
 async function create ({ firstName, lastName, email, password, phone }) {
-  const hash = await bcrypt.create(password)
+  const hash = await bcrypt.hash(password)
 
   const existingMentor = await Mentor.findOne({ email })
   if (existingMentor) throw createError(409, `Mentor [${email}] already exists`)
