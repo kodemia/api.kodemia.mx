@@ -13,6 +13,7 @@ async function main () {
 main()
   .then((classes) => {
     console.log('Clases: ', classes)
+    console.log(`${classes.length} classes uploaded`)
     console.log('DONE!!')
     process.exit(0)
   })
