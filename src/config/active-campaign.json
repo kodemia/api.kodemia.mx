@@ -1,0 +1,19 @@
+
+{
+  "deals": {
+    "customProperties": {
+      "curso": { "id": "2" }
+    }
+  },
+  "pipelines": {
+    "skillUp": {
+      "id": "1",
+      "stages": {
+        "new": { "id": "1" }
+      }
+    }
+  },
+  "users": {
+    "diana": { "id": "5" }
+  }
+}

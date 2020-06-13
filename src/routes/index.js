@@ -1,11 +1,12 @@
 const Router = require('koa-router')
 
+const activeCampaign = require('./active-campaign')
 const auth = require('./auth')
-const koders = require('./koders')
+const classes = require('./classes')
 const generations = require('./generations')
+const koders = require('./koders')
 const mentors = require('./mentors')
 const streams = require('./streams')
-const classes = require('./classes')
 
 const root = new Router({
   prefix: '/'
@@ -20,11 +21,12 @@ root.get('/', ctx => {
 })
 
 module.exports = {
+  activeCampaign,
   auth,
+  classes,
   koders,
   mentors,
   generations,
-  streams,
-  classes,
-  root
+  root,
+  streams
 }
