@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "nodemon index.js",
     "standard": "echo '- Running standard -' && standard --fix --verbose | snazzy && echo '- Standard OK -'",
-    "hook:precommit": "npm run standard"
-  },
+    "hook:precommit": "npm run standard",
+    "tools:bulk:classes": "node tools/classes/upload-class-bulk.js",
+    "tools:bulk:koders": "node tools/koders/bulk-load.js"
+  },   
   "husky": {
     "hooks": {
       "pre-commit": "npm run hook:precommit"
