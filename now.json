@@ -17,6 +17,8 @@
     "DB_PASSWORD": "@db_password",
     "DB_USER": "@db_user",
     "JWT_SECRET": "@jwt_secret",
-    "VIMEO_TOKEN": "@vimeo_token"
+    "VIMEO_TOKEN": "@vimeo_token",
+    "AC_API_KEY": "@ac_api_key",
+    "AC_API_HOST": "ac_api_host"
   }
 }
