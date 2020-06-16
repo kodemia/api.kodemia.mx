@@ -21,9 +21,12 @@ module.exports = (authRoles = []) => async (ctx, next) => {
       let user = isMentor
         ? await mentor.getById(id)
         : await koder.getById(id)
+
+      assert(user, 404, `User [${id}] not found`)
+
       user = user.toObject({ getters: true })
 
-      assert(user, 401, 'User not found')
+      assert(user, 404, 'User not found')
       _.set(ctx, 'state.user', { isMentor, ...user })
 
       if (tokenDecoded) return next()
