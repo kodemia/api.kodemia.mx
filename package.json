@@ -9,7 +9,7 @@
     "hook:precommit": "npm run standard",
     "tools:bulk:classes": "node tools/classes/upload-class-bulk.js",
     "tools:bulk:koders": "node tools/koders/bulk-load.js"
-  },   
+  },
   "husky": {
     "hooks": {
       "pre-commit": "npm run hook:precommit"
@@ -47,7 +47,7 @@
     "koa-body": "^4.1.0",
     "koa-helmet": "^4.1.0",
     "koa-router": "^7.4.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "minimist": "^1.2.5",
     "moment-timezone": "^0.5.27",
     "mongoose": "^5.4.20",
@@ -55,11 +55,11 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10",
+    "nodemon": "^2.0.4",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1"
   },
   "engines": {
-    "node": "10.15.3"
+    "node": "12.18.2"
   }
 }
