@@ -11,13 +11,16 @@ async function create (title, contactId, value, owner, description, pipeline) {
     contact: contactId,
     description: description,
     currency: 'mxn',
-    group: pipeline || ac.constants.pipelines.skillUp.id,
+    group: pipeline || ac.constants.pipelines.bwj10_bwp1.id,
     status: 0,
     title: title,
     value: value || 0,
     owner: owner || ac.constants.users.diana.id
   }
-  const dealResponse = await ac.fetch('POST', '/deals', { deal: dealProperties })
+
+  const dealResponse = await ac.fetch('POST', '/deals', {
+    deal: dealProperties
+  })
   return _.get(dealResponse, 'deal', null)
 }
 
@@ -29,7 +32,7 @@ async function setCustomProperty (dealId, propertyName, value) {
       fieldValue: value
     }
   })
-  console.log('dealResponse', dealResponse)
+
   return _.get(dealResponse, 'deal', null)
 }
 
