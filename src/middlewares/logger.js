@@ -1,4 +1,3 @@
-
 function filterBody (body) {
   let newBody = typeof body === 'string' ? JSON.parse(body) : body
   let bodyToClean = { ...newBody }
@@ -12,9 +11,20 @@ module.exports = async (ctx, next) => {
     let start = Date.now()
     await next()
     const ms = Date.now() - start
-    console.log(`${ctx.method} ${ctx.url} -> ${ctx.status} - ${ms}ms, query: ${JSON.stringify(ctx.query)}, ${(ctx.method !== 'GET' || ctx.method !== 'DELETE') && `body: ${filterBody(ctx.request.body)},`} at ${(new Date()).toISOString()}`)
+    console.log(
+      `${ctx.method} ${ctx.url} -> ${
+        ctx.status
+      } - ${ms}ms, query: ${JSON.stringify(ctx.query)}, ${
+        (ctx.method !== 'GET' || ctx.method !== 'DELETE') &&
+        `body: ${filterBody(ctx.request.body)},`
+      } at ${new Date().toISOString()} \n`
+    )
   } catch (error) {
-    console.log(`${ctx.method} ${ctx.url} -> ${ctx.status}, query: ${JSON.stringify(ctx.query)}, body: ${filterBody(ctx.request.body)}, at ${(new Date()).toISOString()}`)
+    console.log(
+      `${ctx.method} ${ctx.url} -> ${ctx.status}, query: ${JSON.stringify(
+        ctx.query
+      )}, body: ${filterBody(ctx.request.body)}, at ${new Date().toISOString()}`
+    )
     // console.error(error)
     throw error
   }

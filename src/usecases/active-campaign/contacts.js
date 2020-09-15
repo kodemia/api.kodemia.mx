@@ -1,4 +1,3 @@
-
 const assert = require('http-assert')
 const _ = require('lodash')
 
@@ -16,7 +15,9 @@ async function upsert (email, firstName, lastName, phone) {
     phone
   }
 
-  const newContactResponse = await ac.fetch('POST', '/contact/sync', { contact })
+  const newContactResponse = await ac.fetch('POST', '/contact/sync', {
+    contact
+  })
   return _.get(newContactResponse, 'contact', null)
 }
 
