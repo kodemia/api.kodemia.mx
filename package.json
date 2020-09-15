@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/devCharles/kodemiAPI#readme",
   "dependencies": {
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "colors": "^1.4.0",
     "csv-parse": "^4.6.5",
     "dotenv": "^7.0.0",
