@@ -1,7 +1,6 @@
 const Router = require('koa-router')
 
 const ac = require('../../usecases/active-campaign')
-const acData = require('../../lib/active-campaign')
 
 const router = new Router({
   prefix: '/apply'
@@ -10,24 +9,15 @@ const router = new Router({
 router.post('/', async ctx => {
   const { email, firstName, lastName, phone, course } = ctx.request.body
 
-  const bootcampDealValue = 0
-  const dealDescription = 'website'
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone)
-  const deal = await ac.deals.create(
-    `${contact.firstName} [${course}]`,
-    contact.id,
-    bootcampDealValue,
-    acData.constants.users.veronica.id,
-    dealDescription,
-    acData.constants.pipelines.bwj10_bwp1.id
-  )
 
-  await ac.deals.setCustomProperty(deal.id, 'curso', course)
+  const dealInList = await ac.lists.subscribeContact(contact.id, course)
+
   ctx.resolve({
-    message: 'Contact and deal created',
+    message: 'Contact created and associated',
     payload: {
       contact,
-      deal
+      dealInList
     }
   })
 })

@@ -18,5 +18,19 @@
   "users": {
     "diana": { "id": "5" },
     "veronica": { "id": "7" }
+  },
+  "lists": {
+    "javascript-lifetime": {
+      "ten": { "id": "14" }
+    },
+    "javascript-live": {
+      "ten": { "id": "15" }
+    },
+    "python-lifetime": {
+      "one": { "id": "16" }
+    },
+    "python-live": {
+      "one": { "id": "17" }
+    }
   }
 }

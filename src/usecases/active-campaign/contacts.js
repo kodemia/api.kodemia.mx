@@ -18,6 +18,7 @@ async function upsert (email, firstName, lastName, phone) {
   const newContactResponse = await ac.fetch('POST', '/contact/sync', {
     contact
   })
+
   return _.get(newContactResponse, 'contact', null)
 }
 
