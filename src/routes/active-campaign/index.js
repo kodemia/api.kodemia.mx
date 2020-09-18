@@ -4,7 +4,7 @@ const contacts = require('./contacts')
 const apply = require('./apply')
 
 const router = new Router({
-  prefix: '/active-campaign'
+  prefix: '/active-campaign',
 })
 
 router.use(contacts.routes(), contacts.allowedMethods())

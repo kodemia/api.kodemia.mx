@@ -18,5 +18,11 @@
   "users": {
     "diana": { "id": "5" },
     "veronica": { "id": "7" }
+  },
+  "lists": {
+    "bwj10": { "id": "14" },
+    "bwjl10": { "id": "15" },
+    "bwp1": { "id": "16" },
+    "bwpl1": { "id": "17" }
   }
 }
