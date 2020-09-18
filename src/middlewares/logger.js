@@ -1,4 +1,4 @@
-function filterBody(body) {
+function filterBody (body) {
   let newBody = typeof body === 'string' ? JSON.parse(body) : body
   let bodyToClean = { ...newBody }
   if ('password' in bodyToClean) bodyToClean.password = '<password>'
