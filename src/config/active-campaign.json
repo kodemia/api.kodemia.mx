@@ -20,9 +20,17 @@
     "veronica": { "id": "7" }
   },
   "lists": {
-    "bwj10": { "id": "14" },
-    "bwjl10": { "id": "15" },
-    "bwp1": { "id": "16" },
-    "bwpl1": { "id": "17" }
+    "javascript-lifetime": {
+      "ten": { "id": "14" }
+    },
+    "javascript-live": {
+      "ten": { "id": "15" }
+    },
+    "python-lifetime": {
+      "one": { "id": "16" }
+    },
+    "python-live": {
+      "one": { "id": "17" }
+    }
   }
 }

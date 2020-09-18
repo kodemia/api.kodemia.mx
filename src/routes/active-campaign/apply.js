@@ -11,10 +11,10 @@ router.post('/', async ctx => {
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone)
 
-  const dealInList = await ac.lists.subscribeDeal(course, contact.id)
+  const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
   ctx.resolve({
-    message: 'Contact and deal created',
+    message: 'Contact created and associated',
     payload: {
       contact,
       dealInList
