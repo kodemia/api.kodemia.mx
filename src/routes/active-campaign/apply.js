@@ -7,9 +7,16 @@ const router = new Router({
 })
 
 router.post('/', async ctx => {
-  const { email, firstName, lastName, phone, course } = ctx.request.body
+  const {
+    email,
+    firstName,
+    lastName,
+    phone,
+    course,
+    customFields = { source: '', reasonToApply: '' }
+  } = ctx.request.body
 
-  const contact = await ac.contacts.upsert(email, firstName, lastName, phone)
+  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
