@@ -13,7 +13,7 @@ router.get('/', auth(), async ctx => {
   const koders = await koder.getAll()
 
   ctx.resolve({
-    message: `Koders list`,
+    message: 'Koders list',
     payload: { koders }
   })
 })

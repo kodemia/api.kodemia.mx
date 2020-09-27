@@ -13,7 +13,7 @@ module.exports = (authRoles = []) => async (ctx, next) => {
       const token = _.get(ctx, 'request.headers.authorization')
       assert(token, 401, 'Empty Authorization header')
 
-      let tokenDecoded = await jwt.verify(token)
+      const tokenDecoded = await jwt.verify(token)
       const { id, isMentor } = tokenDecoded
 
       if (!authRoles.includes('koder') && !isMentor) ctx.throw(401, 'Unauthorized role')
