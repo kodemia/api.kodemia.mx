@@ -1,76 +1,37 @@
-const createError = require('http-errors')
-
+const querystring = require('querystring')
 const fetch = require('node-fetch')
 
 const constants = require('../config/vimeo.json')
 
-async function videoFetchById (vimeoId) {
-  const videoDataResponse = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
-    headers: {
-      Authorization: `Bearer ${process.env.VIMEO_TOKEN}`
-    }
+const { VIMEO_TOKEN } = process.env
+
+async function vimeoFetch (
+  method = 'GET',
+  endpoint = '',
+  body = {},
+  queryParams = {},
+  extraConfig = {}) {
+  endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  const queryParamsString = querystring.stringify(queryParams)
+  const headers = {
+    Authorization: `Bearer ${VIMEO_TOKEN}`, 'Content-Type': 'application/json'
+  }
+
+  const response = await fetch(`https://api.vimeo.com${endpoint}?${queryParamsString}`, {
+    method,
+    headers,
+    body: method === 'GET' ? null : JSON.stringify(body)
   })
 
-  if (!videoDataResponse.ok) throw createError(404, `Class ${vimeoId} not found in vimeo`)
-  return videoDataResponse.json()
-}
+  if (!response.ok) {
+    const { errors } = await response.json()
+    throw errors
+  }
 
-async function getLastVideos (videosToFetch = 10) {
-  const videosDataResponse = await fetch(`https://api.vimeo.com/me/videos?per_page=${videosToFetch}`, {
-    headers: {
-      Authorization: `Bearer ${process.env.VIMEO_TOKEN}`
-    }
-  })
-
-  if (!videosDataResponse.ok) throw createError(404, 'Something went wrong getting videos')
-  return videosDataResponse.json()
-}
-
-async function updateVideoName (vimeoId, newName) {
-  const videoDataResponse = await fetch(`https://api.vimeo.com/videos/${vimeoId}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ name: newName }),
-    headers: {
-      Authorization: `Bearer ${process.env.VIMEO_TOKEN}`, 'Content-Type': 'application/json'
-    }
-  })
-
-  if (!videoDataResponse.ok) throw createError(404, `Class ${vimeoId} not found in vimeo`)
-
-  return videoDataResponse.json()
-}
-
-async function putVideoInFolder (userId, projectId, vimeoId) {
-  const videoDataResponse = await fetch(`https://api.vimeo.com/users/${userId}/projects/${projectId}/videos/${vimeoId}`, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${process.env.VIMEO_TOKEN}`, 'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({})
-  })
-
-  if (!videoDataResponse.ok) throw createError(404, `Class ${vimeoId} not found in vimeo`)
-
-  return videoDataResponse.json()
-}
-
-async function getFoldersByUser (userId) {
-  const videoDataResponse = await fetch(`https://api.vimeo.com/users/${userId}/projects`, {
-    headers: {
-      Authorization: `Bearer ${process.env.VIMEO_TOKEN}`
-    }
-  })
-
-  if (!videoDataResponse.ok) throw createError(404, `User ${userId} not found in vimeo`)
-  return videoDataResponse.json()
+  return response.json()
 }
 
 module.exports = {
   constants,
-  videoFetchById,
-  getLastVideos,
-  updateVideoName,
-  putVideoInFolder,
-  getFoldersByUser
-
+  fetch: vimeoFetch
 }

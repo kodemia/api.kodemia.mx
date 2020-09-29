@@ -10,7 +10,7 @@ const Generation = require('../models/generation').model
 const vimeo = require('../lib/vimeo')
 
 async function getVimeoVideoData (vimeoId) {
-  const videoData = await vimeo.videoFetchById(vimeoId)
+  const videoData = await vimeo.fetch('GET', `/videos/${vimeoId}`)
 
   let picture = _.get(videoData, 'pictures', [])
   const pictureSizes = _.get(picture, 'sizes', [])
@@ -97,30 +97,34 @@ async function getListByUser (user = {}) {
 }
 
 async function classUploadLast () {
-  const countOfVideosToGet = 10
-  const videosData = await vimeo.getLastVideos(countOfVideosToGet)
+  const body = {}
+  const countOfVideosToGet = 12
+
+  const videosData = await vimeo.fetch('GET', '/me/videos', body, { per_page: countOfVideosToGet })
   const data = _.get(videosData, 'data', [])
 
   const classVideos = data.filter(video => ((video.name).includes('bootcamp') && video.duration > 0))
 
   const existingClassPromises = classVideos.map(video => {
     const vimeoId = (video.uri).split('/')[2]
-    console.log(vimeoId)
+
     return Class.findOne({ vimeoId })
   })
   const existingClasses = await Promise.all(existingClassPromises)
   const classToUpload = classVideos.filter((vimeoId, index) => !existingClasses[index])
 
   const classAlreadyUploadPromise = classToUpload.map(element => {
-    const id = (element.uri).split('/')[2]
-    const newName = `${(element.name.includes('pyhton')) ? 'python' : 'js'}-${(element.name).split('-')[2]}gen -${moment(element.created_time).format('L')}`
+    const vimeoId = (element.uri).split('/')[2]
+    const name = `${(element.name.includes('pyhton')) ? 'python' : 'js'} - ${(element.name).split('-')[2]}gen - ${moment(element.created_time).format('L')}`
 
-    return vimeo.updateVideoName(id, newName)
+    return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
+
   const classAlreadyUpload = await Promise.all(classAlreadyUploadPromise)
 
   const classesSaveDBPromise = classAlreadyUpload.map(classUpload => {
-    const number = vimeo.constants.generations[classUpload.name.split(' ')[1]].number
+    const number = vimeo.constants.generations[(classUpload.name.split('-')[1]).trim()].number
+
     const vimeoId = (classUpload.uri).split('/')[2]
     const classData = {
       vimeoId,
@@ -136,7 +140,10 @@ async function classUploadLast () {
   const classesSaveDB = await Promise.all(classesSaveDBPromise)
   const classesMoved = classesSaveDB.map((classDB) => {
     // ToDo: FolderId dinamico
-    return vimeo.putVideoInFolder(vimeo.constants.users.kodemia.id, vimeo.constants.folders['9na-generación'].id, classDB.vimeoId)
+    const userId = vimeo.constants.users.kodemia.id
+    const projectId = vimeo.constants.folders['9na-generación'].id
+    const vimeoId = classDB.vimeoId
+    return vimeo.fetch('PUT', `/users/${userId}/projects/${projectId}/videos/${vimeoId}`, body)
   })
   await Promise.all(classesMoved)
 }
