@@ -9,8 +9,7 @@ async function vimeoFetch (
   method = 'GET',
   endpoint = '',
   body = {},
-  queryParams = {},
-  extraConfig = {}) {
+  queryParams = {}) {
   endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const queryParamsString = querystring.stringify(queryParams)
   const headers = {

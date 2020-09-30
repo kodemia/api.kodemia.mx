@@ -2,7 +2,7 @@
 const createError = require('http-errors')
 const _ = require('lodash')
 const utils = require('../lib/utils')
-const moment = require('moment')
+const dayjs = require('dayjs')
 
 const Class = require('../models/class').model
 const Generation = require('../models/generation').model
@@ -115,8 +115,7 @@ async function classUploadLast () {
 
   const classAlreadyUploadPromise = classToUpload.map(element => {
     const vimeoId = (element.uri).split('/')[2]
-    const name = `${(element.name.includes('pyhton')) ? 'python' : 'js'} - ${(element.name).split('-')[2]}gen - ${moment(element.created_time).format('L')}`
-
+    const name = `${(element.name.includes('pyhton')) ? 'python' : 'js'}-${(element.name).split('-')[2]}gen-${dayjs(element.created_time).format('DD/MM/YYYY')}`
     return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
 
@@ -143,7 +142,7 @@ async function classUploadLast () {
     const userId = vimeo.constants.users.kodemia.id
     const projectId = vimeo.constants.folders['9na-generación'].id
     const vimeoId = classDB.vimeoId
-    return vimeo.fetch('PUT', `/users/${userId}/projects/${projectId}/videos/${vimeoId}`, body)
+    return vimeo.fetch('PUT', `/users/${userId}/projects/${projectId}/videos/${vimeoId}`, null)
   })
   await Promise.all(classesMoved)
 }
