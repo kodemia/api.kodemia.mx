@@ -110,15 +110,16 @@ async function uploadLastClasses () {
   const videosData = await vimeo.fetch('GET', '/me/videos', body, { per_page: countOfVideosToGet })
   const data = _.get(videosData, 'data', [])
 
-  //* Obteniendo los videos que son clases y que tenga contenido
+  /* Obteniendo los videos tipo clases y que tengan contenido */
   const lastClassesVideos = data.filter(video => ((video.name).includes('bootcamp') && video.duration > 0))
 
   const existingClassesPromises = lastClassesVideos.map(video => {
-    const vimeoId = (video.uri).split('/')[2]
+    const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
 
     return Class.findOne({ vimeoId })
   })
   const existingClasses = await Promise.all(existingClassesPromises)
+
   const classesToUpload = lastClassesVideos.filter((vimeoId, index) => !existingClasses[index])
 
   const classesRenamedPromises = classesToUpload.map(video => {
@@ -126,13 +127,11 @@ async function uploadLastClasses () {
     const name = `${(video.name.includes('pyhton')) ? 'python' : 'js'}-${(video.name).split('-')[2]}gen-${dayjs(video.created_time).format('DD/MM/YYYY')}`
     return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
-
   const classesRenamed = await Promise.all(classesRenamedPromises)
 
   const classesToSavePromises = classesRenamed.map(classVideo => {
     const number = vimeo.constants.generations[(classVideo.name.split('-')[1]).trim()].number
-
-    const vimeoId = (classVideo.uri).split('/')[2]
+    const vimeoId = vimeo.utils.getVideoIdFromUri(classVideo.uri)
     const classData = {
       vimeoId,
       generation: {
