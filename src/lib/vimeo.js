@@ -29,8 +29,16 @@ async function vimeoFetch (
 
   return response.json()
 }
+// UTILS
+function getVideoIdFromUri (videoUri = '') {
+  if (typeof videoUri !== 'string') throw Error('.....')
+  return videoUri.split('/')[2]
+}
 
 module.exports = {
   constants,
-  fetch: vimeoFetch
+  fetch: vimeoFetch,
+  utils: {
+    getVideoIdFromUri
+  }
 }
