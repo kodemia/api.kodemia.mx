@@ -4,6 +4,18 @@
       "curso": { "id": "2" }
     }
   },
+  "contacts": {
+    "customFields": {
+      "source": {
+        "id": "15",
+        "title": "¿Dónde nos conociste?"
+      },
+      "reasonToApply": {
+        "id": "16",
+        "title": "¿Por qué quieres aplicar a Kodemia?"
+      }
+    }
+  },
   "pipelines": {
     "skillUp": {
       "id": "1",

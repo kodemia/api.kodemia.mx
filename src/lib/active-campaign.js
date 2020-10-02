@@ -1,5 +1,8 @@
-const querystring = require('querystring')
+
+const _ = require('lodash')
+const assert = require('http-assert')
 const fetch = require('node-fetch')
+const querystring = require('querystring')
 
 const constants = require('../config/active-campaign.json')
 
@@ -38,7 +41,23 @@ async function acFetch (
   return response.json()
 }
 
+// UTILS
+function buildFieldValuesArrayFromObject (customFieldsObject = {}) {
+  return Object.entries(customFieldsObject).map(([key, value]) => {
+    const customFieldId = _.get(constants.contacts.customFields, `${key}.id`, null)
+    assert(customFieldId, 404, `customField '${key}' does not exists`)
+
+    return {
+      field: `${customFieldId}`,
+      value
+    }
+  })
+}
+
 module.exports = {
   constants,
-  fetch: acFetch
+  fetch: acFetch,
+  utils: {
+    buildFieldValuesArrayFromObject
+  }
 }
