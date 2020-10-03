@@ -22,19 +22,13 @@ async function vimeoFetch (
     body: method === 'GET' ? null : JSON.stringify(body)
   })
 
-  let responseJson
-
-  try {
-    if (!response.ok) {
-      const { errors } = await response.json()
-      throw errors
-    }
-    responseJson = await response.json()
-  } catch (error) {
-    responseJson = null
+  const isJsonResponse = (response.headers.get('content-type') || '').includes('json')
+  if (!response.ok && isJsonResponse) {
+    const { errors } = await response.json()
+    throw errors
   }
 
-  return responseJson
+  return isJsonResponse ? response.json() : null
 }
 
 // UTILS

@@ -111,7 +111,6 @@ async function uploadLastClasses () {
 
   /* Obteniendo los videos tipo clases y que tengan contenido */
   const lastClassesVideos = data.filter(video => ((video.name).includes('bootcamp') && video.duration > 0))
-
   const existingClassesPromises = lastClassesVideos.map(video => {
     const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
 
@@ -120,10 +119,10 @@ async function uploadLastClasses () {
   const existingClasses = await Promise.all(existingClassesPromises)
 
   const classesToUpload = lastClassesVideos.filter((vimeoId, index) => !existingClasses[index])
-
   const classesRenamedPromises = classesToUpload.map(video => {
     const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
     const name = `${(video.name.includes('pyhton')) ? 'python' : 'js'}-${(video.name).split('-')[2]}gen-${dayjs(video.created_time).format('DD/MM/YYYY')}`
+
     return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
   const classesRenamed = await Promise.all(classesRenamedPromises)
