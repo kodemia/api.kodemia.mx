@@ -104,10 +104,9 @@ async function getListByUser (user = {}) {
 }
 
 async function uploadLastClasses () {
-  const body = {}
-  const countOfVideosToGet = 12
+  const countOfVideosToGet = 20
 
-  const videosData = await vimeo.fetch('GET', '/me/videos', body, { per_page: countOfVideosToGet })
+  const videosData = await vimeo.fetch('GET', '/me/videos', null, { per_page: countOfVideosToGet })
   const data = _.get(videosData, 'data', [])
 
   /* Obteniendo los videos tipo clases y que tengan contenido */
@@ -123,7 +122,7 @@ async function uploadLastClasses () {
   const classesToUpload = lastClassesVideos.filter((vimeoId, index) => !existingClasses[index])
 
   const classesRenamedPromises = classesToUpload.map(video => {
-    const vimeoId = (video.uri).split('/')[2]
+    const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
     const name = `${(video.name.includes('pyhton')) ? 'python' : 'js'}-${(video.name).split('-')[2]}gen-${dayjs(video.created_time).format('DD/MM/YYYY')}`
     return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
@@ -144,14 +143,15 @@ async function uploadLastClasses () {
   })
 
   const classesSaved = await Promise.all(classesToSavePromises)
-  const classesMoved = classesSaved.map((classDB) => {
+  const classesMovedPromises = classesSaved.map((classDB) => {
     // ToDo: FolderId dinamico
     const userId = vimeo.constants.users.kodemia.id
     const projectId = vimeo.constants.folders['9na-generación'].id
     const vimeoId = classDB.vimeoId
+
     return vimeo.fetch('PUT', `/users/${userId}/projects/${projectId}/videos/${vimeoId}`, null)
   })
-  await Promise.all(classesMoved)
+  await Promise.all(classesMovedPromises)
 }
 
 module.exports = {

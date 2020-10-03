@@ -22,17 +22,24 @@ async function vimeoFetch (
     body: method === 'GET' ? null : JSON.stringify(body)
   })
 
-  if (!response.ok) {
-    const { errors } = await response.json()
-    throw errors
+  let responseJson
+
+  try {
+    if (!response.ok) {
+      const { errors } = await response.json()
+      throw errors
+    }
+    responseJson = await response.json()
+  } catch (error) {
+    responseJson = null
   }
 
-  return response.json()
+  return responseJson
 }
 
 // UTILS
 function getVideoIdFromUri (videoUri = '') {
-  if (typeof videoUri !== 'string') throw Error('Invalid uri')
+  if (typeof videoUri !== 'string') throw Error('Uri should be a string')
   return videoUri.split('/')[2]
 }
 
