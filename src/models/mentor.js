@@ -4,7 +4,7 @@ const _ = require('lodash')
 
 const { Schema } = mongoose
 
-const nonPublicProperties = [ 'password' ]
+const nonPublicProperties = ['password']
 
 const mentorSchema = new Schema({
   firstName: {

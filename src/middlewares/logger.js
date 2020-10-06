@@ -1,6 +1,6 @@
 function filterBody (body) {
-  let newBody = typeof body === 'string' ? JSON.parse(body) : body
-  let bodyToClean = { ...newBody }
+  const newBody = typeof body === 'string' ? JSON.parse(body) : body
+  const bodyToClean = { ...newBody }
   if ('password' in bodyToClean) bodyToClean.password = '<password>'
   if ('token' in bodyToClean) bodyToClean.token = '<token>'
   return typeof body === 'string' ? body : JSON.stringify(bodyToClean)
@@ -8,7 +8,7 @@ function filterBody (body) {
 
 module.exports = async (ctx, next) => {
   try {
-    let start = Date.now()
+    const start = Date.now()
     await next()
     const ms = Date.now() - start
     console.log(

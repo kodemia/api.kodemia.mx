@@ -5,7 +5,7 @@ const _ = require('lodash')
 const { Schema } = mongoose
 const { Types } = Schema
 
-const nonPublicProperties = [ 'password' ]
+const nonPublicProperties = ['password']
 
 const koderSchema = new Schema({
   firstName: {

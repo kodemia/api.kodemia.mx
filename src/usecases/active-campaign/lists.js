@@ -17,7 +17,7 @@ async function subscribeContact (contactId, course) {
 
   const defaultListId = '14'
 
-  let list = _.get(ac, `constants.lists.${course}.${finalGeneration}.id`, defaultListId)
+  const list = _.get(ac, `constants.lists.${course}.${finalGeneration}.id`, defaultListId)
 
   const subscribeDealResponse = await ac.fetch('POST', '/contactLists', {
     contactList: {
