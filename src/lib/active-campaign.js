@@ -49,7 +49,7 @@ function buildFieldValuesArrayFromObject (customFieldsObject = {}) {
 
     return {
       field: `${customFieldId}`,
-      value
+      value: `${key === 'campaignName' ? constants.contacts.customFields[key].values[value] : value}`
     }
   })
 }
