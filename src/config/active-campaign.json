@@ -13,6 +13,10 @@
       "reasonToApply": {
         "id": "16",
         "title": "¿Por qué quieres aplicar a Kodemia?"
+      },
+      "campaignName":{
+        "id": "2",
+        "title":"Campaign Name"
       }
     }
   },

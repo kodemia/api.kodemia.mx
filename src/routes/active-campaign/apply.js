@@ -13,7 +13,7 @@ router.post('/', async ctx => {
     lastName,
     phone,
     course,
-    customFields = { source: '', reasonToApply: '' }
+    customFields = { source: '', reasonToApply: '', campaignName: '' }
   } = ctx.request.body
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
