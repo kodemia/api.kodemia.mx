@@ -16,13 +16,7 @@
       },
       "campaignName":{
         "id": "2",
-        "title":"Campaign Name",
-        "values":{
-          "Javascript-lifetime": "BWJ-LP",
-          "Javascript-live": "BWJL-LP",
-          "Python-lifetime": "BWP-LP",
-          "Python-live": "BWPL-LP"
-        }
+        "title":"Campaign Name"
       }
     }
   },
