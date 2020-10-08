@@ -3,9 +3,11 @@
     "kodemia": {"id": 105152072}
   },
   "generations":{
-    "09gen":{"number":9}    
+    "09gen":{"number":9},
+    "10gen":{"number":10} 
   },
   "folders":{
-    "9na-generación":{"id":2285783 }
+    "9na-generación":{"id": 2285783 },
+    "10ma-generación":{"id": 2693984}
   }
 }
