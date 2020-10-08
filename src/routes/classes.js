@@ -32,7 +32,7 @@ router.get('/', auth(['koder']), async ctx => {
 })
 
 router.get('/upload/last', async ctx => {
-  const classesUpload = klass.uploadLastClasses()
+  const classesUpload = await klass.uploadLastClasses()
   ctx.resolve({
     payload: {
       classes: classesUpload
