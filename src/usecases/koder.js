@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const _ = require('lodash')
 
 const bcrypt = require('../lib/bcrypt')
+const utils = require('../lib/utils')
 const Koder = require('../models/koder').model
 const Generation = require('../models/generation').model
 
@@ -43,9 +44,10 @@ async function upsertMany (koders = []) {
   })
 
   const upsertKodersPromises = kodersToUpsert.map(koder => {
+    const koderData = utils.removeFalsyEntries(koder)
     return Koder.findOneAndUpdate(
       { email: koder.email },
-      { ...koder },
+      { ...koderData },
       { upsert: true }
     )
   })
