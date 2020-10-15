@@ -22,7 +22,7 @@ async function create ({ firstName = '', lastName = '', email = '', password = '
   return newKoder.save()
 }
 
-async function createMany (koders = []) {
+async function upsertMany (koders = []) {
   const kodersHashesPromises = koders.map(({ password }) => bcrypt.hash(password))
   const kodersHashes = await Promise.all(kodersHashesPromises)
 
@@ -34,7 +34,7 @@ async function createMany (koders = []) {
   })
   const kodersGenerations = await Promise.all(kodersGenerationsPromises)
 
-  const kodersToInsert = koders.map((koderData, index) => {
+  const kodersToUpsert = koders.map((koderData, index) => {
     return {
       ...koderData,
       password: _.get(kodersHashes, index),
@@ -42,7 +42,16 @@ async function createMany (koders = []) {
     }
   })
 
-  return Koder.insertMany(kodersToInsert)
+  const upsertKodersPromises = kodersToUpsert.map(koder => {
+    return Koder.findOneAndUpdate(
+      { email: koder.email },
+      { ...koder },
+      { upsert: true }
+    )
+  })
+
+  return Promise.all(upsertKodersPromises)
+  // return Koder.insertMany(kodersToUpsert) // upsert
 }
 
 async function resetPassword (email = '', password = '') {
@@ -80,7 +89,7 @@ function getById (id, selectOptions = '') {
 
 module.exports = {
   create,
-  createMany,
+  upsertMany,
   getAll,
   sigIn,
   resetPassword,

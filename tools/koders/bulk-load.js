@@ -51,7 +51,7 @@ async function main () {
   await db.connect()
   console.log('> DB connected')
   await generation.createIfNotExists({ number: generationNumber, type: generationType })
-  return koder.createMany(kodersData)
+  return koder.upsertMany(kodersData)
 }
 
 main()
