@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const _ = require('lodash')
 
 const bcrypt = require('../lib/bcrypt')
+const utils = require('../lib/utils')
 const Koder = require('../models/koder').model
 const Generation = require('../models/generation').model
 
@@ -22,7 +23,7 @@ async function create ({ firstName = '', lastName = '', email = '', password = '
   return newKoder.save()
 }
 
-async function createMany (koders = []) {
+async function upsertMany (koders = []) {
   const kodersHashesPromises = koders.map(({ password }) => bcrypt.hash(password))
   const kodersHashes = await Promise.all(kodersHashesPromises)
 
@@ -34,7 +35,7 @@ async function createMany (koders = []) {
   })
   const kodersGenerations = await Promise.all(kodersGenerationsPromises)
 
-  const kodersToInsert = koders.map((koderData, index) => {
+  const kodersToUpsert = koders.map((koderData, index) => {
     return {
       ...koderData,
       password: _.get(kodersHashes, index),
@@ -42,7 +43,17 @@ async function createMany (koders = []) {
     }
   })
 
-  return Koder.insertMany(kodersToInsert)
+  const upsertKodersPromises = kodersToUpsert.map(koder => {
+    const koderData = utils.removeFalsyEntries(koder)
+    return Koder.findOneAndUpdate(
+      { email: koder.email },
+      { ...koderData },
+      { upsert: true }
+    )
+  })
+
+  return Promise.all(upsertKodersPromises)
+  // return Koder.insertMany(kodersToUpsert) // upsert
 }
 
 async function resetPassword (email = '', password = '') {
@@ -80,7 +91,7 @@ function getById (id, selectOptions = '') {
 
 module.exports = {
   create,
-  createMany,
+  upsertMany,
   getAll,
   sigIn,
   resetPassword,
