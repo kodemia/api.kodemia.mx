@@ -26,7 +26,7 @@ router.post('/', auth(), async ctx => {
     password = '',
     phone = '',
     generation = {
-      type: 'white',
+      type: 'javascript',
       number: 0
     }
   } = ctx.request.body

@@ -16,7 +16,7 @@ async function main () {
   const {
     csv = '',
     generationNumber = 0,
-    generationType = 'white'
+    generationType = 'javascript'
   } = args
 
   if (!csv) throw new Error('csv file is required')
