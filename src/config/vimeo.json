@@ -1,13 +1,25 @@
 {
   "users":{
-    "kodemia": {"id": 105152072}
+    "kodemia": {
+      "id": "105152072"
+    }
   },
   "generations":{
-    "09gen":{"number":9},
-    "10gen":{"number":10} 
-  },
-  "folders":{
-    "9na-generación":{"id": 2285783 },
-    "10ma-generación":{"id": 2693984}
+    "javascript": [
+      {
+        "number": 9,
+        "folder": "2285783"
+      },
+      {
+        "number": 10,
+        "folder": "2693984"
+      }
+    ],
+    "python": [
+      {
+        "number": 1,
+        "folder": "2903777"
+      }
+    ]
   }
 }

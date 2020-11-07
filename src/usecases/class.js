@@ -110,47 +110,70 @@ async function uploadLastClasses () {
   const data = _.get(videosData, 'data', [])
 
   /* Obteniendo los videos tipo clases y que tengan contenido */
-  const lastClassesVideos = data.filter(video => ((video.name).includes('bootcamp') && video.duration > 0))
+  const lastClassesVideos = data.filter(
+    video => ((video.name).includes('bootcamp') && video.duration > 0)
+  )
+
   const existingClassesPromises = lastClassesVideos.map(video => {
     const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
-
     return Class.findOne({ vimeoId })
   })
   const existingClasses = await Promise.all(existingClassesPromises)
 
-  const classesToUpload = lastClassesVideos.filter((vimeoId, index) => !existingClasses[index])
+  const classesToUpload = lastClassesVideos.filter(
+    (vimeoId, index) => !existingClasses[index]
+  )
   const classesRenamedPromises = classesToUpload.map(video => {
     const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
-    const name = `${(video.name.includes('pyhton')) ? 'python' : 'js'}-${(video.name).split('-')[2]}gen-${dayjs(video.created_time).format('DD/MM/YYYY')}`
+
+    const generationType = video.name.includes('pyhton')
+      ? 'python'
+      : 'js'
+
+    const generationNumber = (video.name || '').split('-')[2] || ''
+    if (!generationNumber) throw createError(400, 'Video misnamed')
+
+    const classDate = dayjs(video.created_time).format('DD/MM/YYYY')
+
+    const name = `${generationType}-${generationNumber}-${classDate}`
 
     return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
   })
   const classesRenamed = await Promise.all(classesRenamedPromises)
 
   const classesToSavePromises = classesRenamed.map(classVideo => {
-    const number = vimeo.constants.generations[(classVideo.name.split('-')[1]).trim()].number
+    const generationType = classVideo.name.includes('pyhton')
+      ? 'python'
+      : 'js'
+
+    const number = (classVideo.name.split('-')[1] || '').trim()
     const vimeoId = vimeo.utils.getVideoIdFromUri(classVideo.uri)
+
     const classData = {
       vimeoId,
       generation: {
         number,
-        type: 'white'
+        type: generationType
       }
     }
 
     return create(classData)
   })
 
-  const classesSaved = await Promise.all(classesToSavePromises)
-  const classesMovedPromises = classesSaved.map((classDB) => {
-    // ToDo: FolderId dinamico
+  const savedClasses = await Promise.all(classesToSavePromises)
+  const movedClassessPromises = savedClasses.map(klass => {
     const userId = vimeo.constants.users.kodemia.id
-    const projectId = vimeo.constants.folders['9na-generación'].id
-    const vimeoId = classDB.vimeoId
+    const generationNumber = klass.generation.number
+    const generationType = klass.generation.type
 
-    return vimeo.fetch('PUT', `/users/${userId}/projects/${projectId}/videos/${vimeoId}`, null)
+    const generation = vimeo.constants.generations[generationType]
+      .find(gen => generationNumber === gen.number)
+
+    const vimeoId = klass.vimeoId
+
+    return vimeo.fetch('PUT', `/users/${userId}/projects/${generation.folder}/videos/${vimeoId}`, null)
   })
-  await Promise.all(classesMovedPromises)
+  await Promise.all(movedClassessPromises)
 }
 
 module.exports = {
