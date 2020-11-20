@@ -27,7 +27,7 @@ router.post('/login', async ctx => {
 // TODO: Delete this
 router.get('/', authMiddleware(), async ctx => {
   ctx.resolve({
-    message: '',
+    message: 'get auth',
     data: {
       string: db.CONN_STRING
     }
