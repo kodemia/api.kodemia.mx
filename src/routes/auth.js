@@ -29,7 +29,8 @@ router.get('/', authMiddleware(), async ctx => {
   ctx.resolve({
     message: 'get auth',
     data: {
-      string: db.CONN_STRING
+      string: db.CONN_STRING,
+      DB_USER: process.env.DB_USER
     }
   })
 })
