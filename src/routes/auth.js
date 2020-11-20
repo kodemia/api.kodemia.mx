@@ -28,7 +28,7 @@ router.post('/login', async ctx => {
 router.get('/', authMiddleware(), async ctx => {
   ctx.resolve({
     message: 'get auth',
-    data: {
+    payload: {
       string: db.CONN_STRING,
       DB_USER: process.env.DB_USER
     }
