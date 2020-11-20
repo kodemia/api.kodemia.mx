@@ -14,4 +14,7 @@ function connect () {
   })
 }
 
-module.exports = { connect }
+module.exports = { 
+  connect,
+  CONN_STRING
+}
