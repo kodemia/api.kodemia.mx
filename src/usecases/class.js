@@ -126,9 +126,9 @@ async function uploadLastClasses () {
   const classesRenamedPromises = classesToUpload.map(video => {
     const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
 
-    const generationType = video.name.includes('pyhton')
+    const generationType = video.name.includes('python')
       ? 'python'
-      : 'js'
+      : 'javascript'
 
     const generationNumber = (video.name || '').split('-')[2] || ''
     if (!generationNumber) throw createError(400, 'Video misnamed')
@@ -142,9 +142,9 @@ async function uploadLastClasses () {
   const classesRenamed = await Promise.all(classesRenamedPromises)
 
   const classesToSavePromises = classesRenamed.map(classVideo => {
-    const generationType = classVideo.name.includes('pyhton')
+    const generationType = classVideo.name.includes('python')
       ? 'python'
-      : 'js'
+      : 'javascript'
 
     const number = (classVideo.name.split('-')[1] || '').trim()
     const vimeoId = vimeo.utils.getVideoIdFromUri(classVideo.uri)
