@@ -24,11 +24,11 @@ npm run tools:bulk:koders -- --csv=alumnos-novena.csv --generationNumber=10
 
 Where available args are:
 
-|  Arg               | Description       | Default | Example               |
-|--------------------|-------------------|---------|-----------------------|
-| --csv              | path to csv file  | -       | --csv=koders.csv      |
-| --generationNumber | generation number | 0       | --generationNumber=10 |
-| --generationType   | `white`|`python`  | `white` | --generationType=white|
+|  Arg               | Description               | Default      | Example                    |
+|--------------------|---------------------------|--------------|----------------------------|
+| --csv              | path to csv file          | -            | --csv=koders.csv           |
+| --generationNumber | generation number         | 0            | --generationNumber=10      |
+| --generationType   | `javascript` or `python`  | `javascript` | --generationType=javascript|
 
 > NOTE: This script is idempotent and makes upsert operations on each koder
 

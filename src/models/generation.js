@@ -16,8 +16,9 @@ const generationSchema = new Schema({
     lowercase: true,
     required: true,
     enum: [
-      'black',
-      'white'
+      'white', // TODO: Delete this
+      'javascript',
+      'python'
     ]
   },
   startDate: {
