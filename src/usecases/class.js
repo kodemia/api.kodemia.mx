@@ -173,7 +173,7 @@ async function uploadLastClasses () {
 
     return vimeo.fetch('PUT', `/users/${userId}/projects/${generation.folder}/videos/${vimeoId}`, null)
   })
-  
+
   return Promise.all(movedClassessPromises)
 }
 
