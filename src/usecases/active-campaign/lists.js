@@ -9,7 +9,7 @@ async function subscribeContact (contactId, course) {
 
   course = course.toLowerCase()
 
-  const currentJSGeneration = 'ten'
+  const currentJSGeneration = 'eleven'
   const currentPythonGeneration = 'one'
   const finalGeneration = course.toLowerCase().includes('python')
     ? currentPythonGeneration
