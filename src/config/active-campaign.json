@@ -40,7 +40,8 @@
       "ten": { "id": "14" }
     },
     "javascript-live": {
-      "ten": { "id": "15" }
+      "ten": { "id": "15" },
+      "eleven": { "id": "31" }
     },
     "python-lifetime": {
       "one": { "id": "16" }
