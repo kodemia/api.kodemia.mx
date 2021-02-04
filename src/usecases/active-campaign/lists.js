@@ -9,13 +9,13 @@ async function subscribeContact (contactId, course) {
 
   course = course.toLowerCase()
 
-  const currentJSGeneration = 'eleven'
-  const currentPythonGeneration = 'one'
+  const currentJSGeneration = '2021'
+  const currentPythonGeneration = '2021'
   const finalGeneration = course.toLowerCase().includes('python')
     ? currentPythonGeneration
     : currentJSGeneration
 
-  const defaultListId = '14'
+  const defaultListId = '38'
 
   const list = _.get(ac, `constants.lists.${course}.${finalGeneration}.id`, defaultListId)
 
