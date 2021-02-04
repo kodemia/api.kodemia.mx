@@ -41,13 +41,15 @@
     },
     "javascript-live": {
       "ten": { "id": "15" },
-      "eleven": { "id": "31" }
+      "eleven": { "id": "31" },
+      "2021": { "id": "38" }
     },
     "python-lifetime": {
       "one": { "id": "16" }
     },
     "python-live": {
-      "one": { "id": "17" }
+      "one": { "id": "17" },
+      "2021": { "id": "37" }
     }
   }
 }
