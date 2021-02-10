@@ -17,7 +17,6 @@ router.post('/', async ctx => {
   } = ctx.request.body
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
-
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
   ctx.resolve({
