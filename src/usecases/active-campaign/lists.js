@@ -33,11 +33,13 @@ async function subscribeContact (contactId, course) {
 async function subscribeCompanyContact (contactId) {
   assert(contactId, 400, 'contactId is required')
 
-  const defaultListId = '42'
+  const defaultListId = ac.constants.lists.empresas.id
+
+  const list = _.get(ac, `constants.lists.empresas.id`, defaultListId)
 
   const subscribeCompanyResponse = await ac.fetch('POST', '/contactLists', {
     contactList: {
-      list: defaultListId,
+      list,
       contact: contactId,
       status: '1'
     }

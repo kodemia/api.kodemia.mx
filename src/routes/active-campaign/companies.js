@@ -1,9 +1,9 @@
-const Router = require ('koa-router')
-const ac = require ('../../usecases/active-campaign')
+const Router = require('koa-router')
+const ac = require('../../usecases/active-campaign')
 
-const router = new Router (
+const router = new Router(
   {
-    prefix: "/companies"
+    prefix: '/companies'
   }
 )
 
@@ -22,9 +22,9 @@ router.post('/', async (ctx) => {
   ctx.resolve(
     {
       message: 'Contact created and asociated',
-      payload: {contact, companyInList}
+      payload: { contact, companyInList }
     }
   )
 })
 
-module.exports = router 
+module.exports = router
