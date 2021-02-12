@@ -30,6 +30,23 @@ async function subscribeContact (contactId, course) {
   return _.get(subscribeDealResponse, 'contactList', null)
 }
 
+async function subscribeCompanyContact (contactId) {
+  assert(contactId, 400, 'contactId is required')
+
+  const list = _.get(ac, `constants.lists.empresas.id`)
+
+  const subscribeCompanyResponse = await ac.fetch('POST', '/contactLists', {
+    contactList: {
+      list,
+      contact: contactId,
+      status: '1'
+    }
+  })
+
+  return _.get(subscribeCompanyResponse, 'contactList', null)
+}
+
 module.exports = {
-  subscribeContact
+  subscribeContact,
+  subscribeCompanyContact
 }
