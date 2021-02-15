@@ -13,10 +13,11 @@ router.post('/', async ctx => {
     lastName,
     phone,
     course,
-    customFields = { source: '', reasonToApply: '', campaignName: '' }
+    customFields = { source: '', reasonToApply: '', campaignName: '' },
+    tags = {}
   } = ctx.request.body
 
-  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
+  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields, tags)
 
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
