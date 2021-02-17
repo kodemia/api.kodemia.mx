@@ -14,9 +14,17 @@
         "id": "16",
         "title": "¿Por qué quieres aplicar a Kodemia?"
       },
-      "campaignName":{
+      "campaignName": {
         "id": "2",
         "title":"Campaign Name"
+      },
+      "company": {
+        "id": "28",
+        "title": "Empresa o Compañía"
+      },
+      "position": {
+        "id": "30",
+        "title": "Puesto o Posicion"
       }
     }
   },
@@ -50,6 +58,9 @@
     "python-live": {
       "one": { "id": "17" },
       "2021": { "id": "37" }
+    },
+    "empresas": {
+      "id": "42"
     }
   },
   "tags": {
