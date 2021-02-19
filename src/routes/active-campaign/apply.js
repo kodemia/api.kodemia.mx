@@ -13,11 +13,18 @@ router.post('/', async ctx => {
     lastName,
     phone,
     course,
-    customFields = { source: '', reasonToApply: '', campaignName: '' }
+    customFields = { source: '', reasonToApply: '', campaignName: '' },
+    tags = ['website']
   } = ctx.request.body
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
+
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
+
+  const addTagsPromises = tags
+    .map((tagName) => ac.contacts.addTag(contact.id, tagName))
+
+  await Promise.all(addTagsPromises)
 
   ctx.resolve({
     message: 'Contact created and associated',
