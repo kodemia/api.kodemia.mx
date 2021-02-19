@@ -21,9 +21,8 @@ router.post('/', async ctx => {
 
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
-  const addTagsPromises = tags.map(([tagName]) => {
-    ac.contacts.addTag(contact.id, tagName)
-  })
+  const addTagsPromises = tags
+    .map(([tagName]) => ac.contacts.addTag(contact.id, tagName))
 
   Promise.all(addTagsPromises)
 
