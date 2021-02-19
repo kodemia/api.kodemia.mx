@@ -27,7 +27,7 @@ async function addTag (contactId, tagName) {
   return ac.fetch('POST', '/contactTags', {
     contactTag: {
       contact: contactId,
-      tag: ac.constants.tags['tagName'].id
+      tag: ac.constants.tags[tagName].id
     }
   })
 }
