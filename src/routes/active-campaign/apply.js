@@ -24,7 +24,7 @@ router.post('/', async ctx => {
   const addTagsPromises = tags
     .map(([tagName]) => ac.contacts.addTag(contact.id, tagName))
 
-  Promise.all(addTagsPromises)
+  await Promise.all(addTagsPromises)
 
   ctx.resolve({
     message: 'Contact created and associated',
