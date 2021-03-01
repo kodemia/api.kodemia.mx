@@ -3,10 +3,11 @@ const cors = require('kcors')
 const Router = require('koa-router')
 const koaBody = require('koa-body')
 const Sentry = require('@sentry/node')
+const sentry = require('./lib/sentry')
+
 const logger = require('./middlewares/logger')
 const errorHandler = require('./middlewares/errorHandler')
 const resolver = require('./middlewares/ctx/resolver')
-
 const requestHandler = require('./middlewares/sentry/requestHandler')
 const tracingMiddleWare = require('./middlewares/sentry/tracingMiddleWare')
 
@@ -14,10 +15,7 @@ const app = new Koa()
 const rootRouter = new Router()
 const environment = process.env.NODE_ENV || 'development'
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0
-})
+sentry.init()
 
 let routers = require('./routes')
 
@@ -30,10 +28,10 @@ routers = { rootRouter, ...routers }
 
 app.use(cors())
 app.use(koaBody({ multipart: true, formidable: { maxFileSize: 10000000 } }))
+
 app.use(errorHandler)
 app.use(resolver)
 app.use(logger)
-
 app.use(requestHandler)
 app.use(tracingMiddleWare)
 

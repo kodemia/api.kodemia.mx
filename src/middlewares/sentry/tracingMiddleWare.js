@@ -1,14 +1,8 @@
-
 const Sentry = require('@sentry/node')
 const {
   extractTraceparentData,
   stripUrlQueryAndFragment
 } = require('@sentry/tracing')
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 1.0
-})
 
 module.exports = async (ctx, next) => {
   const reqMethod = (ctx.method || '').toUpperCase()
@@ -28,7 +22,6 @@ module.exports = async (ctx, next) => {
   ctx.__sentry_transaction = transaction
   await next()
 
-  // if using koa router, a nicer way to capture transaction using the matched route
   if (ctx._matchedRoute) {
     const mountPath = ctx.mountPath || ''
     transaction.setName(`${reqMethod} ${mountPath}${ctx._matchedRoute}`)
