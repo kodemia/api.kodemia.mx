@@ -89,11 +89,18 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
+function deactivateByEmail (email) {
+  return Koder
+    .findOneAndUpdate({ email }, { isActive: false, password: 'disabled' })
+    .select('email')
+}
+
 module.exports = {
   create,
   upsertMany,
   getAll,
   sigIn,
   resetPassword,
-  getById
+  getById,
+  deactivateByEmail
 }

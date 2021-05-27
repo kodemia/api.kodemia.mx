@@ -42,6 +42,10 @@ const koderSchema = new Schema({
   generation: {
     type: Types.ObjectId,
     ref: 'Generation'
+  },
+  isActive: {
+    type: Boolean,
+    default: true
   }
 })
 
