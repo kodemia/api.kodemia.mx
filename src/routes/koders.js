@@ -71,4 +71,25 @@ router.post('/reset-password', auth(), async ctx => {
   })
 })
 
+router.patch('/deactivate', auth(), async ctx => {
+  const { emails } = ctx.request.body
+
+  if (!emails) throw ctx.throw(400, 'Emails is required')
+
+  const emailsIsArray = Array.isArray(emails)
+
+  if (!emailsIsArray) throw ctx.throw(400, 'Emails should be an array')
+
+  const deactivatePromises = emails.map(email => koder.deactivateByEmail(email))
+
+  const deactivatedKoders = await Promise.all(deactivatePromises)
+
+  ctx.resolve({
+    message: 'Koders deactivated',
+    payload: {
+      emails: deactivatedKoders
+    }
+  })
+})
+
 module.exports = router
