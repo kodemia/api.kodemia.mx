@@ -1,3 +1,4 @@
+// this tracing middleware creates a transaction per request
 const Sentry = require('@sentry/node')
 const {
   extractTraceparentData,
