@@ -6,23 +6,26 @@ const createError = require('http-errors')
 
 const {
   DOCUSIGN_PRIVATE_KEY,
-  ENV,
+  VERCEL_ENV,
   DOCUSIGN_INTEGRATION_KEY,
-  DOCUSIGN_USER_ID
+  DOCUSIGN_USER_ID,
+  NODE_ENV
 } = process.env
 
-const authUrl = ENV === 'production'
+const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
 async function getToken () {
   let token = null
+
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
     aud: authUrl,
     scope: 'signature impersonation'
   }
+  
   const requestAccessTokenJWT = jwt.sign(
     requestAccessTokenJWTPayload,
     DOCUSIGN_PRIVATE_KEY,
