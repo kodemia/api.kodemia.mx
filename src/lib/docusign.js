@@ -36,7 +36,7 @@ async function getToken () {
   requestAccessTokenData.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer')
   requestAccessTokenData.append('assertion', requestAccessTokenJWT)
 
-  const responseRequestAccessToken = await fetch('https://account-d.docusign.com/oauth/token', {
+  const responseRequestAccessToken = await fetch(`https://${authUrl}/oauth/token`, {
     method: 'POST',
     body: requestAccessTokenData
   })
