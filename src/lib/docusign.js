@@ -25,7 +25,7 @@ async function getToken () {
     aud: authUrl,
     scope: 'signature impersonation'
   }
-  
+
   const requestAccessTokenJWT = jwt.sign(
     requestAccessTokenJWTPayload,
     DOCUSIGN_PRIVATE_KEY,
