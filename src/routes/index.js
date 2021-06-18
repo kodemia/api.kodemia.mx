@@ -7,7 +7,7 @@ const generations = require('./generations')
 const koders = require('./koders')
 const mentors = require('./mentors')
 const streams = require('./streams')
-const platform = require('./platform')
+const platform = require('./admissions')
 
 const root = new Router({
   prefix: '/'
