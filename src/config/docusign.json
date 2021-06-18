@@ -1,0 +1,16 @@
+{
+  "development": {
+    "templates": {
+      "offer": {
+        "id": "2c137885-9b86-45f4-90d8-11661d6cf9c2"
+      }
+    }
+  },
+  "production": {
+    "templates": {
+      "offer": {
+        "id": "to be determinate"
+      }
+    }
+  }
+}
