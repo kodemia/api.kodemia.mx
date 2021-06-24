@@ -1,11 +1,14 @@
 const Router = require('koa-router')
 
+const docuSign = require('../lib/docusign')
+
 const router = new Router({
   prefix: '/admissions'
 })
 
 router.post('/calculator', async ctx => {
-  console.log(ctx.request.body)
+  let response = await docuSign.worker()
+  console.log(response)
   ctx.resolve({
     message: 'success'
   })

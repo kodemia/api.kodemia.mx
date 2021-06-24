@@ -7,7 +7,7 @@ const generations = require('./generations')
 const koders = require('./koders')
 const mentors = require('./mentors')
 const streams = require('./streams')
-const platform = require('./admissions')
+const admissions = require('./admissions')
 
 const root = new Router({
   prefix: '/'
@@ -30,5 +30,5 @@ module.exports = {
   generations,
   root,
   streams,
-  platform
+  admissions
 }
