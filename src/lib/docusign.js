@@ -100,34 +100,13 @@ async function request(url = '', config = {}) {
   }
 }
 
-// ToDo: In progress
-// async function makeEnvelope (templateId, signerEmail, signerName) {
-//   if (!templateId) throw createError(500, 'template id is required to make an envelop')
-
-//   const envelop = docusign.EnvelopeDefinition()
-//   envelop.templateId = templateId
-
-//   const signer = docusign.TemplateRole()
-//   signer.email = signerEmail
-//   signer.name = signerName
-//   signer.roleName = 'signer'
-
-//   const cc = docusign.TemplateRole()
-//   cc.email = signerEmail
-//   cc.name = signerName
-//   cc.roleName = 'cc'
-
-//   envelop.templateRoles = [ signer, cc ]
-//   envelop.status = 'sent'
-//   return envelop
-// }
 
 async function worker(signerEmail, signerName) {
   let envelopeArgs = {
-    signerEmail: 'naomi@kodemia.mx ',
-    signerName: 'Rose',
+    signerEmail,
+    signerName,
     ccEmail: 'arianaomi.lp@gmail.com',
-    ccName: 'Naomi',
+    ccName: 'Naomi L',
     status: 'sent'
   }
   console.log('worker', envelopeArgs)
@@ -142,16 +121,11 @@ async function worker(signerEmail, signerName) {
 
   let envelopesApi = new docusign.EnvelopesApi(dsApiClient)
 
-  let results = null
-
   // Step 1. Make the envelope request body
   let envelope = makeEnvelope(envelopeArgs)
 
-
   // Step 2. call Envelopes::create API method
-  // Exceptions will be caught by the calling function
-  console.log('id', accountInfo.account_id)
-  results = await envelopesApi.createEnvelope(accountInfo.account_id, { envelopeDefinition: envelope })
+  let results = await envelopesApi.createEnvelope(accountInfo.account_id, { envelopeDefinition: envelope })
   let envelopeId = results.envelopeId
 
   console.log(`Envelope was created. EnvelopeId ${envelopeId}`)

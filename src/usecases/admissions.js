@@ -1,1 +1,0 @@
-/* use cases of admissions */

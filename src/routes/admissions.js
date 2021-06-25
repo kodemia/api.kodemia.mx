@@ -7,10 +7,15 @@ const router = new Router({
 })
 
 router.post('/calculator', async ctx => {
-  let response = await docuSign.worker()
-  console.log(response)
+
+  const { signerEmail, signerName } = ctx.request.body
+  let response = await docuSign.worker(signerEmail, signerName)
+
   ctx.resolve({
-    message: 'success'
+    message: 'success',
+    payload: {
+      envelopeId: response
+    }
   })
 })
 
