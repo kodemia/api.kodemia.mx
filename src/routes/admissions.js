@@ -7,7 +7,6 @@ const router = new Router({
 })
 
 router.post('/calculator', async ctx => {
-
   const { signerEmail, signerName } = ctx.request.body
   let response = await docuSign.worker(signerEmail, signerName)
 
