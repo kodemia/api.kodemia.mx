@@ -11,7 +11,9 @@ const {
   VERCEL_ENV,
   DOCUSIGN_INTEGRATION_KEY,
   DOCUSIGN_USER_ID,
-  NODE_ENV
+  DOCUSIGN_CCEMAIL,
+  DOCUSIGN_CCNAME,
+  NODE_ENV,
 } = process.env
 
 const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
@@ -104,11 +106,10 @@ async function worker (signerEmail, signerName) {
   let envelopeArgs = {
     signerEmail,
     signerName,
-    ccEmail: 'arianaomi.lp@gmail.com',
-    ccName: 'Naomi L',
+    ccEmail: DOCUSIGN_CCEMAIL,
+    ccName: DOCUSIGN_CCNAME,
     status: 'sent'
   }
-  console.log('worker', envelopeArgs)
 
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
@@ -127,7 +128,6 @@ async function worker (signerEmail, signerName) {
   let results = await envelopesApi.createEnvelope(accountInfo.account_id, { envelopeDefinition: envelope })
   let envelopeId = results.envelopeId
 
-  console.log(`Envelope was created. EnvelopeId ${envelopeId}`)
   return ({ envelopeId: envelopeId })
 }
 
