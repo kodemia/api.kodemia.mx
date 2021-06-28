@@ -13,7 +13,7 @@ const {
   DOCUSIGN_USER_ID,
   DOCUSIGN_CCEMAIL,
   DOCUSIGN_CCNAME,
-  NODE_ENV,
+  NODE_ENV
 } = process.env
 
 const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
