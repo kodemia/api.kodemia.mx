@@ -28,10 +28,11 @@ router.post('/', auth(), async ctx => {
     generation = {
       type: 'javascript',
       number: 0
-    }
+    },
+    isTemporal = false
   } = ctx.request.body
 
-  const newKoder = await koder.create({ firstName, lastName, email, password, phone, generation })
+  const newKoder = await koder.create({ firstName, lastName, email, password, phone, generation, isTemporal })
 
   ctx.resolve({
     message: 'Koder created',
