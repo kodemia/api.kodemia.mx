@@ -10,6 +10,12 @@ const Generation = require('../models/generation').model
 
 const vimeo = require('../lib/vimeo')
 
+// i.e bootcamp-javascript-10
+const newVideoNameFormat = new RegExp('^bootcamp-[a-z]+-[0-9]{2,}', 'i')
+
+// i.e javascript-10-06/06/2020
+const renamedVideoFormat = new RegExp('^[a-z]+-[0-2]{2,}-[0-9]{2}/[0-9]{2}/[0-9]{4}', 'i')
+
 async function getVimeoVideoData (vimeoId) {
   const videoData = await vimeo.fetch('GET', `/videos/${vimeoId}`)
 
@@ -56,8 +62,8 @@ async function create (classData) {
     if (!mentorFound) createError(409, `Mentor [${mentor}] does not exists`)
   }
 
-  const existingClass = await Class.findOne({ vimeoId })
-  if (existingClass) throw createError(409, `Class with vimeoId [${vimeoId}] already exists`)
+  const existingClass = await Class.findOne({ vimeoId, generation: generationFound.id })
+  if (existingClass) throw createError(409, `Class with vimeoId [${vimeoId}] already exists in ${generation.type}-${generation.number}`)
 
   let vimeoData = await getVimeoVideoData(vimeoId)
   vimeoData = utils.removeFalsyEntries(vimeoData)
@@ -103,83 +109,160 @@ async function getListByUser (user = {}) {
     .populate('mentor generation')
 }
 
-async function uploadLastClasses () {
-  const countOfVideosToGet = 20
-
+async function getLastClassesFromVimeo (countOfVideosToGet = 20) {
   const videosData = await vimeo.fetch('GET', '/me/videos', null, { per_page: countOfVideosToGet })
-  const data = _.get(videosData, 'data', [])
+  const videos = _.get(videosData, 'data', [])
 
-  /* Obteniendo los videos tipo clases y que tengan contenido */
-  const lastClassesVideos = data.filter(
-    video => ((video.name).includes('bootcamp') && video.duration > 0)
-  )
+  /* Get class videos with content */
+  return videos
+    .filter(video => {
+      const isNewVideo = newVideoNameFormat.test(video.name)
+      const isAlreadyRenamedVideo = renamedVideoFormat.test(video.name)
+      const hasContent = video.duration > 0
+      return hasContent && (isNewVideo | isAlreadyRenamedVideo)
+    })
+    .map(video => {
+      return {
+        id: vimeo.utils.getVideoIdFromUri(video.uri),
+        name: video.name,
+        createdDate: video.created_time
+      }
+    })
+}
 
-  const existingClassesPromises = lastClassesVideos.map(video => {
-    const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
-    return Class.findOne({ vimeoId })
+async function getClassesToUpload () {
+  const lastClassesVideos = await getLastClassesFromVimeo()
+
+  const existingClassesPromises = lastClassesVideos.map(vimeoClassVideo => {
+    return Class.findOne({ vimeoId: vimeoClassVideo.id })
   })
   const existingClasses = await Promise.all(existingClassesPromises)
+  const existingClassesIds = existingClasses
+    .filter(klass => !!klass)
+    .map(klass => klass.vimeoId)
 
-  const classesToUpload = lastClassesVideos.filter(
-    (vimeoId, index) => !existingClasses[index]
-  )
-  const classesRenamedPromises = classesToUpload.map(video => {
-    const vimeoId = vimeo.utils.getVideoIdFromUri(video.uri)
+  const lastClassesVideosIds = lastClassesVideos.map(classVideo => classVideo.id)
+  const classesToUploadIds = _.difference(lastClassesVideosIds, existingClassesIds)
+  const classesToUpload = lastClassesVideos.filter(classVideo => classesToUploadIds.includes(classVideo.id))
 
-    const generationType = video.name.includes('python')
-      ? 'python'
-      : 'javascript'
+  return classesToUpload
+}
 
-    const generationNumber = (video.name || '').split('-')[2] || ''
-    if (!generationNumber) throw createError(400, 'Video misnamed')
+function createNewNamesForClassesToUpload (classesToUpload = []) {
+  return classesToUpload.map(classVideo => {
+    const needNewName = newVideoNameFormat.test(classVideo.name)
+    let newName = null
 
-    const classDate = dayjs(video.created_time).format('DD/MM/YYYY')
-
-    const name = `${generationType}-${generationNumber}-${classDate}`
-
-    return vimeo.fetch('PATCH', `/videos/${vimeoId}`, { name })
-  })
-  const classesRenamed = await Promise.all(classesRenamedPromises)
-
-  const classesToSavePromises = classesRenamed.map(classVideo => {
-    const generationType = classVideo.name.includes('python')
-      ? 'python'
-      : 'javascript'
-
-    const number = (classVideo.name.split('-')[1] || '').trim()
-    const vimeoId = vimeo.utils.getVideoIdFromUri(classVideo.uri)
-
-    const classData = {
-      vimeoId,
-      generation: {
-        number,
-        type: generationType
+    if (needNewName) {
+      const [ , program, generation ] = classVideo.name.split('-')
+      const classDate = dayjs(classVideo.createdDate).format('DD/MM/YYYY')
+      newName = `${program}-${generation}-${classDate}`
+      return {
+        ...classVideo,
+        newName,
+        program,
+        generation,
+        needNewName
       }
     }
 
+    const [ program, generation ] = classVideo.name.split('-')
+
+    return {
+      ...classVideo,
+      newName,
+      needNewName,
+      program,
+      generation
+    }
+  })
+}
+
+async function getAllVimeoFolders () {
+  const allFoldersResponse = await vimeo.fetch('GET', '/me/projects', null, { per_page: 100 })
+  const allFolders = _.get(allFoldersResponse, 'data', [])
+  const allFoldersByNameAndId = allFolders.map(folder => {
+    const id = _.last(_.get(folder, 'uri', '').split('/'))
+    return {
+      id,
+      name: folder.name
+    }
+  })
+  return allFoldersByNameAndId
+}
+
+async function createNeededVimeoFolders (foldersNeededNames = []) {
+  let allFolders = await getAllVimeoFolders()
+  foldersNeededNames = _.uniq(foldersNeededNames)
+
+  const foldersToCreate = foldersNeededNames.filter(folderNeededName => {
+    return !allFolders.find(folder => folder.name === folderNeededName)
+  })
+
+  const foldersToCreatePromises = foldersToCreate.map(folderToCreate => {
+    return vimeo.fetch('POST', '/me/projects', { name: folderToCreate })
+  })
+  return Promise.all(foldersToCreatePromises)
+}
+
+async function uploadLastClasses () {
+  const classesToUpload = await getClassesToUpload()
+
+  const classesToUploadWithNewNames = createNewNamesForClassesToUpload(classesToUpload)
+
+  // rename classes
+  const classesRenamedPromises = classesToUploadWithNewNames
+    .filter(classVideo => classVideo.needNewName)
+    .map(classVideo => {
+      return vimeo.fetch('PATCH', `/videos/${classVideo.id}`, { name: classVideo.newName })
+    })
+  await Promise.all(classesRenamedPromises)
+
+  // save classes in the db
+  const classesToSavePromises = classesToUploadWithNewNames.map(classVideo => {
+    const classData = {
+      vimeoId: classVideo.id,
+      generation: {
+        number: classVideo.generation,
+        type: classVideo.program
+      }
+    }
     return create(classData)
   })
+  await Promise.all(classesToSavePromises)
 
-  const savedClasses = await Promise.all(classesToSavePromises)
-  const movedClassessPromises = savedClasses.map(klass => {
-    const userId = vimeo.constants.users.kodemia.id
-    const generationNumber = klass.generation.number
-    const generationType = klass.generation.type
+  // move class videos to its correspondent folder
+  let foldersNeededNames = classesToUploadWithNewNames
+    .map(classVideo => `${classVideo.program}-${classVideo.generation}`)
 
-    const generation = vimeo.constants.generations[generationType]
-      .find(gen => generationNumber === gen.number)
+  await createNeededVimeoFolders(foldersNeededNames)
+  const allFolders = await getAllVimeoFolders()
 
-    const vimeoId = klass.vimeoId
-
-    return vimeo.fetch('PUT', `/users/${userId}/projects/${generation.folder}/videos/${vimeoId}`, null)
+  const classesToPutInAFolder = classesToUploadWithNewNames.map(classVideo => {
+    const folderName = `${classVideo.program}-${classVideo.generation}`
+    const folder = allFolders.find(folder => folder.name === folderName)
+    return {
+      ...classVideo,
+      folderId: folder.id
+    }
   })
 
-  return Promise.all(movedClassessPromises)
+  const classesToPutInAFolderPromises = classesToPutInAFolder.map(classVideo => {
+    return vimeo.fetch('PUT', `/me/projects/${classVideo.folderId}/videos/${classVideo.id}`, null)
+  })
+
+  await Promise.all(classesToPutInAFolderPromises)
+
+  return classesToUploadWithNewNames
 }
 
 module.exports = {
   create,
   getAll,
   getListByUser,
-  uploadLastClasses
+  getClassesToUpload,
+  uploadLastClasses,
+  getLastClassesFromVimeo,
+  createNewNamesForClassesToUpload,
+  getAllVimeoFolders
 }
