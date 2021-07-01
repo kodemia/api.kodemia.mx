@@ -55,7 +55,6 @@ const koderSchema = new Schema({
   expirationDate: {
     type: Date,
     default: function () {
-      console.log('temporal', this.isTemporal)
       return this.isTemporal
         ? dayjs().add(1, 'month')
         : dayjs().add(100, 'year')
