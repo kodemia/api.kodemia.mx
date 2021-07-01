@@ -18,9 +18,16 @@ async function signIn (email, password) {
   const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
 
+  const isExpired = koder
+    ? koder.isExpired()
+    : false
+
+  if (isExpired) throw createError(412, 'Account expired')
+
   const token = await jwt.sign({
     id: user._id,
-    isMentor: !!mentor
+    isMentor: !!mentor,
+    isExpired
   })
 
   return token

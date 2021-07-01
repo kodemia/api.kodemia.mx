@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose')
 const _ = require('lodash')
+const dayjs = require('dayjs')
 
 const { Schema } = mongoose
 const { Types } = Schema
@@ -46,6 +47,23 @@ const koderSchema = new Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  isTemporal: {
+    type: Boolean,
+    default: false
+  },
+  expirationDate: {
+    type: Date,
+    default: function () {
+      console.log('temporal', this.isTemporal)
+      return this.isTemporal
+        ? dayjs().add(1, 'month')
+        : dayjs().add(100, 'year')
+    }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 })
 
@@ -53,6 +71,14 @@ koderSchema.method({
   toPublic: function () {
     const object = this.toObject()
     return _.omit(object, nonPublicProperties)
+  },
+  isExpired: function () {
+    if (!this.expirationDate) return false
+
+    const today = dayjs()
+    const expirationDate = dayjs(this.expirationDate)
+
+    return today.isAfter(expirationDate)
   }
 })
 
