@@ -11,7 +11,7 @@ router.post('/offer', async ctx => {
   offerLetter = {
     signerName,
     ...offerLetter,
-    startBootcamp: "06/07/2021"
+    startBootcamp: '06/07/2021'
   }
   let response = await docuSign.worker(signerEmail, signerName, offerLetter)
 
