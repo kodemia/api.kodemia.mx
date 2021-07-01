@@ -22,7 +22,7 @@ const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
-async function getToken () {
+async function getToken() {
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
@@ -55,7 +55,7 @@ async function getToken () {
   }
 }
 
-async function getUserDefaultAccountInfo (token) {
+async function getUserDefaultAccountInfo(token) {
   if (!token) {
     token = await getToken()
   }
@@ -79,7 +79,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 }
 
-async function request (url = '', config = {}) {
+async function request(url = '', config = {}) {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
@@ -104,13 +104,14 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName) {
+async function worker(signerEmail, signerName, offerLetter) {
   let envelopeArgs = {
     signerEmail,
     signerName,
     ccEmail: DOCUSIGN_CCEMAIL,
     ccName: DOCUSIGN_CCNAME,
-    status: 'sent'
+    status: 'sent',
+    offerLetter
   }
 
   const token = await getToken()
@@ -133,20 +134,20 @@ async function worker (signerEmail, signerName) {
   return ({ envelopeId: envelopeId })
 }
 
-function makeEnvelope (args) {
+function makeEnvelope(args) {
   // Step 1: Create the envelope definition
-  let env = new docusign.EnvelopeDefinition()
-  env.emailSubject = 'Carta oferta Kodemia'
+  let envelop = new docusign.EnvelopeDefinition()
+  envelop.emailSubject = 'Carta oferta Kodemia'
 
   let doc1 = new docusign.Document()
-  let doc1b65 = Buffer.from(document1(args)).toString('base64')
+  let doc1b65 = Buffer.from(document1(args.offerLetter)).toString('base64')
 
   doc1.documentBase64 = doc1b65
   doc1.name = 'Carta oferta'
   doc1.fileExtension = 'html'
   doc1.documentId = '1'
 
-  env.documents = [doc1]
+  envelop.documents = [doc1]
 
   let signer1 = docusign.Signer.constructFromObject({
     email: args.signerEmail,
@@ -179,13 +180,13 @@ function makeEnvelope (args) {
     signers: [signer1],
     carbonCopies: [cc1]
   })
-  env.recipients = recipients
-  env.status = args.status
+  envelop.recipients = recipients
+  envelop.status = args.status
 
-  return env
+  return envelop
 }
 
-function document1 (args) {
+function document1(args) {
   let template = `
     <!DOCTYPE html>
     <html>
@@ -247,13 +248,12 @@ function document1 (args) {
     <body>
     <main>
       <h1 class="title">Carta Oferta</h1>
-   
-      <h3>Estimad@ {{name}}</h3>
+      <h3>Estimad@ {{signerName}}</h3>
       <br>
       <p style="white-space: pre-line; text-align:end;">
         Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
 
-        En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{dateStart}}.<br><br>
+        En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{startBootcamp}}.<br><br>
 
        Este bootcamp te permitirá́entender inicialmente la forma de pensar de un gran programador, a través de los fundamentos de programación y la resolución de algoritmos, dándote el entendimiento claro de la estructura de programación para adoptar cualquier lenguaje en el futuro. Así como consolidarte en el mundo del desarrollo Web creando una aplicación que combina tus nuevas habilidades de Front-end y Back-end con patrones de diseño, todo lo anterior consolidado en el bootcamp.<br><br>
 
@@ -264,28 +264,28 @@ function document1 (args) {
       <table>
         <tr>
           <th>MONTO A FINANCIAR</th>
-          <td>{{value}}</td>
+          <td>{{amountToFinance}}</td>
         </tr>
         <tr style=" background-color: gray">
           <th>INSCRIPCIÓN</th>
-          <td>{{value}}</td>
+          <td>{{inscription}}</td>
         </tr>
         <tr >
           <th>ESQUEMA DE PAGO</th>
-          <td>{{value}}</td>
+          <td>{{paymentScheme}}</td>
         </tr>
         <tr style=" background-color:gray;">
           <th>PAGOS TOTALES</th>
-          <td>{{value}}</td>
+          <td>{{totalPayments}}</td>
         </tr>
         <tr >
           <th>MONTO MENSUAL</th>
-          <td>{{value}}</td>
+          <td>{{monthlyPayment}}</td>
         </tr>
       </table>
       <br>
       <p>
-        *La presente carta oferta tiene vigencia limite al {{date}}para realizar la inscripción.
+        *La presente carta oferta tiene vigencia limite al {{deadline}}para realizar la inscripción.
         <br><br>
         **Después de la aplicación con Accede se tiene un total de 10 días hábiles para concluir el proceso de financiamiento.
         <br><br>
@@ -310,24 +310,7 @@ function document1 (args) {
 </html>
   `
   var template2 = Handlebars.compile(template)
-  var data = {
-    'name': 'Charles',
-    'dateStart': '06/07/2021',
-    'date': '02/07/2021',
-    'monto': 3000,
-    'inversion': [
-      {
-        'name': 'inversion1',
-        'value': 3500
-      },
-      {
-        'name': 'inversion2',
-        'value': 3000
-      }
-    ]
-  }
-  console.log(typeof template, template)
-  var result = template2(data)
+  var result = template2(args)
   return result
 }
 
@@ -337,10 +320,3 @@ module.exports = {
   request,
   worker
 }
-/*
-   {{#each inversion}}
-        <tr>
-          <th>{{name}}</th>
-          <td>{{value}}</td>
-        </tr>
-       {{/each}} */

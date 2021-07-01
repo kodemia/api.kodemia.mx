@@ -6,9 +6,14 @@ const router = new Router({
   prefix: '/admissions'
 })
 
-router.post('/calculator', async ctx => {
-  const { signerEmail, signerName } = ctx.request.body
-  let response = await docuSign.worker(signerEmail, signerName)
+router.post('/offer', async ctx => {
+  let { signerEmail, signerName, offerLetter } = ctx.request.body
+  offerLetter = {
+    signerName,
+    ...offerLetter,
+    startBootcamp: "06/07/2021"
+  }
+  let response = await docuSign.worker(signerEmail, signerName, offerLetter)
 
   ctx.resolve({
     message: 'success',
