@@ -22,7 +22,7 @@ const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
-async function getToken () {
+async function getToken() {
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
@@ -55,7 +55,7 @@ async function getToken () {
   }
 }
 
-async function getUserDefaultAccountInfo (token) {
+async function getUserDefaultAccountInfo(token) {
   if (!token) {
     token = await getToken()
   }
@@ -79,7 +79,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 }
 
-async function request (url = '', config = {}) {
+async function request(url = '', config = {}) {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
@@ -104,7 +104,7 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName, offerLetter) {
+async function worker(signerEmail, signerName, offerLetter) {
   let envelopeArgs = {
     signerEmail,
     signerName,
@@ -134,7 +134,7 @@ async function worker (signerEmail, signerName, offerLetter) {
   return ({ envelopeId: envelopeId })
 }
 
-function makeEnvelope (args) {
+function makeEnvelope(args) {
   // Step 1: Create the envelope definition
   let envelop = new docusign.EnvelopeDefinition()
   envelop.emailSubject = 'Carta oferta Kodemia'
@@ -186,7 +186,7 @@ function makeEnvelope (args) {
   return envelop
 }
 
-function document1 (args) {
+function document1(args) {
   let template = `
     <!DOCTYPE html>
     <html>
@@ -249,9 +249,8 @@ function document1 (args) {
     <main>
       <h1 class="title">Carta Oferta</h1>
       <h3>Estimad@ {{signerName}}</h3>
-      <br>
       <p style="white-space: pre-line; text-align:end;">
-        Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
+        <br>Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
 
         En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{startBootcamp}}.<br><br>
 
@@ -262,23 +261,23 @@ function document1 (args) {
       <h3>INVERSIÓN REGULAR CON IVA:</h3>
       <br>
       <table>
-        <tr>
+        <tr style=" background-color: gray">
           <th>MONTO A FINANCIAR</th>
           <td>{{amountToFinance}}</td>
         </tr>
-        <tr style=" background-color: gray">
+        <tr >
           <th>INSCRIPCIÓN</th>
           <td>{{inscription}}</td>
         </tr>
-        <tr >
+        <tr style=" background-color: gray">
           <th>ESQUEMA DE PAGO</th>
           <td>{{paymentScheme}}</td>
         </tr>
-        <tr style=" background-color:gray;">
+        <tr >
           <th>PAGOS TOTALES</th>
           <td>{{totalPayments}}</td>
         </tr>
-        <tr >
+        <tr style=" background-color:gray;">
           <th>MONTO MENSUAL</th>
           <td>{{monthlyPayment}}</td>
         </tr>
@@ -306,6 +305,9 @@ function document1 (args) {
         </div>
       </article>
     </main>
+    <footer>
+    <p style="text-align: center;">Kodemia es tu casa: COW Roma, <br> Tonalá 10, Roma norte, 03800, CDMX.</p>
+    </footer>
   </body>
 </html>
   `
