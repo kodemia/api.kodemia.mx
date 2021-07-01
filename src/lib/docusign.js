@@ -6,6 +6,8 @@ const FormData = require('form-data')
 const createError = require('http-errors')
 const docusign = require('docusign-esign')
 
+const Handlebars = require('handlebars')
+
 const {
   DOCUSIGN_PRIVATE_KEY,
   VERCEL_ENV,
@@ -184,30 +186,149 @@ function makeEnvelope (args) {
 }
 
 function document1 (args) {
-  return `
+  let template = `
     <!DOCTYPE html>
     <html>
-        <head>
-          <meta charset="UTF-8">
-        </head>
-        <body style="font-family:sans-serif;margin-left:2em;">
-        <h1 style="font-family: 'Trebuchet MS', Helvetica, sans-serif;
-            color: darkblue;margin-bottom: 0;">Enviado desde API Kodemia</h1>
-        <h2 style="font-family: 'Trebuchet MS', Helvetica, sans-serif;
-          margin-top: 0px;margin-bottom: 3.5em;font-size: 1em;
-          color: darkblue;">:)</h2>
-        <h4>Estimad@ ${args.signerName}</h4>
-        <p style="margin-top:3em;">
-          Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.
-          En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como
-          desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp “Full-Stack developer
-          JavaScript” en modalidad “Live” que iniciamos el próximo fechita fechita.
-        </p>
-        <!-- Note the anchor tag for the signature field is in white. -->
-        <h3 style="margin-top:3em;">Agreed: <span style="color:white;">**signature_1**/</span></h3>
-        </body>
-    </html>
+    <head>
+    <meta charset="UTF-8" />
+    <style>
+      .title {
+        font-size: 18px;
+        text-align: end;
+        display: block;
+      }
+      h3 {
+        margin: 2px;
+        font-size: 12px;
+      }
+      p {
+        white-space: pre-line;
+        font-size: 12px;
+        margin: 0px;
+      }
+      table {
+        border-top: 1px solid black;
+        width: 100%;
+        font-size: 12px;
+      }
+      tr {
+        height: 30px;
+        padding: 0px;
+      }
+      tr:nth-child(odd) {
+        background-color: gray;
+      }
+      th {
+        text-align: start;
+        width: 25%;
+        border-right: 1px solid black;
+        padding: 0px;
+      }
+      td {
+        padding: 0px;
+      }
+      .sign-container {
+        display: flex;
+        border: 2px solid black;
+      }
+      div {
+        display:inline-block
+      }
+      .banco {
+        width: 70%;
+        border-right: 2px solid black;
+      }
+      .sign {
+        width: 30%;
+        text-align: center;
+      }
+    </style>
+    </head>
+    <body>
+    <main>
+      <h1 class="title">Carta Oferta</h1>
+   
+      <h3>Estimad@ {{name}}</h3>
+      <br>
+      <p style="white-space: pre-line; text-align:end;">
+        Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
+
+        En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{dateStart}}.<br><br>
+
+       Este bootcamp te permitirá́entender inicialmente la forma de pensar de un gran programador, a través de los fundamentos de programación y la resolución de algoritmos, dándote el entendimiento claro de la estructura de programación para adoptar cualquier lenguaje en el futuro. Así como consolidarte en el mundo del desarrollo Web creando una aplicación que combina tus nuevas habilidades de Front-end y Back-end con patrones de diseño, todo lo anterior consolidado en el bootcamp.<br><br>
+
+       Luego de conocer tus expectativas, nos gustaría trabajar contigo durante este bootcamp y por ello, te presentamos el programa con el siguiente <strong>esquema de financiamiento</strong> , Quedando de la siguiente manera: <br><br>
+      </p>
+      <h3>INVERSIÓN REGULAR CON IVA:</h3>
+      <br>
+      <table>
+        <tr>
+          <th>MONTO A FINANCIAR</th>
+          <td>{{value}}</td>
+        </tr>
+        <tr style=" background-color: gray">
+          <th>INSCRIPCIÓN</th>
+          <td>{{value}}</td>
+        </tr>
+        <tr >
+          <th>ESQUEMA DE PAGO</th>
+          <td>{{value}}</td>
+        </tr>
+        <tr style=" background-color:gray;">
+          <th>PAGOS TOTALES</th>
+          <td>{{value}}</td>
+        </tr>
+        <tr >
+          <th>MONTO MENSUAL</th>
+          <td>{{value}}</td>
+        </tr>
+      </table>
+      <br>
+      <p>
+        *La presente carta oferta tiene vigencia limite al {{date}}para realizar la inscripción.
+        <br><br>
+        **Después de la aplicación con Accede se tiene un total de 10 días hábiles para concluir el proceso de financiamiento.
+        <br><br>
+         *Al aprobarse el financiamiento, Accede solicita el 5%por apertura de contrato del monto solicitado.<br><br>
+      </p>
+      <article class="sign-container" >
+        <div class="banco">
+          <h3>Datos Bancarios</h3>
+          <p>
+            Banco BBVA <br> Titular: Kodemia SC <br> Número de cuenta: 0113364240 <br>
+            CLABE: 012180001133642404<br>
+          </p>
+        </div>
+        <div>
+          <h3>Firma del alumno</h3>
+          <br>
+          <span style="color: white">**signature_1**/</span>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>
   `
+  var template2 = Handlebars.compile(template)
+  var data = {
+    'name': 'Charles',
+    'dateStart': '06/07/2021',
+    'date': '02/07/2021',
+    'monto': 3000,
+    'inversion': [
+      {
+        'name': 'inversion1',
+        'value': 3500
+      },
+      {
+        'name': 'inversion2',
+        'value': 3000
+      }
+    ]
+  }
+  console.log(typeof template, template)
+  var result = template2(data)
+  return result
 }
 
 module.exports = {
@@ -216,3 +337,10 @@ module.exports = {
   request,
   worker
 }
+/*
+   {{#each inversion}}
+        <tr>
+          <th>{{name}}</th>
+          <td>{{value}}</td>
+        </tr>
+       {{/each}} */
