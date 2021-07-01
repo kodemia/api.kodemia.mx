@@ -7,6 +7,20 @@ const router = new Router({
 })
 
 router.post('/offer', async ctx => {
+  /* payload
+  {
+    "signerEmail": "rose@kodemia.mx",
+    "signerName": "Rose Tech",
+    "offerLetter": {
+    "deadline": "02/07/2021",
+    "amountToFinance":"60000",
+    "inscription": 3000,
+    "paymentScheme":"Accede",
+    "totalPayments": 12,
+    "monthlyPayment": 2500
+    }
+  }
+*/
   let { signerEmail, signerName, offerLetter } = ctx.request.body
   offerLetter = {
     signerName,
