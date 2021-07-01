@@ -6,13 +6,13 @@ const utils = require('../lib/utils')
 const Koder = require('../models/koder').model
 const Generation = require('../models/generation').model
 
-async function create ({ firstName = '', lastName = '', email = '', password = '', phone = '', generation = {} }) {
+async function create ({ firstName = '', lastName = '', email = '', password = '', phone = '', generation = {}, isTemporal = false }) {
   const hash = await bcrypt.hash(password)
 
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number })
   if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
-  const newKoder = new Koder({ firstName, lastName, email, password: hash, phone, generation: generationFound._id })
+  const newKoder = new Koder({ firstName, lastName, email, password: hash, phone, generation: generationFound._id, isTemporal })
 
   const error = newKoder.validateSync()
   if (error) throw error
@@ -53,7 +53,6 @@ async function upsertMany (koders = []) {
   })
 
   return Promise.all(upsertKodersPromises)
-  // return Koder.insertMany(kodersToUpsert) // upsert
 }
 
 async function resetPassword (email = '', password = '') {
@@ -89,11 +88,18 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
+function deactivateByEmail (email) {
+  return Koder
+    .findOneAndUpdate({ email }, { isActive: false, password: 'disabled' })
+    .select('email')
+}
+
 module.exports = {
   create,
   upsertMany,
   getAll,
   sigIn,
   resetPassword,
-  getById
+  getById,
+  deactivateByEmail
 }

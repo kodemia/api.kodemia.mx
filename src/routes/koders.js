@@ -28,10 +28,11 @@ router.post('/', auth(), async ctx => {
     generation = {
       type: 'javascript',
       number: 0
-    }
+    },
+    isTemporal = false
   } = ctx.request.body
 
-  const newKoder = await koder.create({ firstName, lastName, email, password, phone, generation })
+  const newKoder = await koder.create({ firstName, lastName, email, password, phone, generation, isTemporal })
 
   ctx.resolve({
     message: 'Koder created',
@@ -68,6 +69,27 @@ router.post('/reset-password', auth(), async ctx => {
 
   ctx.resolve({
     message: `Password updated for ${email}`
+  })
+})
+
+router.patch('/deactivate', auth(), async ctx => {
+  const { emails } = ctx.request.body
+
+  if (!emails) throw ctx.throw(400, 'Emails is required')
+
+  const emailsIsArray = Array.isArray(emails)
+
+  if (!emailsIsArray) throw ctx.throw(400, 'Emails should be an array')
+
+  const deactivatePromises = emails.map(email => koder.deactivateByEmail(email))
+
+  const deactivatedKoders = await Promise.all(deactivatePromises)
+
+  ctx.resolve({
+    message: 'Koders deactivated',
+    payload: {
+      emails: deactivatedKoders
+    }
   })
 })
 

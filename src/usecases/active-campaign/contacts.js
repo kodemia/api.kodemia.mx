@@ -23,6 +23,16 @@ async function upsert (email, firstName, lastName, phone, customFields = {}) {
   return _.get(newContactResponse, 'contact', null)
 }
 
+async function addTag (contactId, tagName) {
+  return ac.fetch('POST', '/contactTags', {
+    contactTag: {
+      contact: contactId,
+      tag: ac.constants.tags[tagName].id
+    }
+  })
+}
+
 module.exports = {
-  upsert
+  upsert,
+  addTag
 }
