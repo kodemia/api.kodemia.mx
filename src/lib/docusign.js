@@ -22,7 +22,7 @@ const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
-async function getToken () {
+async function getToken() {
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
@@ -55,7 +55,7 @@ async function getToken () {
   }
 }
 
-async function getUserDefaultAccountInfo (token) {
+async function getUserDefaultAccountInfo(token) {
   if (!token) {
     token = await getToken()
   }
@@ -79,7 +79,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 }
 
-async function request (url = '', config = {}) {
+async function request(url = '', config = {}) {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
@@ -104,7 +104,7 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName, offerLetter) {
+async function worker(signerEmail, signerName, offerLetter) {
   let envelopeArgs = {
     signerEmail,
     signerName,
@@ -134,7 +134,7 @@ async function worker (signerEmail, signerName, offerLetter) {
   return ({ envelopeId: envelopeId })
 }
 
-function makeEnvelope (args) {
+function makeEnvelope(args) {
   // Step 1: Create the envelope definition
   let envelop = new docusign.EnvelopeDefinition()
   envelop.emailSubject = 'Carta oferta Kodemia'
@@ -186,7 +186,7 @@ function makeEnvelope (args) {
   return envelop
 }
 
-function document1 (args) {
+function document1(args) {
   let template = `
     <!DOCTYPE html>
     <html>
@@ -194,92 +194,75 @@ function document1 (args) {
     <meta charset="UTF-8" />
     <style>
       .title {
-        font-size: 18px;
-        text-align: end;
-        display: block;
+        font-size: 20px;
+        text-align: right;
       }
       h3 {
-        margin: 2px;
-        font-size: 12px;
+        font-size: 13.5px;
+        font-family: sans-serif;
       }
       p {
-        white-space: pre-line;
-        font-size: 12px;
+        font-size: 13.5px;
         margin: 0px;
       }
-      table {
-        border-top: 1px solid black;
+      .investment {
+        border-top: 1px solid silver;
         width: 100%;
         font-size: 12px;
+        padding: 0px;
+        font-family: sans-serif;
       }
-      tr {
+      .investment tr {
         height: 30px;
         padding: 0px;
+        margin: 0px
       }
-      tr:nth-child(odd) {
-        background-color: gray;
-      }
-      th {
-        text-align: start;
+      .investment th {
+        text-align: left;
         width: 25%;
-        border-right: 1px solid black;
-        padding: 0px;
+        border-right: 1px solid silver;
+        margin-left:5px;
       }
-      td {
-        padding: 0px;
-      }
-      .sign-container {
-        display: flex;
-        border: 2px solid black;
-      }
-      div {
-        display:inline-block
-      }
-      .banco {
-        width: 70%;
-        border-right: 2px solid black;
-      }
-      .sign {
-        width: 30%;
-        text-align: center;
+      .investment td {
+         margin-left:5px;
       }
     </style>
     </head>
-    <body>
+    <body style="font-family: sans-serif;">
     <main>
+      <img src="https://cdn.kodemia.mx/images/brand/black-imagotipo.png" width="100px" />
       <h1 class="title">Carta Oferta</h1>
       <h3>Estimad@ {{signerName}}</h3>
-      <p style="white-space: pre-line; text-align:end;">
+      <p>
         <br>Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
 
-        En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{startBootcamp}}.<br><br>
+       En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{startBootcamp}}.<br><br>
 
        Este bootcamp te permitirá́entender inicialmente la forma de pensar de un gran programador, a través de los fundamentos de programación y la resolución de algoritmos, dándote el entendimiento claro de la estructura de programación para adoptar cualquier lenguaje en el futuro. Así como consolidarte en el mundo del desarrollo Web creando una aplicación que combina tus nuevas habilidades de Front-end y Back-end con patrones de diseño, todo lo anterior consolidado en el bootcamp.<br><br>
 
        Luego de conocer tus expectativas, nos gustaría trabajar contigo durante este bootcamp y por ello, te presentamos el programa con el siguiente <strong>esquema de financiamiento</strong> , Quedando de la siguiente manera: <br><br>
       </p>
-      <h3>INVERSIÓN REGULAR CON IVA:</h3>
-      <br>
-      <table>
-        <tr style=" background-color: gray">
-          <th>MONTO A FINANCIAR</th>
-          <td>{{amountToFinance}}</td>
+      <h3 style="font-size:14px;">INVERSIÓN REGULAR CON IVA:</h3>
+      <table class="investment">
+        <tr style=" background-color: silver">
+          <th > MONTO A FINANCIAR:</th>
+          <td>$ {{amountToFinance}}</td>
         </tr>
         <tr >
-          <th>INSCRIPCIÓN</th>
-          <td>{{inscription}}</td>
+          <th> INSCRIPCIÓN:</th>
+          <td>$ {{inscription}}</td>
         </tr>
-        <tr style=" background-color: gray">
-          <th>ESQUEMA DE PAGO</th>
+        <tr style=" background-color: silver">
+          <th> ESQUEMA DE PAGO:</th>
           <td>{{paymentScheme}}</td>
         </tr>
         <tr >
-          <th>PAGOS TOTALES</th>
-          <td>{{totalPayments}}</td>
+          <th> PAGOS TOTALES:</th>
+          <td> {{totalPayments}}</td>
         </tr>
-        <tr style=" background-color:gray;">
-          <th>MONTO MENSUAL</th>
-          <td>{{monthlyPayment}}</td>
+        <tr style=" background-color:silver;">
+          <th> MONTO MENSUAL:</th>
+          <td>$ {{monthlyPayment}}</td>
         </tr>
       </table>
       <br>
@@ -290,22 +273,26 @@ function document1 (args) {
         <br><br>
          *Al aprobarse el financiamiento, Accede solicita el 5%por apertura de contrato del monto solicitado.<br><br>
       </p>
-      <article class="sign-container" >
-        <div class="banco">
-          <h3>Datos Bancarios</h3>
-          <p>
-            Banco BBVA <br> Titular: Kodemia SC <br> Número de cuenta: 0113364240 <br>
-            CLABE: 012180001133642404<br>
-          </p>
-        </div>
-        <div>
-          <h3>Firma del alumno</h3>
-          <br>
-          <span style="color: white">**signature_1**/</span>
-        </div>
-      </article>
+      <table style="border: 1px solid black; width: 100%; font-family: sans-serif;">
+        <tr stylle="width: 70%">
+          <th style="text-align:left; border-right: 1px solid black; font-size: 13.5px;">Datos Bancarios</th>
+          <th style="text-align:center; font-size: 13.5px;">Firma del alumno</th>
+        </tr>
+        <tr stylle="width: 30%">
+          <td style="border-right: 1px solid black;">
+            <p>
+              Banco BBVA <br> Titular: Kodemia SC <br> Número de cuenta: 0113364240 <br>
+              CLABE: 012180001133642404<br>
+            </p>
+          </td>
+          <td >
+            <span style="color: white; diplay:block; text-align:center;">**signature_1**/</span>
+          </td>
+        </tr>
+      </table>
     </main>
     <footer>
+    <br>
     <p style="text-align: center;">Kodemia es tu casa: COW Roma, <br> Tonalá 10, Roma norte, 03800, CDMX.</p>
     </footer>
   </body>
