@@ -5,8 +5,8 @@ const fetch = require('node-fetch')
 const FormData = require('form-data')
 const createError = require('http-errors')
 const docusign = require('docusign-esign')
-
 const Handlebars = require('handlebars')
+const conversor = require('conversor-numero-a-letras-es-ar');
 
 const {
   DOCUSIGN_PRIVATE_KEY,
@@ -22,7 +22,7 @@ const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
-async function getToken () {
+async function getToken() {
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
@@ -55,7 +55,7 @@ async function getToken () {
   }
 }
 
-async function getUserDefaultAccountInfo (token) {
+async function getUserDefaultAccountInfo(token) {
   if (!token) {
     token = await getToken()
   }
@@ -79,7 +79,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 }
 
-async function request (url = '', config = {}) {
+async function request(url = '', config = {}) {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
@@ -104,7 +104,7 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName, offerLetter) {
+async function worker(signerEmail, signerName, offerLetter) {
   let envelopeArgs = {
     signerEmail,
     signerName,
@@ -134,7 +134,7 @@ async function worker (signerEmail, signerName, offerLetter) {
   return ({ envelopeId: envelopeId })
 }
 
-function makeEnvelope (args) {
+function makeEnvelope(args) {
   // Step 1: Create the envelope definition
   let envelop = new docusign.EnvelopeDefinition()
   envelop.emailSubject = 'Carta oferta Kodemia'
@@ -186,8 +186,20 @@ function makeEnvelope (args) {
   return envelop
 }
 
-function document1 (args) {
-  let template = `
+function document1(args) {
+  //Convirtiendo a numeros a letras
+  const amountToFinanceWord = converterNumberToWords(args.amountToFinance)
+  const inscriptionWord = converterNumberToWords(args.inscription)
+  const monthlyPaymentWord = converterNumberToWords(args.monthlyPayment)
+
+  args = {
+    ...args,
+    amountToFinanceWord,
+    inscriptionWord,
+    monthlyPaymentWord
+  }
+
+  let text = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -246,11 +258,11 @@ function document1 (args) {
       <table class="investment">
         <tr style=" background-color: silver">
           <th > MONTO A FINANCIAR:</th>
-          <td>$ {{amountToFinance}}</td>
+          <td>$ {{amountToFinance}}.00 {{amountToFinanceWord}}</td>
         </tr>
         <tr >
           <th> INSCRIPCIÓN:</th>
-          <td>$ {{inscription}}</td>
+          <td>$ {{inscription}}.00 {{inscriptionWord}}</td>
         </tr>
         <tr style=" background-color: silver">
           <th> ESQUEMA DE PAGO:</th>
@@ -262,7 +274,7 @@ function document1 (args) {
         </tr>
         <tr style=" background-color:silver;">
           <th> MONTO MENSUAL:</th>
-          <td>$ {{monthlyPayment}}</td>
+          <td>$ {{monthlyPayment}}.00 {{monthlyPaymentWord}} </td>
         </tr>
       </table>
       <br>
@@ -298,9 +310,19 @@ function document1 (args) {
   </body>
 </html>
   `
-  var template2 = Handlebars.compile(template)
-  var result = template2(args)
+  var template = Handlebars.compile(text)
+  var result = template(args)
   return result
+}
+
+function converterNumberToWords(number) {
+  const ConverterClass = conversor.conversorNumerosALetras
+  const myConverter = new ConverterClass()
+  const numberWord = myConverter.convertToText(number)
+  const capitalLetter = numberWord.slice(0, 1).toUpperCase()
+  const restOfLetters = numberWord.slice(1)
+
+  return `${capitalLetter}${restOfLetters} pesos`
 }
 
 module.exports = {
