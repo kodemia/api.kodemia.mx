@@ -22,7 +22,7 @@ const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
-async function getToken () {
+async function getToken() {
   const requestAccessTokenJWTPayload = {
     iss: DOCUSIGN_INTEGRATION_KEY,
     sub: DOCUSIGN_USER_ID,
@@ -55,7 +55,7 @@ async function getToken () {
   }
 }
 
-async function getUserDefaultAccountInfo (token) {
+async function getUserDefaultAccountInfo(token) {
   if (!token) {
     token = await getToken()
   }
@@ -79,7 +79,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 }
 
-async function request (url = '', config = {}) {
+async function request(url = '', config = {}) {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
@@ -104,7 +104,7 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName, offerLetter) {
+async function worker(signerEmail, signerName, offerLetter) {
   let envelopeArgs = {
     signerEmail,
     signerName,
@@ -134,7 +134,7 @@ async function worker (signerEmail, signerName, offerLetter) {
   return ({ envelopeId: envelopeId })
 }
 
-function makeEnvelope (args) {
+function makeEnvelope(args) {
   // Step 1: Create the envelope definition
   let envelop = new docusign.EnvelopeDefinition()
   envelop.emailSubject = 'Carta oferta Kodemia'
@@ -186,7 +186,7 @@ function makeEnvelope (args) {
   return envelop
 }
 
-function document1 (args) {
+function document1(args) {
   let template = `
     <!DOCTYPE html>
     <html>
@@ -230,7 +230,7 @@ function document1 (args) {
     </head>
     <body style="font-family: sans-serif;">
     <main>
-      <img src="https://cdn.kodemia.mx/images/brand/black-imagotipo.png" width="100px" />
+      <img src="data:image/png;base64,aHR0cHM6Ly9jZG4ua29kZW1pYS5teC9pbWFnZXMvYnJhbmQvYmxhY2staW1hZ290aXBvLnBuZw==" >
       <h1 class="title">Carta Oferta</h1>
       <h3>Estimad@ {{signerName}}</h3>
       <p>
