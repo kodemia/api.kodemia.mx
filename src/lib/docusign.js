@@ -5,8 +5,6 @@ const fetch = require('node-fetch')
 const FormData = require('form-data')
 const createError = require('http-errors')
 const docusign = require('docusign-esign')
-const Handlebars = require('handlebars')
-const conversor = require('conversor-numero-a-letras-es-ar')
 
 const {
   DOCUSIGN_PRIVATE_KEY,
@@ -104,16 +102,7 @@ async function request (url = '', config = {}) {
   }
 }
 
-async function worker (signerEmail, signerName, offerLetter) {
-  let envelopeArgs = {
-    signerEmail,
-    signerName,
-    ccEmail: DOCUSIGN_CCEMAIL,
-    ccName: DOCUSIGN_CCNAME,
-    status: 'sent',
-    offerLetter
-  }
-
+async function getEnvelopApiClient () {
   const token = await getToken()
   const accountInfo = await getUserDefaultAccountInfo(token)
   const baseUrl = `${accountInfo.base_uri}/restapi`
@@ -122,51 +111,65 @@ async function worker (signerEmail, signerName, offerLetter) {
   dsApiClient.setBasePath(baseUrl)
   dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + token)
 
-  let envelopesApi = new docusign.EnvelopesApi(dsApiClient)
-
-  // Step 1. Make the envelope request body
-  let envelope = makeEnvelope(envelopeArgs)
-
-  // Step 2. call Envelopes::create API method
-  let results = await envelopesApi.createEnvelope(accountInfo.account_id, { envelopeDefinition: envelope })
-  let envelopeId = results.envelopeId
-
-  return ({ envelopeId: envelopeId })
+  return {
+    client: new docusign.EnvelopesApi(dsApiClient),
+    accountInfo
+  }
 }
 
-function makeEnvelope (args) {
+async function sendDocumentToBeSigned (signerEmail, signerName, documentString) {
+  let { client, accountInfo } = await getEnvelopApiClient()
+
+  // Step 1. Make the envelope request body
+  let envelopeDefinition = makeEnvelope({ signerEmail, signerName }, documentString)
+
+  // Step 2. call Envelopes::create API method
+  let results = await client.createEnvelope(accountInfo.account_id, { envelopeDefinition })
+  let envelopeId = results.envelopeId
+
+  return { envelopeId }
+}
+
+function makeEnvelope ({
+  signerEmail,
+  signerName,
+  ccEmail = DOCUSIGN_CCEMAIL,
+  ccName = DOCUSIGN_CCNAME,
+  status = 'sent'
+}, documentString) {
   // Step 1: Create the envelope definition
   let envelop = new docusign.EnvelopeDefinition()
-  envelop.emailSubject = 'Carta oferta Kodemia'
+  envelop.emailSubject = 'Kodemia | Carta oferta'
 
-  let doc1 = new docusign.Document()
-  let doc1b65 = Buffer.from(document1(args.offerLetter)).toString('base64')
+  let document = new docusign.Document()
+  // let doc1b65 = Buffer.from(document1(args.offerLetter)).toString('base64')
+  // let doc1b65 = Buffer.from(emails.offerEmailAsText(args.offerLetter)).toString('base64')
 
-  doc1.documentBase64 = doc1b65
-  doc1.name = 'Carta oferta'
-  doc1.fileExtension = 'html'
-  doc1.documentId = '1'
+  document.documentBase64 = Buffer.from(documentString).toString('base64')
+  document.name = 'Carta oferta'
+  document.fileExtension = 'html'
+  document.documentId = '1'
 
-  envelop.documents = [doc1]
+  envelop.documents = [document]
 
-  let signer1 = docusign.Signer.constructFromObject({
-    email: args.signerEmail,
-    name: args.signerName,
+  let signer = docusign.Signer.constructFromObject({
+    email: signerEmail,
+    name: signerName,
     recipientId: '1',
     routingOrder: '1'
   })
 
-  let cc1 = new docusign.CarbonCopy()
-  cc1.email = args.ccEmail
-  cc1.name = args.ccName
-  cc1.routingOrder = '2'
-  cc1.recipientId = '2'
+  let carbonCopy = new docusign.CarbonCopy()
+  carbonCopy.email = ccEmail
+  carbonCopy.name = ccName
+  carbonCopy.routingOrder = '1'
+  carbonCopy.recipientId = '2'
 
   let signHere1 = docusign.SignHere.constructFromObject({
     anchorString: '**signature_1**',
     anchorYOffset: '10',
     anchorUnits: 'pixels',
-    anchorXOffset: '20'
+    anchorXOffset: '70'
   })
 
   // Tabs are set per recipient / signer
@@ -174,160 +177,22 @@ function makeEnvelope (args) {
     signHereTabs: [signHere1]
   })
 
-  signer1.tabs = signer1Tabs
+  signer.tabs = signer1Tabs
 
   let recipients = docusign.Recipients.constructFromObject({
-    signers: [signer1],
-    carbonCopies: [cc1]
+    signers: [signer],
+    carbonCopies: [carbonCopy]
   })
   envelop.recipients = recipients
-  envelop.status = args.status
+  envelop.status = status
 
   return envelop
-}
-
-function document1 (args) {
-  // Convirtiendo a numeros a letras
-  const amountToFinanceWord = converterNumberToWords(args.amountToFinance)
-  const inscriptionWord = converterNumberToWords(args.inscription)
-  const monthlyPaymentWord = converterNumberToWords(args.monthlyPayment)
-
-  args = {
-    ...args,
-    amountToFinanceWord,
-    inscriptionWord,
-    monthlyPaymentWord
-  }
-
-  let text = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8" />
-    <style>
-      .title {
-        font-size: 20px;
-        text-align: right;
-      }
-      h3 {
-        font-size: 13.5px;
-        font-family: sans-serif;
-      }
-      p {
-        font-size: 13.5px;
-        margin: 0px;
-      }
-      .investment {
-        border-top: 1px solid silver;
-        width: 100%;
-        font-size: 12px;
-        padding: 0px;
-        font-family: sans-serif;
-      }
-      .investment tr {
-        height: 30px;
-        padding: 0px;
-        margin: 0px
-      }
-      .investment th {
-        text-align: left;
-        width: 25%;
-        border-right: 1px solid silver;
-        margin-left:5px;
-      }
-      .investment td {
-         margin-left:5px;
-      }
-    </style>
-    </head>
-    <body style="font-family: sans-serif;">
-    <main>
-      <img src="data:image/png;base64,aHR0cHM6Ly9jZG4ua29kZW1pYS5teC9pbWFnZXMvYnJhbmQvYmxhY2staW1hZ290aXBvLnBuZw==" >
-      <h1 class="title">Carta Oferta</h1>
-      <h3>Estimad@ {{signerName}}</h3>
-      <p>
-        <br>Ha sido un placer conocer tus inquietudes y propósitos como desarrollador web.<br><br>
-
-       En Kodemia estamos exageradamente comprometidos con el desarrollo de tu talento como desarrollador, por lo que te extendemos la presente carta oferta para el Bootcamp <strong>“Full-Stack developer JavaScript”</strong> en modalidad <strong>“Live”</strong> que iniciamos el próximo {{startBootcamp}}.<br><br>
-
-       Este bootcamp te permitirá́entender inicialmente la forma de pensar de un gran programador, a través de los fundamentos de programación y la resolución de algoritmos, dándote el entendimiento claro de la estructura de programación para adoptar cualquier lenguaje en el futuro. Así como consolidarte en el mundo del desarrollo Web creando una aplicación que combina tus nuevas habilidades de Front-end y Back-end con patrones de diseño, todo lo anterior consolidado en el bootcamp.<br><br>
-
-       Luego de conocer tus expectativas, nos gustaría trabajar contigo durante este bootcamp y por ello, te presentamos el programa con el siguiente <strong>esquema de financiamiento</strong> , Quedando de la siguiente manera: <br><br>
-      </p>
-      <h3 style="font-size:14px;">INVERSIÓN REGULAR CON IVA:</h3>
-      <table class="investment">
-        <tr style=" background-color: silver">
-          <th > MONTO A FINANCIAR:</th>
-          <td>$ {{amountToFinance}}.00 {{amountToFinanceWord}}</td>
-        </tr>
-        <tr >
-          <th> INSCRIPCIÓN:</th>
-          <td>$ {{inscription}}.00 {{inscriptionWord}}</td>
-        </tr>
-        <tr style=" background-color: silver">
-          <th> ESQUEMA DE PAGO:</th>
-          <td>{{paymentScheme}}</td>
-        </tr>
-        <tr >
-          <th> PAGOS TOTALES:</th>
-          <td> {{totalPayments}}</td>
-        </tr>
-        <tr style=" background-color:silver;">
-          <th> MONTO MENSUAL:</th>
-          <td>$ {{monthlyPayment}}.00 {{monthlyPaymentWord}} </td>
-        </tr>
-      </table>
-      <br>
-      <p>
-        *La presente carta oferta tiene vigencia limite al {{deadline}}para realizar la inscripción.
-        <br><br>
-        **Después de la aplicación con Accede se tiene un total de 10 días hábiles para concluir el proceso de financiamiento.
-        <br><br>
-         *Al aprobarse el financiamiento, Accede solicita el 5%por apertura de contrato del monto solicitado.<br><br>
-      </p>
-      <table style="border: 1px solid black; width: 100%; font-family: sans-serif;">
-        <tr stylle="width: 70%">
-          <th style="text-align:left; border-right: 1px solid black; font-size: 13.5px;">Datos Bancarios</th>
-          <th style="text-align:center; font-size: 13.5px;">Firma del alumno</th>
-        </tr>
-        <tr stylle="width: 30%">
-          <td style="border-right: 1px solid black;">
-            <p>
-              Banco BBVA <br> Titular: Kodemia SC <br> Número de cuenta: 0113364240 <br>
-              CLABE: 012180001133642404<br>
-            </p>
-          </td>
-          <td >
-            <span style="color: white; diplay:block; text-align:center;">**signature_1**/</span>
-          </td>
-        </tr>
-      </table>
-    </main>
-    <footer>
-    <br>
-    <p style="text-align: center;">Kodemia es tu casa: COW Roma, <br> Tonalá 10, Roma norte, 03800, CDMX.</p>
-    </footer>
-  </body>
-</html>
-  `
-  var template = Handlebars.compile(text)
-  var result = template(args)
-  return result
-}
-
-function converterNumberToWords (number) {
-  const ConverterClass = conversor.conversorNumerosALetras
-  const myConverter = new ConverterClass()
-  const numberWord = myConverter.convertToText(number)
-  const capitalLetter = numberWord.slice(0, 1).toUpperCase()
-  const restOfLetters = numberWord.slice(1)
-
-  return `${capitalLetter}${restOfLetters} pesos`
 }
 
 module.exports = {
   getToken,
   getUserDefaultAccountInfo,
   request,
-  worker
+  sendDocumentToBeSigned,
+  getEnvelopApiClient
 }

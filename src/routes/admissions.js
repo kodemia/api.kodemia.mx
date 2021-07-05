@@ -1,6 +1,7 @@
 const Router = require('koa-router')
+const dayjs = require('dayjs')
 
-const docuSign = require('../lib/docusign')
+const offer = require('../usecases/offer')
 
 const router = new Router({
   prefix: '/admissions'
@@ -11,26 +12,33 @@ router.post('/offer', async ctx => {
   {
     "signerEmail": "rose@kodemia.mx",
     "signerName": "Rose Tech",
-    "offerLetter": {
-    "deadline": "02/07/2021",
-    "amountToFinance":"60000",
-    "inscription": 3000,
-    "paymentScheme":"Accede",
-    "totalPayments": 12,
-    "monthlyPayment": 2500
-    }
+    "offer": {
+      "deadline": "02/07/2021",
+      "amountToFinance":"60000",
+      "inscription": 3000,
+      "paymentScheme":"Accede",
+      "totalPayments": 12,
+      "monthlyPayment": 2500,
+      "startBootcampDate": "02/07/2021"
+    },
   }
 */
-  let { signerEmail, signerName, offerLetter } = ctx.request.body
-  offerLetter = {
+  let {
+    signerEmail,
     signerName,
-    ...offerLetter,
-    startBootcamp: '06/07/2021'
+    offer: offerData = offer.defaultOfferData
+  } = ctx.request.body
+
+  offerData = {
+    deadline: dayjs().add(1, 'week').format('DD/MM/YYYY'),
+    signerName,
+    ...offerData
   }
-  let response = await docuSign.worker(signerEmail, signerName, offerLetter)
+
+  let response = await offer.send(signerEmail, signerName, offerData)
 
   ctx.resolve({
-    message: 'success',
+    message: `Offer sent to ${signerEmail}`,
     payload: {
       envelopeId: response
     }
