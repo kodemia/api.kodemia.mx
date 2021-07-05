@@ -82,7 +82,6 @@ async function request (url = '', config = {}) {
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
   const baseUrl = `${accountInfo.base_uri}/restapi/v2.1/accounts/${accountInfo.account_id}${url}`
-  console.log('baseUrlll: ', baseUrl)
 
   const { headers: configHeaders, ...restConfig } = config
 
@@ -142,8 +141,6 @@ function makeEnvelope ({
   envelop.emailSubject = 'Kodemia | Carta oferta'
 
   let document = new docusign.Document()
-  // let doc1b65 = Buffer.from(document1(args.offerLetter)).toString('base64')
-  // let doc1b65 = Buffer.from(emails.offerEmailAsText(args.offerLetter)).toString('base64')
 
   document.documentBase64 = Buffer.from(documentString).toString('base64')
   document.name = 'Carta oferta'
