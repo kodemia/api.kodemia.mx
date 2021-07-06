@@ -6,7 +6,7 @@ const conversor = require('conversor-numero-a-letras-es-ar')
  * @param {Object} object - any object
  * removes falsy entries in an object
  */
-function removeFalsyEntries (object = {}) {
+function removeFalsyEntries(object = {}) {
   return Object.entries(object)
     .reduce((objectData, [key, value]) => {
       return !value
@@ -20,7 +20,7 @@ function removeFalsyEntries (object = {}) {
  * @param {number} number
  * @returns string representation of the number in spanish words
  */
-function convertNumberToTextInSpanish (number) {
+function convertNumberToTextInSpanish(number) {
   const ConverterClass = conversor.conversorNumerosALetras
   const myConverter = new ConverterClass()
   const numberWord = myConverter.convertToText(number)
@@ -30,7 +30,28 @@ function convertNumberToTextInSpanish (number) {
   return `${capitalLetter}${restOfLetters}`
 }
 
+/**
+ *@param {number} number
+ * format the number in the correct currency
+ *
+*/
+function formatCurrency(value) {
+  var numberToString = value.toString()
+  if (numberToString.length === 4) {
+    const thousand = numberToString.slice(0, 1)
+    const restOfValues = numberToString.slice(1)
+    return `$${thousand},${restOfValues}.00`
+  }
+  const formatter = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN'
+  })
+  return formatter.format(value)
+
+}
+
 module.exports = {
   removeFalsyEntries,
-  convertNumberToTextInSpanish
+  convertNumberToTextInSpanish,
+  formatCurrency
 }
