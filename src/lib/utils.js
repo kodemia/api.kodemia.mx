@@ -32,21 +32,17 @@ function convertNumberToTextInSpanish (number) {
 
 /**
  *@param {number} number
- * format the number in the correct currency
+ *@param {boolean} withCurrencySign
+ *@returns the number formatted as currency
  *
 */
-function formatCurrency (value) {
-  var numberToString = value.toString()
-  if (numberToString.length === 4) {
-    const thousand = numberToString.slice(0, 1)
-    const restOfValues = numberToString.slice(1)
-    return `$${thousand},${restOfValues}.00`
-  }
-  const formatter = new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN'
+function formatCurrency (number, withCurrencySign = true) {
+  const formatter = new Intl.NumberFormat('en-MX', {
+    maximumSignificantDigits: 3
   })
-  return formatter.format(value)
+  return withCurrencySign
+    ? `$ ${formatter.format(number)}`
+    : formatter.format(number)
 }
 
 module.exports = {
