@@ -56,7 +56,7 @@ const koderSchema = new Schema({
     type: Date,
     default: function () {
       return this.isTemporal
-        ? dayjs().add(1, 'month')
+        ? dayjs().add(2, 'weeks')
         : dayjs().add(100, 'year')
     }
   },
