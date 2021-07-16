@@ -20,7 +20,7 @@ async function send (applicantEmail, applicantName, offerData = defaultOfferData
     fileUrl = `.${fileUrl}`
   }
 
-  console.log('fileUrl: ', fileUrl)
+  console.log('fileUrl: ', fileUrl, process.cwd)
   const offerDocumentTemplateHTML = fs.readFileSync(fileUrl, 'utf8')
   const offerDocumentTemplate = Handlebars.compile(offerDocumentTemplateHTML)
   const offerDocumentString = offerDocumentTemplate(offerData)
