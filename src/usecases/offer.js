@@ -15,7 +15,13 @@ const defaultOfferData = {
 }
 
 async function send (applicantEmail, applicantName, offerData = defaultOfferData) {
-  const offerDocumentTemplateHTML = fs.readFileSync('./src/templates/offer.hbs', 'utf8')
+  let fileUrl = './src/templates/offer.hbs'
+  if (process.env.VERCEL) {
+    fileUrl = `.${fileUrl}`
+  }
+
+  console.log('fileUrl: ', fileUrl)
+  const offerDocumentTemplateHTML = fs.readFileSync(fileUrl, 'utf8')
   const offerDocumentTemplate = Handlebars.compile(offerDocumentTemplateHTML)
   const offerDocumentString = offerDocumentTemplate(offerData)
   return docusign.sendDocumentToBeSigned(applicantEmail, applicantName, offerDocumentString)
