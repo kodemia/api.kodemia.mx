@@ -1,12 +1,7 @@
 
-const fs = require('fs-extra')
 const Handlebars = require('../lib/handlebars')
 const docusign = require('../lib/docusign')
-
-const dirContent = fs.readdirSync('./src')
-console.log('dirContent: ', dirContent)
-const offerDocumentTemplateHTML = fs.readFileSync('./src/templates/offer.hbs', 'utf8')
-const offerDocumentTemplate = Handlebars.compile(offerDocumentTemplateHTML)
+const offerTemplate = require('../templates/offer.hbs')
 
 const defaultOfferData = {
   signerName: null,
@@ -20,6 +15,7 @@ const defaultOfferData = {
 }
 
 async function send (applicantEmail, applicantName, offerData = defaultOfferData) {
+  const offerDocumentTemplate = Handlebars.compile(offerTemplate)
   const offerDocumentString = offerDocumentTemplate(offerData)
   return docusign.sendDocumentToBeSigned(applicantEmail, applicantName, offerDocumentString)
 }
