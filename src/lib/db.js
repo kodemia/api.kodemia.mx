@@ -6,6 +6,7 @@ const DB_NAME = process.env.DB_NAME || ''
 const CONN_STRING = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@charles-mongo-cluster-ekbll.mongodb.net/${DB_NAME}?retryWrites=true`
 
 function connect () {
+  console.log('CONN_STRING: ', CONN_STRING)
   return mongoose.connect(CONN_STRING, {
     // keepAlive: true,
     useNewUrlParser: true,
