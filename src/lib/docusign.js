@@ -16,7 +16,7 @@ const {
   NODE_ENV
 } = process.env
 
-const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
+const authUrl = (VERCEL_ENV || NODE_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
