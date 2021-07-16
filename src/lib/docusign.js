@@ -4,17 +4,19 @@ const jwt = require('jsonwebtoken')
 const fetch = require('node-fetch')
 const FormData = require('form-data')
 const createError = require('http-errors')
-// const docusign = require('docusign-esign')
+const docusign = require('docusign-esign')
 
 const {
   DOCUSIGN_PRIVATE_KEY,
   VERCEL_ENV,
   DOCUSIGN_INTEGRATION_KEY,
   DOCUSIGN_USER_ID,
+  DOCUSIGN_CCEMAIL,
+  DOCUSIGN_CCNAME,
   NODE_ENV
 } = process.env
 
-const authUrl = (NODE_ENV || VERCEL_ENV) === 'production'
+const authUrl = (VERCEL_ENV || NODE_ENV) === 'production'
   ? 'account.docusign.com'
   : 'account-d.docusign.com'
 
@@ -80,7 +82,6 @@ async function request (url = '', config = {}) {
   const accountInfo = await getUserDefaultAccountInfo(token)
   url = url.startsWith('/') ? url : `/${url}`
   const baseUrl = `${accountInfo.base_uri}/restapi/v2.1/accounts/${accountInfo.account_id}${url}`
-  console.log('baseUrl: ', baseUrl)
 
   const { headers: configHeaders, ...restConfig } = config
 
@@ -100,30 +101,95 @@ async function request (url = '', config = {}) {
   }
 }
 
-// ToDo: In progress
-// async function makeEnvelope (templateId, signerEmail, signerName) {
-//   if (!templateId) throw createError(500, 'template id is required to make an envelop')
+async function getEnvelopApiClient () {
+  const token = await getToken()
+  const accountInfo = await getUserDefaultAccountInfo(token)
+  const baseUrl = `${accountInfo.base_uri}/restapi`
 
-//   const envelop = docusign.EnvelopeDefinition()
-//   envelop.templateId = templateId
+  let dsApiClient = new docusign.ApiClient()
+  dsApiClient.setBasePath(baseUrl)
+  dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + token)
 
-//   const signer = docusign.TemplateRole()
-//   signer.email = signerEmail
-//   signer.name = signerName
-//   signer.roleName = 'signer'
+  return {
+    client: new docusign.EnvelopesApi(dsApiClient),
+    accountInfo
+  }
+}
 
-//   const cc = docusign.TemplateRole()
-//   cc.email = signerEmail
-//   cc.name = signerName
-//   cc.roleName = 'cc'
+async function sendDocumentToBeSigned (signerEmail, signerName, documentString) {
+  let { client, accountInfo } = await getEnvelopApiClient()
 
-//   envelop.templateRoles = [ signer, cc ]
-//   envelop.status = 'sent'
-//   return envelop
-// }
+  // Step 1. Make the envelope request body
+  let envelopeDefinition = makeEnvelope({ signerEmail, signerName }, documentString)
+
+  // Step 2. call Envelopes::create API method
+  let results = await client.createEnvelope(accountInfo.account_id, { envelopeDefinition })
+  let envelopeId = results.envelopeId
+
+  return { envelopeId }
+}
+
+function makeEnvelope ({
+  signerEmail,
+  signerName,
+  ccEmail = DOCUSIGN_CCEMAIL,
+  ccName = DOCUSIGN_CCNAME,
+  status = 'sent'
+}, documentString) {
+  // Step 1: Create the envelope definition
+  let envelop = new docusign.EnvelopeDefinition()
+  envelop.emailSubject = 'Kodemia | Carta oferta'
+
+  let document = new docusign.Document()
+
+  document.documentBase64 = Buffer.from(documentString).toString('base64')
+  document.name = 'Carta oferta'
+  document.fileExtension = 'html'
+  document.documentId = '1'
+
+  envelop.documents = [document]
+
+  let signer = docusign.Signer.constructFromObject({
+    email: signerEmail,
+    name: signerName,
+    recipientId: '1',
+    routingOrder: '1'
+  })
+
+  let carbonCopy = new docusign.CarbonCopy()
+  carbonCopy.email = ccEmail
+  carbonCopy.name = ccName
+  carbonCopy.routingOrder = '1'
+  carbonCopy.recipientId = '2'
+
+  let signHere1 = docusign.SignHere.constructFromObject({
+    anchorString: '**signature_1**',
+    anchorYOffset: '10',
+    anchorUnits: 'pixels',
+    anchorXOffset: '70'
+  })
+
+  // Tabs are set per recipient / signer
+  let signer1Tabs = docusign.Tabs.constructFromObject({
+    signHereTabs: [signHere1]
+  })
+
+  signer.tabs = signer1Tabs
+
+  let recipients = docusign.Recipients.constructFromObject({
+    signers: [signer],
+    carbonCopies: [carbonCopy]
+  })
+  envelop.recipients = recipients
+  envelop.status = status
+
+  return envelop
+}
 
 module.exports = {
   getToken,
   getUserDefaultAccountInfo,
-  request
+  request,
+  sendDocumentToBeSigned,
+  getEnvelopApiClient
 }
