@@ -37,9 +37,7 @@ function convertNumberToTextInSpanish (number) {
  *
 */
 function formatCurrency (number, withCurrencySign = true) {
-  const formatter = new Intl.NumberFormat('en-MX', {
-    maximumSignificantDigits: 3
-  })
+  const formatter = new Intl.NumberFormat('en-MX', {})
   return withCurrencySign
     ? `$ ${formatter.format(number)}`
     : formatter.format(number)
