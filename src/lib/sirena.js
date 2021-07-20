@@ -4,11 +4,8 @@ const querystring = require('querystring')
 
 const { SIRENA_API_KEY, SIRENA_API_HOST } = process.env
 
-console.log(SIRENA_API_KEY, SIRENA_API_HOST)
-
 async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParams = {}) {
   endpoint = endpoint.startsWith('/') ? `${endpoint}?api-key=${SIRENA_API_KEY}` : `/${endpoint}?api-key=${SIRENA_API_KEY}`
-
   const queryParamsString = querystring.stringify(queryParams)
 
   const response = await fetch(
@@ -18,6 +15,7 @@ async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParam
       body: method === 'GET' ? null : JSON.stringify(body)
     }
   )
+  console.log('resp sirena', response)
   if (!response.ok) {
     const { errors } = await response.json()
     throw errors
