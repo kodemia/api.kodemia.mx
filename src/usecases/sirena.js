@@ -1,12 +1,12 @@
 
 const sirena = require('../lib/sirena')
 
-async function getProspect (email) {
+async function getProspect(email) {
   const prospect = await sirena.fetch('GET', '/prospects', null, { search: email })
   return prospect[0]
 }
 
-async function sendTemplate (email) {
+async function sendTemplate(email) {
   const prospect = await getProspect(email)
   const data = {
     'key': sirena.constants.templates.firstMessage,
