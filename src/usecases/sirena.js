@@ -1,25 +1,25 @@
 
 const sirena = require('../lib/sirena')
 
+
 async function getProspect(email) {
   const prospect = await sirena.fetch('GET', '/prospects', null, { search: email })
   return prospect[0]
 }
 
 async function sendTemplate(email) {
-  const prospectData = await getProspect(email)
-  // let { id, firstName } = prospectData
+  const prospect = await getProspect(email)
   const data = {
-    'key': '6c1c93ac-1299-467c-afaa-1606c99799f2',
+    'key': sirena.constants.templates.firstMessage,
     'parameters': {
-      'prospect.firstName': 'Naomi',
+      'prospect.firstName': prospect.firstName,
       'group.displayName': 'Kodemia',
-      'user.firstName': 'Gabs'
+      'user.firstName': sirena.constants.agent.firstName
     }
   }
-  const response = await sirena.fetch('POST', 'prospect/60ad5e96ffcb3f000877e3f3/messaging/whatsapp/notification', data)
-  console.log('send', response, prospectData)
-  // return response
+  const response = await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
+
+  return response
 }
 
 module.exports = {

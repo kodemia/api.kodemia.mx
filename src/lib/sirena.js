@@ -1,21 +1,27 @@
 
 const fetch = require('node-fetch')
 const querystring = require('querystring')
+const constants = require('../config/sirena.json')
 
 const { SIRENA_API_KEY, SIRENA_API_HOST } = process.env
 
-async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParams = {}) {
+async function sirenaFetch(method = 'GET', endpoint = '', body = {}, queryParams = {}) {
+
   endpoint = endpoint.startsWith('/') ? `${endpoint}?api-key=${SIRENA_API_KEY}` : `/${endpoint}?api-key=${SIRENA_API_KEY}`
+
   const queryParamsString = querystring.stringify(queryParams)
 
   const response = await fetch(
     `${SIRENA_API_HOST}${endpoint}&${queryParamsString}`,
     {
       method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: method === 'GET' ? null : JSON.stringify(body)
     }
   )
-  console.log('resp sirena', response)
+
   if (!response.ok) {
     const { errors } = await response.json()
     throw errors
@@ -25,5 +31,6 @@ async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParam
 }
 
 module.exports = {
+  constants,
   fetch: sirenaFetch
 }
