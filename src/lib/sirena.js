@@ -5,8 +5,8 @@ const constants = require('../config/sirena.json')
 
 const { SIRENA_API_KEY, SIRENA_API_HOST } = process.env
 
-async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParams = {}) {
-  endpoint = endpoint.startsWith('/') ? `${endpoint}` : `/${endpoint}`
+async function sirenaFetch(method = 'GET', endpoint = '', body = {}, queryParams = {}) {
+  endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
 
   const queryParamsString = querystring.stringify({
     ...queryParams,
