@@ -1,15 +1,15 @@
 const Router = require('koa-router')
-const { sendTemplate } = require('../usecases/sirena')
+const { sendFirstMessage } = require('../usecases/sirena')
 
 const router = new Router({
   prefix: '/sirena'
 })
 
-router.post('/send-message', async ctx => {
+router.post('/messages/first', async ctx => {
   const { email } = ctx.request.body
 
   if (!email) throw ctx.throw(400, 'Email is required')
-  const response = await sendTemplate(email)
+  const response = await sendFirstMessage(email)
 
   ctx.resolve({
     message: 'Message sent',
