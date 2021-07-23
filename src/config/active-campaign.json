@@ -6,13 +6,13 @@
   },
   "contacts": {
     "customFields": {
-      "source": {
-        "id": "15",
-        "title": "¿Dónde nos conociste?"
+      "knowledge": {
+        "id": "89",
+        "title": "Conocimiento previo"
       },
-      "reasonToApply": {
-        "id": "16",
-        "title": "¿Por qué quieres aplicar a Kodemia?"
+      "reasonToProgramming": {
+        "id": "93",
+        "title": "Por qué aprender a programar"
       },
       "campaignName": {
         "id": "2",
