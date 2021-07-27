@@ -3,7 +3,7 @@ const _ = require('lodash')
 
 const ac = require('../../lib/active-campaign')
 
-async function upsert(email, firstName, lastName, phone, customFields = {}) {
+async function upsert (email, firstName, lastName, phone, customFields = {}) {
   assert(email, 400, 'email is required')
   assert(firstName, 400, 'firstName is required')
   assert(lastName, 400, 'LastName is required')
@@ -21,7 +21,7 @@ async function upsert(email, firstName, lastName, phone, customFields = {}) {
   return _.get(newContactResponse, 'contact', null)
 }
 
-async function addTag(contactId, tagName) {
+async function addTag (contactId, tagName) {
   return ac.fetch('POST', '/contactTags', {
     contactTag: {
       contact: contactId,
