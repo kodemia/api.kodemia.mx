@@ -2,7 +2,7 @@ const assert = require('http-assert')
 const _ = require('lodash')
 const ac = require('../../lib/active-campaign')
 
-async function create (title, contactId, value, owner, description, pipeline) {
+async function create(title, contactId, value, owner, description, pipeline) {
   assert(contactId, 400, 'contactId is required')
   assert(title, 400, 'title is required')
 
@@ -23,13 +23,15 @@ async function create (title, contactId, value, owner, description, pipeline) {
   return _.get(dealResponse, 'deal', null)
 }
 
-async function getDealIdByContactId (contactId) {
+async function getDealIdByContactId(contactId) {
   const dealResponse = await ac.fetch('GET', '/deals', null, { contact: contactId }, null)
   return _.get(dealResponse, 'deals[0].id', null)
 }
 
-async function changeStageDeal (contactId) {
+async function changeStageDeal(contactId) {
   const dealId = await getDealIdByContactId(contactId)
+  assert(dealId, 404, 'deal id not found')
+
   const dealResponse = await ac.fetch('PUT', `/deals/${dealId}`, {
     deal: {
       stage: ac.constants.stages['primer-contacto'].id
@@ -38,7 +40,7 @@ async function changeStageDeal (contactId) {
   return _.get(dealResponse, 'deal', null)
 }
 
-async function setCustomProperty (dealId, propertyName, value) {
+async function setCustomProperty(dealId, propertyName, value) {
   const dealResponse = await ac.fetch('POST', '/dealCustomFieldData', {
     dealCustomFieldDatum: {
       dealId: dealId,
