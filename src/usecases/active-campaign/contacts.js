@@ -9,7 +9,6 @@ async function upsert (email, firstName, lastName, phone, customFields = {}) {
   assert(lastName, 400, 'LastName is required')
 
   let fieldValues = ac.utils.buildFieldValuesArrayFromObject(customFields)
-
   const contact = {
     email,
     firstName,
@@ -19,7 +18,6 @@ async function upsert (email, firstName, lastName, phone, customFields = {}) {
   }
 
   const newContactResponse = await ac.fetch('POST', '/contact/sync', { contact })
-
   return _.get(newContactResponse, 'contact', null)
 }
 

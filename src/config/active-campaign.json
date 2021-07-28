@@ -1,7 +1,9 @@
 {
   "deals": {
     "customProperties": {
-      "curso": { "id": "2" }
+      "curso": {
+        "id": "2"
+      }
     }
   },
   "contacts": {
@@ -14,9 +16,17 @@
         "id": "16",
         "title": "¿Por qué quieres aplicar a Kodemia?"
       },
+      "knowledge": {
+        "id": "89",
+        "title": "Conocimiento previo"
+      },
+      "reasonToProgramming": {
+        "id": "93",
+        "title": "Por qué aprender a programar"
+      },
       "campaignName": {
         "id": "2",
-        "title":"Campaign Name"
+        "title": "Campaign Name"
       },
       "company": {
         "id": "28",
@@ -32,7 +42,9 @@
     "skillUp": {
       "id": "1",
       "stages": {
-        "new": { "id": "1" }
+        "new": {
+          "id": "1"
+        }
       }
     },
     "bwj10_bwp1": {
@@ -40,24 +52,42 @@
     }
   },
   "users": {
-    "diana": { "id": "5" },
-    "veronica": { "id": "7" }
+    "diana": {
+      "id": "5"
+    },
+    "veronica": {
+      "id": "7"
+    }
   },
   "lists": {
     "javascript-lifetime": {
-      "ten": { "id": "14" }
+      "ten": {
+        "id": "14"
+      }
     },
     "javascript-live": {
-      "ten": { "id": "15" },
-      "eleven": { "id": "31" },
-      "2021": { "id": "38" }
+      "ten": {
+        "id": "15"
+      },
+      "eleven": {
+        "id": "31"
+      },
+      "2021": {
+        "id": "38"
+      }
     },
     "python-lifetime": {
-      "one": { "id": "16" }
+      "one": {
+        "id": "16"
+      }
     },
     "python-live": {
-      "one": { "id": "17" },
-      "2021": { "id": "37" }
+      "one": {
+        "id": "17"
+      },
+      "2021": {
+        "id": "37"
+      }
     },
     "empresas": {
       "id": "42"
@@ -69,6 +99,8 @@
     }
   },
   "tags": {
-    "website": { "id": "62" }
+    "website": {
+      "id": "62"
+    }
   }
 }
