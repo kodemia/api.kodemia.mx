@@ -24,6 +24,12 @@ async function create (title, contactId, value, owner, description, pipeline) {
   return _.get(dealResponse, 'deal', null)
 }
 
+async function getDealIdByContactId (contactId) {
+  const dealResponse = await ac.fetch('GET', '/deals', null, { contact: contactId }, null)
+  console.log(dealResponse)
+  return _.get(dealResponse, 'deals[0].id', null)
+}
+
 async function setCustomProperty (dealId, propertyName, value) {
   const dealResponse = await ac.fetch('POST', '/dealCustomFieldData', {
     dealCustomFieldDatum: {
@@ -38,5 +44,6 @@ async function setCustomProperty (dealId, propertyName, value) {
 
 module.exports = {
   create,
-  setCustomProperty
+  setCustomProperty,
+  getDealIdByContactId
 }
