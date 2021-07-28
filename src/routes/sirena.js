@@ -14,7 +14,7 @@ router.post('/messages/first', async ctx => {
   const response = await sendFirstMessage(email)
 
   if (response) {
-    await ac.deals.changeStageDeal(id)
+    await ac.deals.updateDealStage(id)
   }
 
   ctx.resolve({
