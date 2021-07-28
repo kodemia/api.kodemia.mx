@@ -63,6 +63,11 @@
       "id": "42"
     }
   },
+  "stages": {
+    "primer-contacto":{
+      "id":"121"
+    }
+  },
   "tags": {
     "website": { "id": "62" }
   }
