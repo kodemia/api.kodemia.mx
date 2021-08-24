@@ -12,8 +12,8 @@ router.post('/', async ctx => {
     firstName,
     lastName,
     phone,
-    course,
-    customFields = { source: '', reasonToApply: '', campaignName: '' },
+    course = 'javascript-live',
+    customFields = { source: '', reasonToApply: '', campaignName: '', knowledge: '', reasonToProgramming: '' },
     tags = ['website']
   } = ctx.request.body
 

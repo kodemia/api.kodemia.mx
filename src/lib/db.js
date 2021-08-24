@@ -7,7 +7,7 @@ const CONN_STRING = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@charles-mongo-clust
 
 function connect () {
   return mongoose.connect(CONN_STRING, {
-    keepAlive: true,
+    // keepAlive: true,
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
