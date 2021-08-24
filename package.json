@@ -33,6 +33,8 @@
   },
   "homepage": "https://github.com/devCharles/kodemiAPI#readme",
   "dependencies": {
+    "@sentry/node": "^6.1.0",
+    "@sentry/tracing": "^6.1.0",
     "bcrypt": "^5.0.0",
     "colors": "^1.4.0",
     "conversor-numero-a-letras-es-ar": "^1.0.3",
