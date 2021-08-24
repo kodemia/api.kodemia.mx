@@ -35,10 +35,12 @@ async function main () {
   })
 
   const kodersData = koders.map(oneKoder => {
-    const [password] = _.get(oneKoder, 'email', '').trim().split('@')
+    const email = _.get(oneKoder, 'email', '').toLowerCase().trim()
+    const [password] = email.split('@')
     const phone = _.get(oneKoder, 'phone', '').replace(/\s/g, '')
     return {
       ...oneKoder,
+      email,
       password,
       phone,
       generation: {
