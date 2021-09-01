@@ -16,9 +16,7 @@ async function sendFirstMessage (email) {
   const data = {
     'key': sirena.constants.templates.firstMessage.id,
     'parameters': {
-      'prospect.firstName': prospect.firstName,
-      'group.displayName': sirena.constants.account.name,
-      'user.firstName': sirena.constants.agent.firstName
+      'prospect.firstName': prospect.firstName
     }
   }
   const response = await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
