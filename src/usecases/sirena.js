@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const _ = require('lodash')
 const sirena = require('../lib/sirena')
 
-async function getProspect(email) {
+async function getProspect (email) {
   const prospect = await sirena.fetch('GET', '/prospects', null, { search: email })
   const prospectData = _.head(prospect)
 
@@ -11,12 +11,12 @@ async function getProspect(email) {
   return prospectData
 }
 
-async function sendFirstMessage(email) {
+async function sendFirstMessage (email) {
   const prospect = await getProspect(email)
   const data = {
     'key': sirena.constants.templates.firstMessage.id,
     'parameters': {
-      'prospect.firstName': prospect.firstName,
+      'prospect.firstName': prospect.firstName
     }
   }
   const response = await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
