@@ -11,15 +11,12 @@ router.post('/messages/first', async ctx => {
 
   if (!id) throw ctx.throw(400, 'contact id is required')
   if (!email) throw ctx.throw(400, 'Email is required')
-  const response = await sendFirstMessage(email)
 
-  if (response) {
-    await ac.deals.updateDealStage(id)
-  }
+  await sendFirstMessage(email)
+  await ac.deals.updateDealStage(id)
 
   ctx.resolve({
-    message: 'Message sent and change deal to stage',
-    payload: response
+    message: 'Message sent and deal stage updated'
   })
 })
 
