@@ -19,9 +19,7 @@ async function sendFirstMessage (email) {
       'prospect.firstName': prospect.firstName
     }
   }
-  const response = await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
-
-  return response
+  await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 
 const fetch = require('node-fetch')
 const querystring = require('querystring')
+const createError = require('http-errors')
 const constants = require('../config/sirena.json')
 
 const { SIRENA_API_KEY, SIRENA_API_HOST } = process.env
@@ -25,8 +26,9 @@ async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParam
   )
 
   if (response.status >= 400) {
-    const { message } = await response.json()
-    throw message
+    const { message = 'no message' } = await response.json()
+
+    throw createError(response.status, message)
   }
 
   return response.json()
