@@ -33,9 +33,12 @@ async function acFetch (
     }
   )
 
-  if (!response.ok) {
+  if (!response.ok && response.json) {
     const { errors } = await response.json()
     throw errors
+  } else if (!response.ok) {
+    console.error('AC FETCH FAILED!', response)
+    throw new Error(`AC Fetch failed - [${method}] ${endpoint}`)
   }
 
   return response.json()
