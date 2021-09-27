@@ -3,6 +3,7 @@ const _ = require('lodash')
 const assert = require('http-assert')
 const fetch = require('node-fetch')
 const querystring = require('querystring')
+const Sentry = require('@sentry/node')
 
 const constants = require('../config/active-campaign.json')
 
@@ -37,8 +38,14 @@ async function acFetch (
     const { errors } = await response.json()
     throw errors
   } else if (!response.ok) {
-    console.error('AC FETCH FAILED!', response)
-    throw new Error(`AC Fetch failed - [${method}] ${endpoint}`)
+    Sentry.captureException(new Error('[AC] Fetch failed'), {
+      extra: {
+        method,
+        endpoint,
+        response
+      }
+    })
+    throw new Error(`[AC] Fetch failed - [${method}] ${endpoint}`)
   }
 
   return response.json()

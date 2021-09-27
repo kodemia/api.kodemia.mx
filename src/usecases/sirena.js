@@ -6,7 +6,7 @@ async function getProspect (email) {
   const prospect = await sirena.fetch('GET', '/prospects', null, { search: email })
   const prospectData = _.head(prospect)
 
-  if (!prospectData) throw createError(404, 'Prospect not found')
+  if (!prospectData) throw createError(404, '[Sirena] Prospect not found')
 
   return prospectData
 }
@@ -19,7 +19,14 @@ async function sendFirstMessage (email) {
       'prospect.firstName': prospect.firstName
     }
   }
-  await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
+  try {
+    await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
+  } catch (error) {
+    if (error.status === 403 && error.message.includes('WITHOUT_PHONE')) {
+      throw createError(412, '[Sirena] Invalid phone or not a WhatsApp account')
+    }
+    throw createError(error.status, `[Sirena] ${error.message}`)
+  }
 }
 
 module.exports = {
