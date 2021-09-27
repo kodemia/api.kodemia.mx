@@ -29,9 +29,14 @@ async function sirenaFetch (method = 'GET', endpoint = '', body = {}, queryParam
   if (response.status >= 400) {
     const { message = 'no message' } = await response.json()
 
-    const error = createError(response.status, message)
-    Sentry.captureException(error, { extra: response })
-    throw error
+    Sentry.captureException(new Error(`[Sirena] fetch failed`), {
+      extra: {
+        method,
+        endpoint,
+        response
+      }
+    })
+    throw createError(response.status, message)
   }
 
   return response.json()

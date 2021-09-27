@@ -39,7 +39,11 @@ async function acFetch (
     throw errors
   } else if (!response.ok) {
     Sentry.captureException(new Error('[AC] Fetch failed'), {
-      extra: { response }
+      extra: {
+        method,
+        endpoint,
+        response
+      }
     })
     throw new Error(`[AC] Fetch failed - [${method}] ${endpoint}`)
   }
