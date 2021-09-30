@@ -35,6 +35,10 @@
       "position": {
         "id": "30",
         "title": "Puesto o Posicion"
+      },
+      "cvUrl":{
+        "id": "96",
+        "title": "CV"
       }
     }
   },
@@ -91,6 +95,9 @@
     },
     "empresas": {
       "id": "42"
+    },
+    "temporaryBackbase": {
+      "id": "18"
     }
   },
   "stages": {
@@ -101,6 +108,9 @@
   "tags": {
     "website": {
       "id": "62"
+    },
+    "landing":{
+      "id": "107"
     }
   }
 }

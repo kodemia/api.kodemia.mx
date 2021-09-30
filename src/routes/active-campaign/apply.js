@@ -35,4 +35,35 @@ router.post('/', async ctx => {
   })
 })
 
+router.post('/mobile', async ctx => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    course = 'temporaryBackbase', // ToDo: poner la lista correcta
+    customFields = {
+      source: '', cvUrl: ''
+    },
+    tags = ['landing']
+  } = ctx.request.body
+
+  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
+
+  const dealInList = await ac.lists.subscribeContact(contact.id, course)
+
+  const addTagsPromises = tags
+    .map((tagName) => ac.contacts.addTag(contact.id, tagName))
+
+  await Promise.all(addTagsPromises)
+
+  ctx.resolve({
+    message: 'Contact created and associated',
+    payload: {
+      contact,
+      dealInList
+    }
+
+  })
+})
 module.exports = router
