@@ -41,12 +41,15 @@ router.post('/mobile', async ctx => {
     lastName,
     email,
     phone,
-    course = 'temporaryBackbase', // ToDo: poner la lista correcta
+    course = 'javascript-live',
     customFields = {
-      source: '', cvUrl: ''
+      source: '', cvUrl: '', reasonToApplyForScholarship: ''
     },
     tags = ['landing']
   } = ctx.request.body
+
+  if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
+  if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 

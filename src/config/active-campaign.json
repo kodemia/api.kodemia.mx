@@ -39,6 +39,10 @@
       "cvUrl":{
         "id": "96",
         "title": "CV"
+      },
+      "reasonToApplyForScholarship":{
+        "id": "98",
+        "title": "¿Por qué quieres aplicar a la beca?"
       }
     }
   },
@@ -95,9 +99,6 @@
     },
     "empresas": {
       "id": "42"
-    },
-    "temporaryBackbase": {
-      "id": "18"
     }
   },
   "stages": {
