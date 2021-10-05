@@ -35,6 +35,18 @@
       "position": {
         "id": "30",
         "title": "Puesto o Posicion"
+      },
+      "cvUrl":{
+        "id": "96",
+        "title": "CV"
+      },
+      "reasonToApplyForScholarship":{
+        "id": "98",
+        "title": "¿Por qué quieres aplicar a la beca?"
+      },
+      "program":{
+        "id": "99",
+        "title": "Programa"
       }
     }
   },
@@ -91,6 +103,16 @@
     },
     "empresas": {
       "id": "42"
+    },
+    "iOS":{
+      "2021": {
+        "id": "38"
+      }
+    },
+    "android":{
+      "2021": {
+        "id": "38"
+      }
     }
   },
   "stages": {
@@ -101,6 +123,9 @@
   "tags": {
     "website": {
       "id": "62"
+    },
+    "mobile":{
+      "id": "108"
     }
   }
 }

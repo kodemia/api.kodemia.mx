@@ -35,4 +35,42 @@ router.post('/', async ctx => {
   })
 })
 
+router.post('/mobile', async ctx => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    course,
+    customFields = {
+      source: '',
+      cvUrl: '',
+      reasonToApplyForScholarship: ''
+    },
+    tags = ['mobile']
+  } = ctx.request.body
+
+  if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
+  if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
+  if (!course) throw ctx.throw(400, 'Course is required')
+
+  customFields.program = course
+
+  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
+
+  const dealInList = await ac.lists.subscribeContact(contact.id, course)
+
+  const addTagsPromises = tags
+    .map((tagName) => ac.contacts.addTag(contact.id, tagName))
+
+  await Promise.all(addTagsPromises)
+
+  ctx.resolve({
+    message: 'Contact created and associated',
+    payload: {
+      contact,
+      dealInList
+    }
+  })
+})
 module.exports = router
