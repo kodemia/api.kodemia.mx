@@ -41,16 +41,20 @@ router.post('/mobile', async ctx => {
     lastName,
     email,
     phone,
-    course = 'iOS',
+    course,
     customFields = {
-      source: '', cvUrl: '', reasonToApplyForScholarship: ''
+      source: '',
+      cvUrl: '',
+      reasonToApplyForScholarship: ''
     },
     tags = ['mobile']
   } = ctx.request.body
 
   if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
   if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
-  if (!course) throw ctx.throw(400, 'Courses is required')
+  if (!course) throw ctx.throw(400, 'Course is required')
+
+  customFields.program = course
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
