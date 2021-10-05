@@ -41,15 +41,16 @@ router.post('/mobile', async ctx => {
     lastName,
     email,
     phone,
-    course = 'javascript-live',
+    course = 'iOS',
     customFields = {
       source: '', cvUrl: '', reasonToApplyForScholarship: ''
     },
-    tags = ['landing']
+    tags = ['mobile']
   } = ctx.request.body
 
   if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
   if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
+  if (!course) throw ctx.throw(400, 'Courses is required')
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
@@ -66,7 +67,6 @@ router.post('/mobile', async ctx => {
       contact,
       dealInList
     }
-
   })
 })
 module.exports = router
