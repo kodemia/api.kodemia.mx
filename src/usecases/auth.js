@@ -27,7 +27,8 @@ async function signIn (email, password) {
   const token = await jwt.sign({
     id: user._id,
     isMentor: !!mentor,
-    isExpired
+    isExpired,
+    isTemporal: koder.isTemporal
   })
 
   return token
