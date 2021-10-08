@@ -2,25 +2,32 @@ const createError = require('http-errors')
 const _ = require('lodash')
 const sirena = require('../lib/sirena')
 
-async function getProspect (email) {
-  const prospect = await sirena.fetch('GET', '/prospects', null, { search: email })
-  const prospectData = _.head(prospect)
-
-  if (!prospectData) throw createError(404, '[Sirena] Prospect not found')
-
-  return prospectData
+async function createLead (firstName, lastName, phone, email, source, campaignName) {
+  const utmSource = campaignName || source
+  const phones = [phone]
+  const emails = [email]
+  const body = {
+    firstName,
+    lastName,
+    phones,
+    emails,
+    utmSource
+  }
+  const lead = await sirena.fetch('POST', '/lead/retail', body)
+  const leadId = _.get(lead, 'id')
+  return leadId
 }
 
-async function sendFirstMessage (email) {
-  const prospect = await getProspect(email)
+async function sendFirstMessage (firstName, lastName, phone, email, source, campaignName) {
+  const prospectId = await createLead(firstName, lastName, phone, email, source, campaignName)
   const data = {
     'key': sirena.constants.templates.firstMessage.id,
     'parameters': {
-      'prospect.firstName': prospect.firstName
+      'prospect.firstName': firstName
     }
   }
   try {
-    await sirena.fetch('POST', `prospect/${prospect.id}/messaging/whatsapp/notification`, data)
+    await sirena.fetch('POST', `prospect/${prospectId}/messaging/whatsapp/notification`, data)
   } catch (error) {
     if (error.status === 403 && error.message.includes('WITHOUT_PHONE')) {
       throw createError(412, '[Sirena] Invalid phone or not a WhatsApp account')

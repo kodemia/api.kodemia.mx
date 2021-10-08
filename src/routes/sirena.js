@@ -7,12 +7,23 @@ const router = new Router({
 })
 
 router.post('/messages/first', async ctx => {
-  const { email, id } = ctx.request.body
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    id,
+    source,
+    campaignName } = ctx.request.body
 
-  if (!id) throw ctx.throw(400, 'contact id is required')
+  if (!firstName) throw ctx.throw(400, 'FirstName is required')
+  if (!lastName) throw ctx.throw(400, 'LastName is required')
+  if (!id) throw ctx.throw(400, 'Contact id is required')
   if (!email) throw ctx.throw(400, 'Email is required')
+  if (!phone) throw ctx.throw(400, 'Phone is required')
+  if (!source && !campaignName) throw ctx.throw(400, 'Source or campaignName is required')
 
-  await sendFirstMessage(email)
+  await sendFirstMessage(firstName, lastName, phone, email, source, campaignName)
   await ac.deals.updateDealStage(id)
 
   ctx.resolve({
