@@ -28,7 +28,7 @@ async function signIn (email, password) {
     id: user._id,
     isMentor: !!mentor,
     isExpired,
-    isTemporal: koder.isTemporal
+    isTemporal: !!user.isTemporal
   })
 
   return token
