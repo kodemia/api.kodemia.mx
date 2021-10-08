@@ -14,12 +14,13 @@ async function createLead (firstName, lastName, phone, email, source, campaignNa
     utmSource
   }
   const lead = await sirena.fetch('POST', '/lead/retail', body)
-  const leadId = _.get(lead, 'id')
-  return leadId
+
+  return lead
 }
 
 async function sendFirstMessage (firstName, lastName, phone, email, source, campaignName) {
-  const prospectId = await createLead(firstName, lastName, phone, email, source, campaignName)
+  const leadData = await createLead(firstName, lastName, phone, email, source, campaignName)
+  const prospectId = _.get(leadData, 'id')
   const data = {
     'key': sirena.constants.templates.firstMessage.id,
     'parameters': {
