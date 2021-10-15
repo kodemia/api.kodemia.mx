@@ -35,7 +35,7 @@ router.post('/offer', async ctx => {
     ...offerData
   }
 
-  let response = await offer.send(signerEmail, signerName, offerData)
+  const response = await offer.send(signerEmail, signerName, offerData)
 
   ctx.resolve({
     message: `Offer sent to ${signerEmail}`,

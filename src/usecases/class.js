@@ -11,10 +11,10 @@ const Generation = require('../models/generation').model
 const vimeo = require('../lib/vimeo')
 
 // i.e bootcamp-javascript-10
-const newVideoNameFormat = new RegExp('^bootcamp-[a-z]+-[0-9]{2,}', 'i')
+const newVideoNameFormat = /^bootcamp-[a-z]+-[0-9]{2,}/i
 
 // i.e javascript-10-06/06/2020
-const renamedVideoFormat = new RegExp('^[a-z]+-[0-2]{2,}-[0-9]{2}/[0-9]{2}/[0-9]{4}', 'i')
+const renamedVideoFormat = /^[a-z]+-[0-2]{2,}-[0-9]{2}\/[0-9]{2}\/[0-9]{4}/i
 
 async function getVimeoVideoData (vimeoId) {
   const videoData = await vimeo.fetch('GET', `/videos/${vimeoId}`)
@@ -56,7 +56,7 @@ async function create (classData) {
   })
   if (!generationFound) createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
-  var mentorFound = null
+  let mentorFound = null
   if (!_.isEmpty(mentor)) {
     mentorFound = await Mentor.findOne({ ...mentor })
     if (!mentorFound) createError(409, `Mentor [${mentor}] does not exists`)
@@ -154,7 +154,7 @@ function createNewNamesForClassesToUpload (classesToUpload = []) {
     let newName = null
 
     if (needNewName) {
-      const [ , program, generation ] = classVideo.name.split('-')
+      const [, program, generation] = classVideo.name.split('-')
       const classDate = dayjs(classVideo.createdDate).format('DD/MM/YYYY')
       newName = `${program}-${generation}-${classDate}`
       return {
@@ -166,7 +166,7 @@ function createNewNamesForClassesToUpload (classesToUpload = []) {
       }
     }
 
-    const [ program, generation ] = classVideo.name.split('-')
+    const [program, generation] = classVideo.name.split('-')
 
     return {
       ...classVideo,
@@ -192,7 +192,7 @@ async function getAllVimeoFolders () {
 }
 
 async function createNeededVimeoFolders (foldersNeededNames = []) {
-  let allFolders = await getAllVimeoFolders()
+  const allFolders = await getAllVimeoFolders()
   foldersNeededNames = _.uniq(foldersNeededNames)
 
   const foldersToCreate = foldersNeededNames.filter(folderNeededName => {
@@ -232,7 +232,7 @@ async function uploadLastClasses () {
   await Promise.all(classesToSavePromises)
 
   // move class videos to its correspondent folder
-  let foldersNeededNames = classesToUploadWithNewNames
+  const foldersNeededNames = classesToUploadWithNewNames
     .map(classVideo => `${classVideo.program}-${classVideo.generation}`)
 
   await createNeededVimeoFolders(foldersNeededNames)

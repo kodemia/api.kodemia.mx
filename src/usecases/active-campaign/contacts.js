@@ -8,7 +8,7 @@ async function upsert (email, firstName, lastName, phone, customFields = {}) {
   assert(firstName, 400, 'firstName is required')
   assert(lastName, 400, 'LastName is required')
 
-  let fieldValues = ac.utils.buildFieldValuesArrayFromObject(customFields)
+  const fieldValues = ac.utils.buildFieldValuesArrayFromObject(customFields)
   const contact = {
     email,
     firstName,

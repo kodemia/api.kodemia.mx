@@ -11,7 +11,7 @@ async function connectDatabase (ctx, next) {
     console.log('- DB Connection Closed -')
   } catch (error) {
     Sentry.captureException(error)
-    console.error('- DB Connection Error -')
+    console.error('- DB Connection Error -', error)
     ctx.throw(500, 'DB connection error')
   }
 }

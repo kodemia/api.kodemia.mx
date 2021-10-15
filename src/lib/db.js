@@ -8,11 +8,7 @@ const CONN_STRING = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@charles-mongo-clust
 async function connect () {
   if (mongoose.connection.readyState !== mongoose.STATES.connected) {
     return mongoose
-      .connect(CONN_STRING, {
-        useNewUrlParser: true,
-        useCreateIndex: true,
-        useUnifiedTopology: true
-      })
+      .connect(CONN_STRING)
       .then(() => {
         console.log('- DB Connection Open -')
         return mongoose
