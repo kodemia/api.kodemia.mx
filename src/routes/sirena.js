@@ -21,7 +21,6 @@ router.post('/messages/first', async ctx => {
   if (!id) throw ctx.throw(400, 'contact id is required')
   if (!email) throw ctx.throw(400, 'email is required')
   if (!phone) throw ctx.throw(400, 'phone is required')
-  if (!source && !campaignName) throw ctx.throw(400, 'source or campaignName is required')
 
   await sendFirstMessage(firstName, lastName, phone, email, source, campaignName)
   await ac.deals.updateDealStage(id)

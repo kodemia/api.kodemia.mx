@@ -3,7 +3,7 @@ const _ = require('lodash')
 const sirena = require('../lib/sirena')
 
 async function createLead (firstName, lastName, phone, email, source, campaignName) {
-  const utmSource = campaignName || source
+  const utmSource = campaignName || source || 'Desconocido'
   const phones = [phone]
   const emails = [email]
   const body = {
