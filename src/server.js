@@ -5,6 +5,7 @@ const koaBody = require('koa-body')
 const Sentry = require('@sentry/node')
 const sentry = require('./lib/sentry')
 
+const connectDatabase = require('./middlewares/db')
 const logger = require('./middlewares/logger')
 const errorHandler = require('./middlewares/errorHandler')
 const resolver = require('./middlewares/ctx/resolver')
@@ -28,6 +29,7 @@ routers = { rootRouter, ...routers }
 app.use(cors())
 app.use(koaBody({ multipart: true, formidable: { maxFileSize: 10000000 } }))
 
+app.use(connectDatabase)
 app.use(errorHandler)
 app.use(resolver)
 app.use(logger)
