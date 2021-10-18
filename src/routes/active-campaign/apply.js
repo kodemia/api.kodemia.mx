@@ -13,9 +13,17 @@ router.post('/', async ctx => {
     lastName,
     phone,
     course = 'javascript-live',
-    customFields = { source: '', reasonToApply: '', campaignName: '', knowledge: '', reasonToProgramming: '' },
+    customFields = {
+      source: '',
+      reasonToApply: '',
+      campaignName: 'website',
+      knowledge: '',
+      reasonToProgramming: ''
+    },
     tags = ['website']
   } = ctx.request.body
+
+  if (!customFields.campaignName) throw ctx.throw(400, 'campaign name is required')
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
@@ -45,19 +53,20 @@ router.post('/mobile', async ctx => {
     customFields = {
       source: '',
       cvUrl: '',
-      reasonToApplyForScholarship: ''
+      reasonToApplyForScholarship: '',
+      campaignName: 'website mobile'
     },
     tags = ['mobile']
   } = ctx.request.body
 
   if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
   if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
+  if (!customFields.campaignName) throw ctx.throw(400, 'campaign name is required')
   if (!course) throw ctx.throw(400, 'Course is required')
 
   customFields.program = course
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
-
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
 
   const addTagsPromises = tags

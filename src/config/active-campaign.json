@@ -47,6 +47,10 @@
       "program":{
         "id": "99",
         "title": "Programa"
+      },
+      "campaignName":{
+        "id": "2",
+        "title": "Campaign Name"
       }
     }
   },
