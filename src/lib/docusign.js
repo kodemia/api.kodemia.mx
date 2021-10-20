@@ -59,7 +59,7 @@ async function getUserDefaultAccountInfo (token) {
   }
 
   const userUriResponse = await fetch(`https://${authUrl}/oauth/userinfo`, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` }
   })
 
   try {
@@ -88,7 +88,7 @@ async function request (url = '', config = {}) {
   const response = await fetch(baseUrl, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       ...configHeaders
     },
     ...restConfig
@@ -106,7 +106,7 @@ async function getEnvelopApiClient () {
   const accountInfo = await getUserDefaultAccountInfo(token)
   const baseUrl = `${accountInfo.base_uri}/restapi`
 
-  let dsApiClient = new docusign.ApiClient()
+  const dsApiClient = new docusign.ApiClient()
   dsApiClient.setBasePath(baseUrl)
   dsApiClient.addDefaultHeader('Authorization', 'Bearer ' + token)
 
@@ -117,14 +117,14 @@ async function getEnvelopApiClient () {
 }
 
 async function sendDocumentToBeSigned (signerEmail, signerName, documentString) {
-  let { client, accountInfo } = await getEnvelopApiClient()
+  const { client, accountInfo } = await getEnvelopApiClient()
 
   // Step 1. Make the envelope request body
-  let envelopeDefinition = makeEnvelope({ signerEmail, signerName }, documentString)
+  const envelopeDefinition = makeEnvelope({ signerEmail, signerName }, documentString)
 
   // Step 2. call Envelopes::create API method
-  let results = await client.createEnvelope(accountInfo.account_id, { envelopeDefinition })
-  let envelopeId = results.envelopeId
+  const results = await client.createEnvelope(accountInfo.account_id, { envelopeDefinition })
+  const envelopeId = results.envelopeId
 
   return { envelopeId }
 }
@@ -137,10 +137,10 @@ function makeEnvelope ({
   status = 'sent'
 }, documentString) {
   // Step 1: Create the envelope definition
-  let envelop = new docusign.EnvelopeDefinition()
+  const envelop = new docusign.EnvelopeDefinition()
   envelop.emailSubject = 'Kodemia | Carta oferta'
 
-  let document = new docusign.Document()
+  const document = new docusign.Document()
 
   document.documentBase64 = Buffer.from(documentString).toString('base64')
   document.name = 'Carta oferta'
@@ -149,20 +149,20 @@ function makeEnvelope ({
 
   envelop.documents = [document]
 
-  let signer = docusign.Signer.constructFromObject({
+  const signer = docusign.Signer.constructFromObject({
     email: signerEmail,
     name: signerName,
     recipientId: '1',
     routingOrder: '1'
   })
 
-  let carbonCopy = new docusign.CarbonCopy()
+  const carbonCopy = new docusign.CarbonCopy()
   carbonCopy.email = ccEmail
   carbonCopy.name = ccName
   carbonCopy.routingOrder = '1'
   carbonCopy.recipientId = '2'
 
-  let signHere1 = docusign.SignHere.constructFromObject({
+  const signHere1 = docusign.SignHere.constructFromObject({
     anchorString: '**signature_1**',
     anchorYOffset: '10',
     anchorUnits: 'pixels',
@@ -170,13 +170,13 @@ function makeEnvelope ({
   })
 
   // Tabs are set per recipient / signer
-  let signer1Tabs = docusign.Tabs.constructFromObject({
+  const signer1Tabs = docusign.Tabs.constructFromObject({
     signHereTabs: [signHere1]
   })
 
   signer.tabs = signer1Tabs
 
-  let recipients = docusign.Recipients.constructFromObject({
+  const recipients = docusign.Recipients.constructFromObject({
     signers: [signer],
     carbonCopies: [carbonCopy]
   })

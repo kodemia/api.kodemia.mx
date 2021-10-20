@@ -22,8 +22,8 @@ async function sendFirstMessage (firstName, lastName, phone, email, source, camp
   const leadData = await createLead(firstName, lastName, phone, email, source, campaignName)
   const prospectId = _.get(leadData, 'id')
   const data = {
-    'key': sirena.constants.templates.firstMessage.id,
-    'parameters': {
+    key: sirena.constants.templates.firstMessage.id,
+    parameters: {
       'prospect.firstName': firstName
     }
   }

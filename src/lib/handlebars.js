@@ -3,10 +3,10 @@ const Handlebars = require('handlebars')
 const utils = require('./utils')
 
 Handlebars.registerHelper({
-  'numberToTextInPesos': value => {
+  numberToTextInPesos: value => {
     return utils.convertNumberToTextInSpanish(value)
   },
-  'formatCurrency': value => {
+  formatCurrency: value => {
     return utils.formatCurrency(value)
   }
 })

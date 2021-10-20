@@ -14,7 +14,8 @@ router.post('/messages/first', async ctx => {
     phone,
     id,
     source,
-    campaignName } = ctx.request.body
+    campaignName
+  } = ctx.request.body
 
   if (!firstName) throw ctx.throw(400, 'firstName is required')
   if (!lastName) throw ctx.throw(400, 'lastName is required')
