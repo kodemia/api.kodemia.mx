@@ -23,8 +23,6 @@ router.post('/', async ctx => {
     tags = ['website']
   } = ctx.request.body
 
-  if (!customFields.campaignName) throw ctx.throw(400, 'campaign name is required')
-
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
   const dealInList = await ac.lists.subscribeContact(contact.id, course)
