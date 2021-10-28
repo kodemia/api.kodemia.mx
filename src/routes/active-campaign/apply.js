@@ -58,7 +58,6 @@ router.post('/mobile', async ctx => {
   } = ctx.request.body
 
   if (!customFields.reasonToApplyForScholarship) throw ctx.throw(400, 'Reasion to apply for a scholarship is required')
-  if (!customFields.cvUrl) throw ctx.throw(400, 'CV is required')
   if (!customFields.campaignName) throw ctx.throw(400, 'campaign name is required')
   if (!course) throw ctx.throw(400, 'Course is required')
 
