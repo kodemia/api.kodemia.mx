@@ -47,10 +47,6 @@
       "program":{
         "id": "99",
         "title": "Programa"
-      },
-      "campaignName":{
-        "id": "2",
-        "title": "Campaign Name"
       }
     }
   },
@@ -65,6 +61,9 @@
     },
     "bwj10_bwp1": {
       "id": "14"
+    },
+    "backbase": {
+      "id": "20"
     }
   },
   "users": {
@@ -108,14 +107,14 @@
     "empresas": {
       "id": "42"
     },
-    "iOS":{
+    "ios":{
       "2021": {
-        "id": "38"
+        "id": "53"
       }
     },
     "android":{
       "2021": {
-        "id": "38"
+        "id": "54"
       }
     }
   },
