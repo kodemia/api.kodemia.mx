@@ -31,7 +31,7 @@ const koderSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: () => !!this.generation,
     trim: true,
     select: false
   },
@@ -42,7 +42,8 @@ const koderSchema = new Schema({
   },
   generation: {
     type: Types.ObjectId,
-    ref: 'Generation'
+    ref: 'Generation',
+    default: null
   },
   isActive: {
     type: Boolean,
