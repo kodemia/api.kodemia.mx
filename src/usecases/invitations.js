@@ -6,30 +6,75 @@ const Invitation = require('../models/invitation').model
 const Koder = require('../models/koder').model
 const Event = require('../models/event').model
 
-async function create (eventId, koderId) {
-  const koderExists = await Koder.findById(koderId)
-  const eventExists = await Event.findById(eventId)
-
-  if (!koderExists) createError(404, `Koder ${koderId} does not exists`)
-  if (!eventExists) createError(404, `Event ${eventId} does not exists`)
-
-  return Invitation.create({
-    koder: koderId,
-    event: eventId
-  })
+function getAll () {
+  return Invitation.find()
+    .populate('koder')
+    .populate('event')
 }
 
-function deleteById (id) {
-  return Invitation.findByIdAndDelete(id)
+function getById (id) {
+  return Invitation.findById(id)
+    .populate('koder')
+    .populate('event')
+}
+
+function getByEventId (eventId) {
+  return Invitation.find({ event: eventId })
+    .populate('koder')
+    .populate('event')
+}
+
+function getByKoderId (koderId) {
+  return Invitation.find({ koder: koderId })
+    .populate('koder')
+    .populate('event')
+}
+
+async function create (eventId, koderId) {
+  const koder = await Koder.findById(koderId)
+  const event = await Event.findById(eventId)
+
+  if (!koder) createError(404, `Koder ${koderId} does not exists`)
+  if (!event) createError(404, `Event ${eventId} does not exists`)
+
+  const invitation = await Invitation.findOne({
+    koder: koder._id,
+    event: event._id
+  }).populate('koder')
+    .populate('event')
+
+  if (invitation) return invitation
+
+  return Invitation.create({ koder: koder._id, event: event._id })
+}
+
+async function deleteById (id) {
+  const invitation = await Invitation.findById(id)
+
+  if (!invitation) throw createError(404, 'Invitation not found')
+
+  return invitation.delete()
 }
 
 async function checkIn (id) {
+  const invitation = await Invitation.findById(id)
+    .populate('koder')
+    .populate('event')
+
+  if (!invitation) throw createError(404, 'Invitation not found')
+
+  if (invitation.checkIn) return invitation
+
   return Invitation.findByIdAndUpdate(id, {
     checkIn: dayjs()
   })
 }
 
 module.exports = {
+  getAll,
+  getById,
+  getByEventId,
+  getByKoderId,
   create,
   deleteById,
   checkIn

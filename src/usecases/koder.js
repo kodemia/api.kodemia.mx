@@ -10,9 +10,17 @@ async function create ({ firstName = '', lastName = '', email = '', password = '
   const hash = await bcrypt.hash(password)
 
   const generationFound = await Generation.findOne({ type: generation.type, number: generation.number })
-  if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
+  if (generation.type && !generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
-  const newKoder = new Koder({ firstName, lastName, email, password: hash, phone, generation: generationFound._id, isTemporal })
+  const newKoder = new Koder({
+    firstName,
+    lastName,
+    email,
+    password: hash,
+    phone,
+    generation: generationFound ? generationFound._id : null,
+    isTemporal
+  })
 
   const error = newKoder.validateSync()
   if (error) throw error
