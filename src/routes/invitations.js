@@ -17,7 +17,7 @@ router.get('/', auth(), async ctx => {
   })
 })
 
-router.get('/:id', auth(), async ctx => {
+router.get('/:id', async ctx => {
   const { id } = ctx.params
   const invitations = await Invitation.getById(id)
 
@@ -37,7 +37,7 @@ router.post('/:id/check-in', auth(), async ctx => {
   })
 })
 
-router.get('/events/:eventId', auth(), async ctx => {
+router.get('/events/:eventId', async ctx => {
   const { eventId } = ctx.params
   const invitations = await Invitation.getByEventId(eventId)
 
