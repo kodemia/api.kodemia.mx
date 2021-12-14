@@ -18,6 +18,8 @@ const generationSchema = new Schema({
     enum: [
       'javascript',
       'python',
+      'ios',
+      'android',
       'demo'
     ]
   },
