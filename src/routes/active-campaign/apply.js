@@ -20,8 +20,14 @@ router.post('/', async ctx => {
       knowledge: '',
       reasonToProgramming: ''
     },
-    tags = ['website']
+    promoCode
   } = ctx.request.body
+  const VALID_PROMOCODE = process.env.VALID_PROMOCODE
+
+  let tags = ['website']
+
+  if (promoCode && promoCode !== VALID_PROMOCODE) throw ctx.throw(400, 'Invalid promo code')
+  if (promoCode === VALID_PROMOCODE) tags = [...tags, 'clara']
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
