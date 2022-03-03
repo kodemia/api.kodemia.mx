@@ -22,12 +22,17 @@ router.post('/', async ctx => {
     },
     promoCode
   } = ctx.request.body
-  const VALID_PROMOCODE = process.env.VALID_PROMOCODE
+  const PROMOCODES_LIST = JSON.parse(process.env.PROMOCODES_LIST)
 
   let tags = ['website']
 
-  if (promoCode && promoCode !== VALID_PROMOCODE) throw ctx.throw(400, 'Invalid promo code')
-  if (promoCode === VALID_PROMOCODE) tags = [...tags, 'clara']
+  if (promoCode) {
+    const [, newTag] = Object.assign(PROMOCODES_LIST.find(([code]) => code === promoCode) || [])
+
+    if (!newTag) throw ctx.throw(400, 'Invalid promo code')
+
+    tags = [...tags, newTag]
+  }
 
   const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
 
