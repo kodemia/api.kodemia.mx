@@ -14,7 +14,7 @@ const vimeo = require('../lib/vimeo')
 const newVideoNameFormat = /^bootcamp-[a-z]+-[0-9]{2,}/i
 
 // i.e javascript-10-06/06/2020
-const renamedVideoFormat = /^[a-z]+-[0-2]{2,}-[0-9]{2}\/[0-9]{2}\/[0-9]{4}/i
+const renamedVideoFormat = /^[a-z]+-[0-9]{2,}-[0-9]{2}\/[0-9]{2}\/[0-9]{4}/i
 
 async function getVimeoVideoData (vimeoId) {
   const videoData = await vimeo.fetch('GET', `/videos/${vimeoId}`)
@@ -54,12 +54,12 @@ async function create (classData) {
     type: generation.type,
     number: generation.number
   })
-  if (!generationFound) createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
+  if (!generationFound) throw createError(409, `Generation [${generation.type}, ${generation.number}] does not exists`)
 
   let mentorFound = null
   if (!_.isEmpty(mentor)) {
     mentorFound = await Mentor.findOne({ ...mentor })
-    if (!mentorFound) createError(409, `Mentor [${mentor}] does not exists`)
+    if (!mentorFound) throw createError(409, `Mentor [${mentor}] does not exists`)
   }
 
   const existingClass = await Class.findOne({ vimeoId, generation: generationFound.id })
@@ -119,7 +119,7 @@ async function getLastClassesFromVimeo (countOfVideosToGet = 20) {
       const isNewVideo = newVideoNameFormat.test(video.name)
       const isAlreadyRenamedVideo = renamedVideoFormat.test(video.name)
       const hasContent = video.duration > 0
-      return hasContent && (isNewVideo | isAlreadyRenamedVideo)
+      return Boolean(hasContent && (isNewVideo | isAlreadyRenamedVideo))
     })
     .map(video => {
       return {

@@ -9,7 +9,8 @@
     "hook:precommit": "npm run standard",
     "tools:bulk:classes": "node tools/classes/upload-class-bulk.js",
     "tools:bulk:koders": "node tools/koders/bulk-load.js",
-    "tools:classes:last": "node tools/classes/upload-last.js"
+    "tools:classes:last": "node tools/classes/upload-last.js",
+    "tools:classes:last:secondary": "node tools/classes/upload-last-secondary.js"
   },
   "husky": {
     "hooks": {
