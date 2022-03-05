@@ -4,6 +4,8 @@ require('colors')
 
 const isEmpty = require('lodash/isEmpty')
 
+process.env.VIMEO_TOKEN = process.env.VIMEO_TOKEN_SECONDARY
+
 const db = require('../../src/lib/db')
 const klass = require('../../src/usecases/class')
 
