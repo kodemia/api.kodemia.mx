@@ -8,7 +8,7 @@ const db = require('../../src/lib/db')
 const klass = require('../../src/usecases/class')
 
 async function main () {
-  console.info('➤ SECONDARY VIMEO UPLOAD LAST'.bgBlue.white)
+  console.info('➤ PRIMARY VIMEO UPLOAD LAST'.bgBlue.white)
   console.info('➤ Connecting DB'.blue)
   await db.connect()
 
