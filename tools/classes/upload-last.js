@@ -2,13 +2,28 @@
 require('dotenv').config()
 require('colors')
 
+const { program } = require('commander')
 const isEmpty = require('lodash/isEmpty')
+
+program
+  .option('--use-secondary', 'To use secondary vimeo account')
+
+program.parse(process.argv)
+
+const options = program.opts()
+if (options.useSecondary) {
+  process.env.VIMEO_TOKEN = process.env.VIMEO_TOKEN_SECONDARY
+}
 
 const db = require('../../src/lib/db')
 const klass = require('../../src/usecases/class')
 
 async function main () {
-  console.info('➤ PRIMARY VIMEO UPLOAD LAST'.bgBlue.white)
+  const vimeoAccountName = options.useSecondary ? 'SECONDARY' : 'PRIMARY'
+
+  console.log('ENV VIMEO (' + vimeoAccountName + '): ', process.env.VIMEO_TOKEN)
+
+  console.info(`➤ ${vimeoAccountName} VIMEO UPLOAD LAST`.bgBlue.white)
   console.info('➤ Connecting DB'.blue)
   await db.connect()
 
@@ -26,8 +41,8 @@ main()
       process.exit(0)
     }
 
-    classes.map(klass => console.table(klass))
     console.log(`✔ ${classes.length} Classes uploaded`.green)
+    classes.map(klass => console.table(klass))
     process.exit(0)
   })
   .catch(error => {

@@ -39,6 +39,7 @@
     "@sentry/tracing": "^6.1.0",
     "bcrypt": "^5.0.0",
     "colors": "^1.4.0",
+    "commander": "^9.0.0",
     "conversor-numero-a-letras-es-ar": "^1.0.3",
     "csv-parse": "^4.6.5",
     "dayjs": "^1.9.1",
