@@ -9,26 +9,21 @@ on:
 jobs:
   upload-classes:
     runs-on: ubuntu-latest
-    environment: Production
   
-    strategy:
-      matrix:
-        node-version: [ 14.x ]
+    # strategy:
+    #   matrix:
+    #     node-version: [ 14.x ]
       
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Upload
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - env:
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_USER: ${{ secrets.DB_USER }}
-      VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
-      VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
-    - run: npm ci
-    - run: npm run tools:classes:last
-    - run: npm run tools:classes:last -- --use-secondary
+      - name: Upload
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run tools:classes:last
+      - run: npm run tools:classes:last -- --use-secondary
+      - env:
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USER: ${{ secrets.DB_USER }}
+          VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+          VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
