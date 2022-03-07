@@ -5,9 +5,16 @@ on:
   schedule:
     # Runs every day at 23:00 pm
     - cron: '0 23 * * *'
+env:
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_USER: ${{ secrets.DB_USER }}
+  VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+  VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
 
 jobs:
   upload-classes:
+    name: Upload classes
     runs-on: ubuntu-latest
   
     # strategy:
@@ -15,15 +22,20 @@ jobs:
     #     node-version: [ 14.x ]
       
     steps:
-      - name: Upload
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run tools:classes:last
-      - run: npm run tools:classes:last -- --use-secondary
-      - env:
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_USER: ${{ secrets.DB_USER }}
-          VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
-          VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+
+      - name: 'Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+
+      - name: 'Install'
+        run: npm ci
+
+      - name: 'Upload classes from primary vimeo account'
+        run: npm run tools:classes:last
+        
+      - name: 'Upload classes from secondary vimeo account'  
+        run: npm run tools:classes:last -- --use-secondary
+
