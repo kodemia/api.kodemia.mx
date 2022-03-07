@@ -8,6 +8,7 @@ on:
 jobs:
   upload-classes:
     runs-on: ubuntu-latest
+    environment: production
   
     strategy:
       matrix:
