@@ -1,6 +1,7 @@
 
 name: Class upload scheduled job
-on:
+on: 
+  workflow_dispatch:
   schedule:
     # Runs every day at 23:00 pm
     - cron: '0 23 * * *'
