@@ -3,7 +3,7 @@ name: Class upload scheduled job
 on:
   schedule:
     # Runs every day at 23:00 pm
-    - cron: '0 23 * *'
+    - cron: '0 23 * * *'
 
 jobs:
   upload-classes:
