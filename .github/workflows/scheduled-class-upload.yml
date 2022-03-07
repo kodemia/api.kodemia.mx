@@ -23,6 +23,12 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+    - env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_USER: ${{ secrets.DB_USER }}
+      VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+      VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
     - run: npm ci
     - run: npm run tools:classes:last
     - run: npm run tools:classes:last -- --use-secondary
