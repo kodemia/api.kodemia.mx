@@ -21,8 +21,6 @@ const klass = require('../../src/usecases/class')
 async function main () {
   const vimeoAccountName = options.useSecondary ? 'SECONDARY' : 'PRIMARY'
 
-  console.log('ENV VIMEO (' + vimeoAccountName + '): ', process.env.VIMEO_TOKEN)
-
   console.info(`➤ ${vimeoAccountName} VIMEO UPLOAD LAST`.bgBlue.white)
   console.info('➤ Connecting DB'.blue)
   await db.connect()

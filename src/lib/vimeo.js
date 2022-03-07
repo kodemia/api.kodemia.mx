@@ -12,8 +12,6 @@ async function vimeoFetch (
   queryParams = {}) {
   endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const queryParamsString = querystring.stringify(queryParams)
-
-  console.log('VIMEO_TOKEN lib: ', VIMEO_TOKEN)
   const headers = {
     Authorization: `Bearer ${VIMEO_TOKEN}`, 'Content-Type': 'application/json'
   }
