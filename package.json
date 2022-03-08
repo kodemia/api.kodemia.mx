@@ -42,7 +42,7 @@
     "conversor-numero-a-letras-es-ar": "^1.0.3",
     "csv-parse": "^4.6.5",
     "dayjs": "^1.9.1",
-    "docusign-esign": "^5.10.0",
+    "docusign-esign": "^5.15.0",
     "dotenv": "^7.0.0",
     "form-data": "^4.0.0",
     "fs-extra": "^8.1.0",
@@ -60,7 +60,7 @@
     "minimist": "^1.2.5",
     "moment-timezone": "^0.5.27",
     "mongoose": "^6.0.11",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
