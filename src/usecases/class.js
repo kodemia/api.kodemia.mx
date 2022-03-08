@@ -11,10 +11,10 @@ const Generation = require('../models/generation').model
 const vimeo = require('../lib/vimeo')
 
 // i.e bootcamp-javascript-10
-const newVideoNameFormat = /^bootcamp-[a-z]+-[0-9]{2,}/i
+const newVideoNameFormat = /^bootcamp-[a-z]+-[0-9]{1,3}$/i
 
 // i.e javascript-10-06/06/2020
-const renamedVideoFormat = /^[a-z]+-[0-9]{2,}-[0-9]{2}\/[0-9]{2}\/[0-9]{4}/i
+const renamedVideoFormat = /^[a-z]+-[0-9]{1,2}-[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$/i
 
 async function getVimeoVideoData (vimeoId) {
   const videoData = await vimeo.fetch('GET', `/videos/${vimeoId}`)
