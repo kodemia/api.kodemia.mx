@@ -1,0 +1,37 @@
+
+name: Upload classes action
+on: 
+  workflow_dispatch:
+  schedule:
+    # Runs every day at 23:15 pm CST (5:15 am UTC)
+    - cron: '15 5 * * *'
+env:
+  DB_NAME: ${{ secrets.DB_NAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_USER: ${{ secrets.DB_USER }}
+  VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
+  VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
+
+jobs:
+  upload-classes:
+    name: Upload classes
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+
+      - name: 'Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.x'
+          cache: 'npm'
+
+      - name: 'Install'
+        run: npm install
+
+      - name: 'Upload classes from primary vimeo account'
+        run: npm run tools:classes:last
+        
+      - name: 'Upload classes from secondary vimeo account'  
+        run: npm run tools:classes:last -- --use-secondary
+
