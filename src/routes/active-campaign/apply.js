@@ -26,7 +26,7 @@ router.post('/', async ctx => {
   let tags = ['website']
 
   if (promoCode) {
-    if (promoCode !== 'CLARA20') throw ctx.throw(400, 'Invalid promo code')
+    if (promoCode !== 'CLARAKOD') throw ctx.throw(400, 'Invalid promo code')
     tags = [...tags, 'clara']
   }
 
