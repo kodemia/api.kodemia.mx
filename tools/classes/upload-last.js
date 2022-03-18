@@ -7,6 +7,7 @@ const isEmpty = require('lodash/isEmpty')
 
 program
   .option('--use-secondary', 'To use secondary vimeo account')
+  .option('--slack-output', 'To format output to be send to slack')
 
 program.parse(process.argv)
 
@@ -18,28 +19,41 @@ if (options.useSecondary) {
 const db = require('../../src/lib/db')
 const klass = require('../../src/usecases/class')
 
+function logger () {
+  if (options.slackOutput) return () => {}
+  return console.log
+}
+
 async function main () {
   const vimeoAccountName = options.useSecondary ? 'SECONDARY' : 'PRIMARY'
-  console.info(`➤ ${vimeoAccountName} VIMEO UPLOAD LAST`.bgBlue.white)
-  console.info('➤ Connecting DB'.blue)
-  await db.connect()
+  logger(`➤ ${vimeoAccountName} VIMEO UPLOAD LAST`.bgBlue.white)
+  logger('➤ Connecting DB'.blue)
+  await db.connect({ logSuccess: !options.slackOutput })
 
-  console.info('➤ Connecting to Vimeo'.blue)
+  logger('➤ Connecting to Vimeo'.blue)
   const uploadedClasses = await klass.uploadLastClasses()
-  console.info('✔ Classes upload finished'.green)
+  logger('✔ Classes upload finished'.green)
 
-  return uploadedClasses
+  // TODO: build return the json for the slack block
+  return {
+    uploadedClasses,
+    vimeoAccountName
+  }
 }
 
 main()
   .then(classes => {
     if (isEmpty(classes)) {
-      console.info('🤷 No classes to upload'.yellow)
+      logger('🤷 No classes to upload'.yellow)
       process.exit(0)
     }
 
-    console.log(`✔ ${classes.length} Classes uploaded`.green)
-    classes.map(klass => console.table(klass))
+    logger(`✔ ${classes.length} Classes uploaded`.green)
+
+    if (!options.slackOutput) {
+      classes.map(klass => console.table(klass))
+    }
+
     process.exit(0)
   })
   .catch(error => {
