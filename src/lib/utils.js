@@ -4,12 +4,12 @@ const conversor = require('conversor-numero-a-letras-es-ar')
 /**
  *
  * @param {Object} object - any object
- * removes falsy entries in an object
+ * removes falsy entries in an object, except if the value is an actual boolean
  */
 function removeFalsyEntries (object = {}) {
   return Object.entries(object)
     .reduce((objectData, [key, value]) => {
-      return !value
+      return (!value && (typeof value !== 'boolean'))
         ? objectData
         : { ...objectData, [key]: value }
     }, {})
