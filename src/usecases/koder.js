@@ -96,9 +96,9 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
-function deactivateByEmail (email) {
+function deactivateByEmail(email, deactivationReason) {
   return Koder
-    .findOneAndUpdate({ email }, { isActive: false, password: 'disabled' })
+    .findOneAndUpdate({ email }, { isActive: false, deactivationReason,  password: 'disabled' })
     .select('email')
 }
 
