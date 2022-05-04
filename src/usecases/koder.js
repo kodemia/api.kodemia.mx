@@ -88,7 +88,7 @@ async function sigIn (email = '', password = '') {
     if (koder.deactivationReason === 'unpaid') {
       throw createError(402, 'Koder has not paid')
     }
-    throw createError(401, `Koder is not active because ${koder.deactivationReason}`)
+    throw createError(401, `Koder is not active ${koder.deactivationReason ? `because ${koder.deactivationReason}` : ''}`)
   }
 
   const { password: hash } = koder
@@ -106,7 +106,7 @@ function getById (id, selectOptions = '') {
 
 function deactivateByEmail (email, deactivationReason) {
   return Koder
-    .findOneAndUpdate({ email }, { isActive: false, deactivationReason, password: 'disabled' })
+    .findOneAndUpdate({ email }, { isActive: false, deactivationReason})
     .select('email')
 }
 
