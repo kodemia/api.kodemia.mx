@@ -90,7 +90,7 @@ async function sigIn (email = '', password = '') {
     if (koder.deactivationReason === 'unpaid') {
       throw createError(402, 'Koder has not paid')
     }
-    throw createError(401, 'Koder is not active')
+    throw createError(401, `Koder is not active because ${koder.deactivationReason}`)
   }
 
   const { password: hash } = koder
