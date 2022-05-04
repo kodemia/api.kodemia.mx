@@ -82,11 +82,21 @@ async function getAll (selectOptions = '') {
 async function sigIn (email = '', password = '') {
   const koder = await Koder.findOne({ email }).select('+password')
 
+  console.log('koder',koder)
+
   if (!koder) throw createError(401, 'Invalid data')
+
+  if(!koder.isActive || koder.deactivationReason) {
+    if (koder.deactivationReason === 'unpaid'){
+      throw createError(402, 'Koder has not paid')
+    }
+    throw createError(401, 'Koder is not active')
+  }
 
   const { password: hash } = koder
   const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
+
   return koder
 }
 
@@ -96,9 +106,9 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
-function deactivateByEmail(email, deactivationReason) {
+function deactivateByEmail (email, deactivationReason) {
   return Koder
-    .findOneAndUpdate({ email }, { isActive: false, deactivationReason,  password: 'disabled' })
+    .findOneAndUpdate({ email }, { isActive: false, deactivationReason, password: 'disabled' })
     .select('email')
 }
 
