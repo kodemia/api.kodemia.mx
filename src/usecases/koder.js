@@ -106,7 +106,7 @@ function getById (id, selectOptions = '') {
 
 function deactivateByEmail (email, deactivationReason) {
   return Koder
-    .findOneAndUpdate({ email }, { isActive: false, deactivationReason})
+    .findOneAndUpdate({ email }, { isActive: false, deactivationReason })
     .select('email')
 }
 
