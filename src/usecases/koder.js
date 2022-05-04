@@ -82,12 +82,12 @@ async function getAll (selectOptions = '') {
 async function sigIn (email = '', password = '') {
   const koder = await Koder.findOne({ email }).select('+password')
 
-  console.log('koder',koder)
+  console.log('koder', koder)
 
   if (!koder) throw createError(401, 'Invalid data')
 
-  if(!koder.isActive || koder.deactivationReason) {
-    if (koder.deactivationReason === 'unpaid'){
+  if (!koder.isActive || koder.deactivationReason) {
+    if (koder.deactivationReason === 'unpaid') {
       throw createError(402, 'Koder has not paid')
     }
     throw createError(401, 'Koder is not active')
