@@ -90,7 +90,7 @@ async function sigIn (email = '', password = '') {
     }
     throw createError(401, `Koder is not active because ${koder.deactivationReason}`)
   }
-  
+
   const { password: hash } = koder
   const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
