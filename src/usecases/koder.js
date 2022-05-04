@@ -82,8 +82,6 @@ async function getAll (selectOptions = '') {
 async function sigIn (email = '', password = '') {
   const koder = await Koder.findOne({ email }).select('+password')
 
-  console.log('koder', koder)
-
   if (!koder) throw createError(401, 'Invalid data')
 
   if (!koder.isActive || koder.deactivationReason) {
@@ -92,7 +90,7 @@ async function sigIn (email = '', password = '') {
     }
     throw createError(401, `Koder is not active because ${koder.deactivationReason}`)
   }
-
+  
   const { password: hash } = koder
   const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
