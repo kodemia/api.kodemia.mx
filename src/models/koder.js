@@ -64,7 +64,7 @@ const koderSchema = new Schema({
   deactivationReason: {
     type: String,
     enum: ['unpaid', 'unresponsive', 'expelled', 'desertion'],
-    required: () => this.isActive === false,
+    required: () => this.isActive === false
   },
   createdAt: {
     type: Date,
