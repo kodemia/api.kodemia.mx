@@ -78,7 +78,7 @@ router.patch('/deactivate', auth(), async ctx => {
 
   if (!kodersIsArray) throw ctx.throw(400, 'koders should be an array')
 
-  const deactivatePromises = koders.map(({ email, deactivationReason }) => koder.deactivateByEmail(email, deactivationReason))
+  const deactivatePromises = koders.map((koderData) => koder.deactivateByEmail(koderData.email, koderData.deactivationReason))
 
   const deactivatedKoders = await Promise.all(deactivatePromises)
 
