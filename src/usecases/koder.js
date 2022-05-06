@@ -84,9 +84,17 @@ async function sigIn (email = '', password = '') {
 
   if (!koder) throw createError(401, 'Invalid data')
 
+  if (!koder.isActive || koder.deactivationReason) {
+    if (koder.deactivationReason === 'unpaid') {
+      throw createError(402, 'Koder has not paid')
+    }
+    throw createError(401, `Koder is not active ${koder.deactivationReason ? `because ${koder.deactivationReason}` : ''}`)
+  }
+
   const { password: hash } = koder
   const isValidPassword = await bcrypt.compare(password, hash)
   if (!isValidPassword) throw createError(401, 'Invalid data')
+
   return koder
 }
 
@@ -96,9 +104,9 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
-function deactivateByEmail (email) {
+function deactivateByEmail (email, deactivationReason) {
   return Koder
-    .findOneAndUpdate({ email }, { isActive: false, password: 'disabled' })
+    .findOneAndUpdate({ email }, { isActive: false, deactivationReason })
     .select('email')
 }
 

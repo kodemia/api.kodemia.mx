@@ -61,6 +61,11 @@ const koderSchema = new Schema({
         : dayjs().add(100, 'year')
     }
   },
+  deactivationReason: {
+    type: String,
+    enum: ['unpaid', 'unresponsive', 'expelled', 'desertion'],
+    required: () => this.isActive === false
+  },
   createdAt: {
     type: Date,
     default: Date.now
