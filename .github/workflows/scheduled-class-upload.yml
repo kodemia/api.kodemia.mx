@@ -9,6 +9,7 @@ env:
   DB_NAME: ${{ secrets.DB_NAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   DB_USER: ${{ secrets.DB_USER }}
+  DB_HOST: ${{ secrets.DB_HOST }}
   VIMEO_TOKEN: ${{ secrets.VIMEO_TOKEN }}
   VIMEO_TOKEN_SECONDARY: ${{ secrets.VIMEO_TOKEN_SECONDARY }}
 
