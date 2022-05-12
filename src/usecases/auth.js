@@ -1,4 +1,3 @@
-
 const createError = require('http-errors')
 
 const Koder = require('../models/koder').model
@@ -23,6 +22,16 @@ async function signIn (email, password) {
     : false
 
   if (isExpired) throw createError(412, 'Account expired')
+
+  const isActive = typeof user.isActive === 'boolean'
+    ? user.isActive
+    : true
+
+  if (!isActive && user.deactivationReason === 'unpaid') {
+    throw createError(402, 'Unpaid')
+  } else if (!isActive) {
+    throw createError(401, `Deactivated: [${user.deactivationReason || 'unknown'}]`)
+  }
 
   const token = await jwt.sign({
     id: user._id,
