@@ -30,6 +30,27 @@ async function subscribeContact (contactId, course) {
   return _.get(subscribeDealResponse, 'contactList', null)
 }
 
+async function subscribeContactByListName (contactId, listName) {
+  assert(contactId, 400, 'contactId is required')
+  assert(listName, 400, 'listName is required')
+
+  listName = listName.toLowerCase()
+
+  const list = _.get(ac, `constants.lists.${listName}.id`)
+
+  assert(list, 404, `List [${listName}] not found`)
+
+  const subscribeResponse = await ac.fetch('POST', '/contactLists', {
+    contactList: {
+      list,
+      contact: contactId,
+      status: '1'
+    }
+  })
+
+  return _.get(subscribeResponse, 'contactList', null)
+}
+
 async function subscribeCompanyContact (contactId) {
   assert(contactId, 400, 'contactId is required')
 
@@ -48,5 +69,6 @@ async function subscribeCompanyContact (contactId) {
 
 module.exports = {
   subscribeContact,
-  subscribeCompanyContact
+  subscribeCompanyContact,
+  subscribeContactByListName
 }

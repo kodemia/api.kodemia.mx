@@ -47,6 +47,10 @@
       "program":{
         "id": "99",
         "title": "Programa"
+      },
+      "programmingExperience": {
+        "id": "104",
+        "title": "Experiencia en programación"
       }
     }
   },
@@ -116,6 +120,9 @@
       "2021": {
         "id": "54"
       }
+    },
+    "high-value": {
+      "id": "69"
     }
   },
   "stages": {
@@ -132,6 +139,9 @@
     },
     "clara":{
       "id": "1152"
+    },
+    "highValue": {
+      "id": "1182"
     }
   }
 }
