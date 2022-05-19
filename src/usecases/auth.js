@@ -30,7 +30,7 @@ async function signIn (email, password) {
   if (!isActive && user.deactivationReason === 'unpaid') {
     throw createError(402, 'Unpaid')
   } else if (!isActive) {
-    throw createError(401, `Deactivated: [${user.deactivationReason || 'unknown'}]`)
+    throw createError(403, `Deactivated: [${user.deactivationReason || 'unknown'}]`)
   }
 
   const token = await jwt.sign({

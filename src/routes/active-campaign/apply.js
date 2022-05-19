@@ -86,4 +86,39 @@ router.post('/mobile', async ctx => {
     }
   })
 })
+
+router.post('/high-value', async ctx => {
+  const {
+    email,
+    firstName,
+    lastName,
+    phone = null,
+    course = 'javascript-live',
+    customFields = {
+      source: 'website',
+      campaignName: 'highValue',
+      programmingExperience: ''
+    }
+  } = ctx.request.body
+  const tags = ['website', 'highValue']
+
+  customFields.program = course
+
+  const contact = await ac.contacts.upsert(email, firstName, lastName, phone, customFields)
+  const contactInList = await ac.lists.subscribeContactByListName(contact.id, 'high-value')
+
+  const addTagsPromises = tags
+    .map((tagName) => ac.contacts.addTag(contact.id, tagName))
+
+  await Promise.all(addTagsPromises)
+
+  ctx.resolve({
+    message: 'Contact created and associated',
+    payload: {
+      contact,
+      contactInList
+    }
+  })
+})
+
 module.exports = router
