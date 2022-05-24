@@ -5,7 +5,10 @@
   },
   "templates": {
     "firstMessage": {
-      "id":"70adba23-ada7-4c3e-a82a-91feffb8cd29"
+      "id": "70adba23-ada7-4c3e-a82a-91feffb8cd29"
+    },
+    "firstMessageHighValue": {
+      "id": "59f16cd0-6cf6-4081-8848-66b9b0f53169"
     }
   },
   "account": {
