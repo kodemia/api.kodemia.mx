@@ -37,6 +37,27 @@ async function sendFirstMessage (firstName, lastName, phone, email, source, camp
   }
 }
 
+async function sendFirstMessageHighValue (firstName, lastName, phone, email, source, campaignName) {
+  const leadData = await createLead(firstName, lastName, phone, email, source, campaignName)
+  const prospectId = _.get(leadData, 'id')
+  const data = {
+    key: sirena.constants.templates.firstMessageHighValue.id,
+    parameters: {
+      'prospect.firstName': firstName,
+      'user.firstName': sirena.constants.agent.firstName
+    }
+  }
+  try {
+    await sirena.fetch('POST', `prospect/${prospectId}/messaging/whatsapp/notification`, data)
+  } catch (error) {
+    if (error.status === 403 && error.message.includes('WITHOUT_PHONE')) {
+      throw createError(412, '[Sirena] Invalid phone or not a WhatsApp account')
+    }
+    throw createError(error.status, `[Sirena] ${error.message}`)
+  }
+}
+
 module.exports = {
-  sendFirstMessage
+  sendFirstMessage,
+  sendFirstMessageHighValue
 }
