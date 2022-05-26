@@ -43,8 +43,7 @@ async function sendFirstMessageHighValue (firstName, lastName, phone, email, sou
   const data = {
     key: sirena.constants.templates.firstMessageHighValue.id,
     parameters: {
-      'prospect.firstName': firstName,
-      'user.firstName': sirena.constants.agent.firstName
+      'prospect.firstName': firstName
     }
   }
   try {
