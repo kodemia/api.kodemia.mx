@@ -11,6 +11,7 @@ const db = require('../../src/lib/db')
 
 const generation = require('../../src/usecases/generation')
 const koder = require('../../src/usecases/koder')
+const dayjs = require('dayjs')
 
 async function main () {
   const {
@@ -46,7 +47,10 @@ async function main () {
       generation: {
         number: generationNumber,
         type: generationType
-      }
+      },
+      isActive: true,
+      isTemporal: false,
+      expirationDate: dayjs().add(100, 'years')
     }
   })
 
