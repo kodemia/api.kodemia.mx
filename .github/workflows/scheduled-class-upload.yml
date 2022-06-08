@@ -41,7 +41,7 @@ jobs:
           channel-id: 'C01GKL43JRY' ##team-tech-updates
           slack-message: ':alert: Upload classes ${{ job.status }}'
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: Slack Notification
         id: slack
@@ -51,7 +51,7 @@ jobs:
           channel-id: 'C01GKL43JRY' ##team-tech-updates
           slack-message: 'Successful upload classes :rocket:'
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: 'Upload classes from secondary vimeo account'  
         run: npm run tools:classes:last -- --use-secondary
