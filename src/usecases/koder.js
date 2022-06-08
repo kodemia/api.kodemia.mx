@@ -104,13 +104,19 @@ function getById (id, selectOptions = '') {
     .populate('generation')
 }
 
-function deactivateByEmail (email, deactivationReason) {
+async function deactivateByEmail (email, deactivationReason) {
+  const koder = await Koder.findOne({email})
+  if (!koder) throw createError(404, `Koder not found ${email}`)
+
   return Koder
     .findOneAndUpdate({ email }, { isActive: false, deactivationReason })
     .select('email')
 }
 
-function reactivateByEmail (email) {
+async function reactivateByEmail (email) {
+  const koder = await Koder.findOne({email})
+  if (!koder) throw createError(404, `Koder not found ${email}`)
+
   return Koder
     .findOneAndUpdate({ email }, { isActive: true, deactivationReason: null })
     .select('email')
