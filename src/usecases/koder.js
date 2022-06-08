@@ -110,6 +110,12 @@ function deactivateByEmail (email, deactivationReason) {
     .select('email')
 }
 
+function reactivateByEmail (email) {
+  return Koder
+    .findOneAndUpdate({ email }, { isActive: true, deactivationReason: null })
+    .select('email')
+}
+
 module.exports = {
   create,
   upsertMany,
@@ -117,5 +123,6 @@ module.exports = {
   sigIn,
   resetPassword,
   getById,
-  deactivateByEmail
+  deactivateByEmail,
+  reactivateByEmail
 }
