@@ -74,9 +74,7 @@ router.patch('/deactivate', auth(), async ctx => {
 
   if (!koders) throw ctx.throw(400, 'koders is required')
 
-  const kodersIsArray = Array.isArray(koders)
-
-  if (!kodersIsArray) throw ctx.throw(400, 'koders should be an array')
+  if (!Array.isArray(koders)) throw ctx.throw(400, 'koders should be an array')
 
   const deactivatePromises = koders.map((koderData) => koder.deactivateByEmail(koderData.email, koderData.deactivationReason))
 
@@ -86,6 +84,25 @@ router.patch('/deactivate', auth(), async ctx => {
     message: 'Koders deactivated',
     payload: {
       koders: deactivatedKoders
+    }
+  })
+})
+
+router.patch('/reactivate', auth(), async ctx => {
+  const { koders } = ctx.request.body
+
+  if (!koders) throw ctx.throw(400, 'koders is required')
+
+  if (!Array.isArray(koders)) throw ctx.throw(400, 'koders should be an array')
+
+  const reactivatePromises = koders.map((koderData) => koder.reactivateByEmail(koderData.email))
+
+  const reactivatedKoders = await Promise.all(reactivatePromises)
+
+  ctx.resolve({
+    message: 'Koders reactivated',
+    payload: {
+      koders: reactivatedKoders
     }
   })
 })
