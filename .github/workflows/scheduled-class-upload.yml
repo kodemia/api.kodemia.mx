@@ -38,8 +38,8 @@ jobs:
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.19.0
         with: 
-          channel-id: 'C01GKL43JRY'
-          slack-message: ':boom: Upload classes ${{ job.status }}'
+          channel-id: 'C01GKL43JRY' ##team-tech-updates
+          slack-message: ':alert: Upload classes ${{ job.status }}'
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -48,7 +48,7 @@ jobs:
         if: ${{ success() }}
         uses: slackapi/slack-github-action@v1.19.0
         with: 
-          channel-id: 'C01GKL43JRY'
+          channel-id: 'C01GKL43JRY' ##team-tech-updates
           slack-message: 'Successful upload classes :rocket:'
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
