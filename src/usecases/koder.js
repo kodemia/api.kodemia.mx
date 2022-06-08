@@ -105,7 +105,7 @@ function getById (id, selectOptions = '') {
 }
 
 async function deactivateByEmail (email, deactivationReason) {
-  const koder = await Koder.findOne({email})
+  const koder = await Koder.findOne({ email })
   if (!koder) throw createError(404, `Koder not found ${email}`)
 
   return Koder
@@ -114,7 +114,7 @@ async function deactivateByEmail (email, deactivationReason) {
 }
 
 async function reactivateByEmail (email) {
-  const koder = await Koder.findOne({email})
+  const koder = await Koder.findOne({ email })
   if (!koder) throw createError(404, `Koder not found ${email}`)
 
   return Koder
