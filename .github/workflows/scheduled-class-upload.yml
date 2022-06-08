@@ -32,7 +32,27 @@ jobs:
 
       - name: 'Upload classes from primary vimeo account'
         run: npm run tools:classes:last
-        
+
+      - name: Slack Notification
+        id: slack
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@v1.19.0
+        with: 
+          channel-id: 'C01GKL43JRY'
+          slack-message: ':boom: Upload classes ${{ job.status }}'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Slack Notification
+        id: slack
+        if: ${{ success() }}
+        uses: slackapi/slack-github-action@v1.19.0
+        with: 
+          channel-id: 'C01GKL43JRY'
+          slack-message: 'Successful upload classes :rocket:'
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_BOT_TOKEN }}
+
       - name: 'Upload classes from secondary vimeo account'  
         run: npm run tools:classes:last -- --use-secondary
 
