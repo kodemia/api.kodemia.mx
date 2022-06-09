@@ -20,7 +20,8 @@ const generationSchema = new Schema({
       'python',
       'ios',
       'android',
-      'demo'
+      'demo',
+      'none'
     ]
   },
   startDate: {
