@@ -33,22 +33,22 @@ jobs:
       - name: 'Upload classes from primary vimeo account'
         run: npm run tools:classes:last
 
-      - name: Slack Notification
+      - name: Slack Notification Failure
         id: slack
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.19.0
         with: 
-          channel-id: 'C01GKL43JRY' ##team-tech-updates
-          slack-message: ':alert: Upload classes ${{ job.status }}'
+          channel-id: 'C027DB3QK1N' ##grabaciones
+          slack-message: ':alert: Oops! La carga de clases ha tenido un problema: ${{ job.status }}'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
-      - name: Slack Notification
+      - name: Slack Notification Success
         if: ${{ success() }}
         uses: slackapi/slack-github-action@v1.19.0
         with: 
-          channel-id: 'C01GKL43JRY' ##team-tech-updates
-          slack-message: 'Successful upload classes :rocket:'
+          channel-id: 'C027DB3QK1N' ##grabaciones
+          slack-message: ':rocket: Las clases de hoy han sido cargadas exitosamente'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
