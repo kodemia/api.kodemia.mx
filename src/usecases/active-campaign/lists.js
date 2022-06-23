@@ -15,7 +15,7 @@ async function subscribeContact (contactId, course) {
     ? defaultPythonList 
     : defaultJSList
 
-  const defaultListId = '38'
+  const defaultListId = ac.constants.lists['javascript-live'].default.id
 
   const list = _.get(ac, `constants.lists.${course}.${finalGeneration}.id`, defaultListId)
 
