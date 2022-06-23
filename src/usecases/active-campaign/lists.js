@@ -9,13 +9,13 @@ async function subscribeContact (contactId, course) {
 
   course = course.toLowerCase()
 
-  const currentJSGeneration = '2021'
-  const currentPythonGeneration = '2021'
+  const defaultJSList = 'default'
+  const defaultPythonList = 'default'
   const finalGeneration = course.toLowerCase().includes('python')
-    ? currentPythonGeneration
-    : currentJSGeneration
+    ? defaultPythonList 
+    : defaultJSList
 
-  const defaultListId = '38'
+  const defaultListId = ac.constants.lists['javascript-live'].default.id
 
   const list = _.get(ac, `constants.lists.${course}.${finalGeneration}.id`, defaultListId)
 
