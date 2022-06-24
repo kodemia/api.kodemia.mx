@@ -6,7 +6,6 @@ const host = process.env.AC_API_HOST
 const pipelineUnificado = '19' // Unificado
 const stageNuevo = '114' // Nuevo
 
-
 function ACFetchOptions (HTTPMethod = 'GET') {
   return {
     method: HTTPMethod,
@@ -18,12 +17,12 @@ function ACFetchOptions (HTTPMethod = 'GET') {
 }
 
 function fetchDeals (pipeline, stage, limit = 10) {
-  return fetch(`${host}/api/3/deals?filters[stage]=${stage}&filters[group]=${pipeline}&filters[status]=0&limit=${limit}`, ACFetchOptions() )
-  .then(response => response.json())
-  .then(json => {
-    console.log('total number of deals: ', json.meta.total);
-    return json.deals
-  })
+  return fetch(`${host}/api/3/deals?filters[stage]=${stage}&filters[group]=${pipeline}&filters[status]=0&limit=${limit}`, ACFetchOptions())
+    .then(response => response.json())
+    .then(json => {
+      console.log('total number of deals: ', json.meta.total)
+      return json.deals
+    })
 }
 
 function deleteDealRequest (dealId) {
@@ -31,15 +30,14 @@ function deleteDealRequest (dealId) {
     .then(response => response.json())
 }
 
-async function deleteDeals(deals) {
+async function deleteDeals (deals) {
   const aDayInMilliseconds = 1000 * 60 * 60 * 24
   const deleteDealsPromises = deals.reduce((deleted, deal) => {
     const dealAgeInMilliseconds = new Date() - new Date(deal.cdate)
     const dealAgeInDays = Math.floor(dealAgeInMilliseconds / aDayInMilliseconds)
     if (dealAgeInDays <= 2) return deleted
-    console.log(`Deal ${deal.id} will be deleted`);
+    console.log(`Deal ${deal.id} will be deleted`)
     return [...deleted, deleteDealRequest(deal.id)]
-    
   }, [])
   return Promise.all(deleteDealsPromises)
 }
