@@ -12,7 +12,7 @@ async function subscribeContact (contactId, course) {
   const defaultJSList = 'default'
   const defaultPythonList = 'default'
   const finalGeneration = course.toLowerCase().includes('python')
-    ? defaultPythonList 
+    ? defaultPythonList
     : defaultJSList
 
   const defaultListId = ac.constants.lists['javascript-live'].default.id
