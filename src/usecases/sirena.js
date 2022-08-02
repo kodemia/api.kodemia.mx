@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const _ = require('lodash')
 const sirena = require('../lib/sirena')
 
-async function createLead (firstName, lastName, phone, email, source, campaignName) {
+async function createLead (firstName, lastName, phone, email, source, campaignName, comments = 'no comments') {
   const utmSource = campaignName || source || 'Desconocido'
   const phones = [phone]
   const emails = [email]
@@ -11,15 +11,16 @@ async function createLead (firstName, lastName, phone, email, source, campaignNa
     lastName,
     phones,
     emails,
-    utmSource
+    utmSource,
+    comments
   }
   const lead = await sirena.fetch('POST', '/lead/retail', body)
 
   return lead
 }
 
-async function sendFirstMessage (firstName, lastName, phone, email, source, campaignName) {
-  const leadData = await createLead(firstName, lastName, phone, email, source, campaignName)
+async function sendFirstMessage (firstName, lastName, phone, email, source, campaignName, comments) {
+  const leadData = await createLead(firstName, lastName, phone, email, source, campaignName, comments)
   const prospectId = _.get(leadData, 'id')
   const data = {
     key: sirena.constants.templates.firstMessage.id,
