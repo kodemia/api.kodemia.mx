@@ -14,7 +14,8 @@ router.post('/messages/first', async ctx => {
     phone,
     id,
     source,
-    campaignName
+    campaignName,
+    comments
   } = ctx.request.body
 
   if (!firstName) throw ctx.throw(400, 'firstName is required')
@@ -23,7 +24,7 @@ router.post('/messages/first', async ctx => {
   if (!email) throw ctx.throw(400, 'email is required')
   if (!phone) throw ctx.throw(400, 'phone is required')
 
-  await sendFirstMessage(firstName, lastName, phone, email, source, campaignName)
+  await sendFirstMessage(firstName, lastName, phone, email, source, campaignName, comments)
   await ac.deals.updateDealStage(id)
 
   ctx.resolve({
