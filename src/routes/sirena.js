@@ -1,4 +1,5 @@
 const Router = require('koa-router')
+const _ = require('lodash')
 const { sendFirstMessage, sendFirstMessageHighValue, createLead } = require('../usecases/sirena')
 const ac = require('../usecases/active-campaign')
 
@@ -24,10 +25,12 @@ router.post('/lead', async ctx => {
   if (!email) throw ctx.throw(400, 'email is required')
   if (!phone) throw ctx.throw(400, 'phone is required')
 
-  await createLead(firstName, lastName, phone, email, source, campaignName, comments)
+  const leadData = await createLead(firstName, lastName, phone, email, source, campaignName, comments)
+  const prospectId = _.get(leadData, 'id')
 
   ctx.resolve({
-    message: 'Lead created'
+    message: 'Lead created',
+    prospectId
   })
 })
 
