@@ -27,7 +27,7 @@ router.post('/lead', async ctx => {
 
   const leadData = await createLead(firstName, lastName, phone, email, source, campaignName, comments)
   const prospectId = _.get(leadData, 'id')
-  
+
   ctx.resolve({
     message: 'Lead created',
     prospectId
