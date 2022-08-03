@@ -59,5 +59,6 @@ async function sendFirstMessageHighValue (firstName, lastName, phone, email, sou
 
 module.exports = {
   sendFirstMessage,
-  sendFirstMessageHighValue
+  sendFirstMessageHighValue,
+  createLead
 }

@@ -1,9 +1,34 @@
 const Router = require('koa-router')
-const { sendFirstMessage, sendFirstMessageHighValue } = require('../usecases/sirena')
+const { sendFirstMessage, sendFirstMessageHighValue, createLead } = require('../usecases/sirena')
 const ac = require('../usecases/active-campaign')
 
 const router = new Router({
   prefix: '/sirena'
+})
+
+router.post('/lead', async ctx => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    id,
+    source,
+    campaignName,
+    comments
+  } = ctx.request.body
+
+  if (!firstName) throw ctx.throw(400, 'firstName is required')
+  if (!lastName) throw ctx.throw(400, 'lastName is required')
+  if (!id) throw ctx.throw(400, 'contact id is required')
+  if (!email) throw ctx.throw(400, 'email is required')
+  if (!phone) throw ctx.throw(400, 'phone is required')
+
+  await createLead(firstName, lastName, phone, email, source, campaignName, comments)
+
+  ctx.resolve({
+    message: 'Lead created'
+  })
 })
 
 router.post('/messages/first', async ctx => {
