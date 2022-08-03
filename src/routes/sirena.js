@@ -30,7 +30,9 @@ router.post('/lead', async ctx => {
 
   ctx.resolve({
     message: 'Lead created',
-    prospectId
+    payload: {
+      prospectId
+    }
   })
 })
 
